@@ -1,0 +1,242 @@
+import random
+from tabnanny import verbose
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pydotplus
+import shap
+from lime.lime_tabular import LimeTabularExplainer
+from pygam import LogisticGAM
+from sklearn import tree
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier, export_graphviz, export_text
+
+from utils import *
+
+
+def build_model(model_type: str):
+    if model_type == "rf":
+        model = RandomForestClassifier(n_estimators=100, random_state=0, max_depth=3)
+    elif model_type == "lgr":
+        model = LogisticRegression(solver="lbfgs", max_iter=500)
+    elif model_type == "dt":
+        model = DecisionTreeClassifier(
+            criterion="entropy", max_depth=10, random_state=0
+        )
+    elif model_type == "svc":
+        model = SVC(probability=True, gamma="auto")
+    elif model_type == "gam":
+        model = LogisticGAM()
+    return model
+
+
+def train(model, X_train, y_train):
+    return model.fit(X_train, y_train)
+
+
+def predict(model, X_test):
+    return model.predict(X_test)
+
+
+def evaluate(y_pred, y_test):
+    return {"acc": accuracy_score(y_pred, y_test)}
+
+
+def get_dt_local_expl(X_sample, dt, X_test, feature_list):
+    node_indicator = dt.decision_path(X_sample)
+    leaf_id = dt.apply(X_test)
+
+    feature = dt.tree_.feature
+    threshold = dt.tree_.threshold
+    sample_id = 0
+    # obtain ids of the nodes `sample_id` goes through, i.e., row `sample_id`
+    node_index = node_indicator.indices[
+        node_indicator.indptr[sample_id] : node_indicator.indptr[sample_id + 1]
+    ]
+
+    rules = []
+    for node_id in node_index:
+        # continue to the next node if it is a leaf node
+        if leaf_id[sample_id] == node_id:
+            continue
+
+        # check if value of the split feature for sample 0 is below threshold
+        if X_test[sample_id, feature[node_id]] <= threshold[node_id]:
+            threshold_sign = "<="
+        else:
+            threshold_sign = ">"
+
+        rules.append(
+            f"[{feature_list[feature[node_id]]} = {X_test[sample_id, feature[node_id]]}] "
+            f"{threshold_sign} {threshold[node_id]}"
+        )
+    return rules
+
+
+def get_dt_tree_expl(X_sample, dt, feature_list):
+    dot_data = export_graphviz(
+        dt,
+        out_file=None,
+        feature_names=feature_list,
+        class_names=["will not", "will"],
+        filled=True,
+        rounded=True,
+        special_characters=True,
+    )
+    graph = pydotplus.graph_from_dot_data(dot_data)
+
+    # empty all nodes, i.e.set color to white and number of samples to zero
+    for node in graph.get_node_list():
+        if node.get_attributes().get("label") is None:
+            continue
+        if "samples = " in node.get_attributes()["label"]:
+            labels = node.get_attributes()["label"].split("<br/>")
+            for i, label in enumerate(labels):
+                if label.startswith("samples = "):
+                    labels[i] = "samples = 0"
+            node.set("label", "<br/>".join(labels))
+            node.set_fillcolor("white")
+
+    decision_paths = dt.decision_path(X_sample)
+
+    for decision_path in decision_paths:
+        for n, node_value in enumerate(decision_path.toarray()[0]):
+            if node_value == 0:
+                continue
+            node = graph.get_node(str(n))[0]
+            node.set_fillcolor("green")
+            labels = node.get_attributes()["label"].split("<br/>")
+            for i, label in enumerate(labels):
+                if label.startswith("samples = "):
+                    labels[i] = "samples = {}".format(int(label.split("=")[1]) + 1)
+
+            node.set("label", "<br/>".join(labels))
+
+    filename = "expl/dt_path_compas.png"
+    graph.write_png(filename)
+
+
+def get_log_regr_global_expl(lgr, feature_list):
+    with plt.style.context("ggplot"):
+        _ = plt.figure(figsize=(8, 6))
+        plt.barh(
+            range(len(lgr.coef_[0])),
+            lgr.coef_[0],
+            color=["red" if coef < 0 else "green" for coef in lgr.coef_[0]],
+        )
+        plt.yticks(range(len(lgr.coef_[0])), feature_list)
+        plt.title("Weights")
+        plt.savefig("expl/lgr_feature_compas.png")
+
+
+def get_gam_pdp(gam, feature_list):
+    plt.rcParams["figure.figsize"] = (28, 8)
+    _, axs = plt.subplots(1, len(feature_list))
+    for i, ax in enumerate(axs):
+        XX = gam.generate_X_grid(term=i)
+        pdep, confi = gam.partial_dependence(term=i, width=0.95)
+
+        ax.plot(XX[:, i], pdep)
+        ax.plot(XX[:, i], confi, c="r", ls="--")
+        ax.set_title(feature_list[i])
+    plt.savefig("expl/gam_pdp_compas.png")
+
+
+def main():
+    compas_df, compas_features_df = load_compas_data()
+
+    labels = compas_features_df["two_year_recid"]
+    features = compas_features_df.drop("two_year_recid", axis=1)
+    feature_list = list(features.columns)
+
+    X_train, X_test, y_train, y_test = train_test_split(
+        features, labels, test_size=0.2, random_state=0, stratify=labels
+    )
+
+    model_types = [
+        "rf",
+        "lgr",
+        "dt",
+        "svc",
+        "gam",
+    ]
+    models = {}
+    preds = {}
+    metrics = {}
+
+    for model_type in model_types:
+        model = build_model(model_type)
+        model = train(model, X_train.values, y_train)
+        models[model_type] = model
+        model_pred = predict(model, X_test.values)
+        preds[model_type] = model_pred
+        model_metrics = evaluate(model_pred, y_test)
+        metrics[model_type] = model_metrics
+    print(metrics)
+
+    # Create results dataframe with features and model predictions
+    output_df = compas_df.iloc[X_test.index]
+    output_df = output_df.reset_index().rename(columns={"index": "id"})
+    for model_type in model_types:
+        output_df = pd.concat(
+            [output_df, pd.Series(preds[model_type]).rename(f"{model_type}_pred")],
+            axis=1,
+        )
+    output_df["gam_pred"] = (output_df["gam_pred"]).astype(int)
+    print(output_df)
+
+    # Export global explanation for logistic regression model
+    get_log_regr_global_expl(models["lgr"], feature_list)
+
+    # Export global explanation for decision tree model
+    tree_rules = export_text(models["dt"], feature_names=feature_list)
+    with open("expl/dt_full_tree.txt", "w") as out:
+        out.write(tree_rules)
+
+    def test_on_sample():
+        idx = random.randint(1, len(X_test))
+        X_sample = X_test.iloc[idx].values.reshape(1, -1)
+        for i, feature in enumerate(feature_list):
+            print(f"{feature} = {X_sample[0][i]}")
+
+        print("Actual :     ", y_test.iloc[idx])
+
+        # Print predictions for all models
+        print("Decision Tree prediction: ", models["dt"].predict(X_sample))
+        print("SVC Prediction : ", models["svc"].predict(X_sample))
+        print("GAM Prediction : ", models["gam"].predict(X_sample))
+        print("Random Forest Prediction : ", models["rf"].predict(X_sample))
+        print("LogR Prediction : ", models["lgr"].predict(X_sample))
+
+        # Local, exact explanation for decision tree model
+        dt_local_expl = get_dt_local_expl(
+            X_sample, models["dt"], X_test.values, feature_list
+        )
+        get_dt_tree_expl(X_sample, models["dt"], feature_list)
+
+        print("SVC Pred. Prob. : ", models["svc"].predict_proba(X_sample))
+        lime_explainer = LimeTabularExplainer(
+            X_train.values,
+            mode="classification",
+            class_names=[0, 1],
+            feature_names=feature_list,
+        )
+        exp = lime_explainer.explain_instance(
+            X_sample.squeeze(), models["svc"].predict_proba, num_features=5
+        )
+        for rule in exp.as_list():
+            print(f"({rule[0]}, {rule[1]:.2f})")
+        exp.save_to_file("expl/svc_lime_compas.html")
+
+        # Partial dependence plots for GAM
+        get_gam_pdp(models["gam"], feature_list)
+
+    test_on_sample()
+
+
+if __name__ == "__main__":
+    main()

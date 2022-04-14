@@ -172,11 +172,15 @@ def beer_review():
     )
 
     y_pred = []
-    classifier = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
+    classifier = pipeline(
+        "sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest"
+    )
     for i in range(len(X)):
         result = classifier(X[i])[0]
         y_pred.append(1 if result["label"] == "Positive" else 0)
-        print(f"label: {result['label']}, with score: {round(result['score'], 4)}, Actual: {y[i]}")
+        print(
+            f"label: {result['label']}, with score: {round(result['score'], 4)}, Actual: {y[i]}"
+        )
     acc = (np.array(y_pred) == np.array(y)).mean()
     print(acc)
 
@@ -251,6 +255,7 @@ def main():
     for i, ex in raw_output.items():
         i = int(i)
         sample = X_test.iloc[i].values.reshape(1, -1)
+        label = int(y_test.iloc[i])
 
         # Local exact explanation for logistic regression model
         base_rate_ftrs = {
@@ -281,7 +286,7 @@ def main():
         ).as_list()
         rule_cleanup_map = {
             "0.00 < is_felony <= 1.00": "is_felony = 1",
-            "is_felony <= 0.00": "is_felony = 0"
+            "is_felony <= 0.00": "is_felony = 0",
         }
 
         output[dataset].append(
@@ -290,6 +295,7 @@ def main():
                 "features": {
                     feature: ex[feature] for feature in list(compas_df.columns)
                 },
+                "label": label,
                 "preds": {
                     model_type: int(preds[model_type][i]) for model_type in model_types
                 },

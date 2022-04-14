@@ -10,6 +10,7 @@ front:
 	@npm run watch
 
 back:
+	# @pkill -f gunicorn
 	@./bin/start_api.sh
 
 build:

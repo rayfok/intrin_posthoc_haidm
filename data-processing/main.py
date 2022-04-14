@@ -1,19 +1,27 @@
+import json
 import random
-from tabnanny import verbose
+from collections import defaultdict
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pydotplus
 import shap
+import statsmodels.api as sm
 from lime.lime_tabular import LimeTabularExplainer
 from pygam import LogisticGAM
 from sklearn import tree
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier, export_graphviz, export_text
+from tqdm import tqdm
+from sklearn.feature_extraction.text import TfidfVectorizer
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+import torch
+from transformers import pipeline
 
 from utils import *
 
@@ -121,6 +129,14 @@ def get_dt_tree_expl(X_sample, dt, feature_list):
 
 
 def get_log_regr_global_expl(lgr, feature_list):
+    # Calculate weights and odds of logistic regression model
+    weights = lgr.coef_[0]
+    odds = np.exp(weights)
+    df = pd.DataFrame(
+        list(zip(feature_list, weights, odds)), columns=["feature", "weight", "odds"]
+    )
+    # print(df.to_string())
+
     with plt.style.context("ggplot"):
         _ = plt.figure(figsize=(8, 6))
         plt.barh(
@@ -134,6 +150,7 @@ def get_log_regr_global_expl(lgr, feature_list):
 
 
 def get_gam_pdp(gam, feature_list):
+    print(gam)
     plt.rcParams["figure.figsize"] = (28, 8)
     _, axs = plt.subplots(1, len(feature_list))
     for i, ax in enumerate(axs):
@@ -141,9 +158,27 @@ def get_gam_pdp(gam, feature_list):
         pdep, confi = gam.partial_dependence(term=i, width=0.95)
 
         ax.plot(XX[:, i], pdep)
-        ax.plot(XX[:, i], confi, c="r", ls="--")
+        # ax.plot(XX[:, i], confi, c="r", ls="--")
         ax.set_title(feature_list[i])
     plt.savefig("expl/gam_pdp_compas.png")
+
+
+def beer_review():
+    with open("task_data/beer_reviews.json", "r") as f:
+        data = json.load(f)
+    X, y = zip(*[(ex["X"], ex["Y"]) for ex in data])
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y, test_size=0.1, random_state=0
+    )
+
+    y_pred = []
+    classifier = pipeline("sentiment-analysis", model="cardiffnlp/twitter-roberta-base-sentiment-latest")
+    for i in range(len(X)):
+        result = classifier(X[i])[0]
+        y_pred.append(1 if result["label"] == "Positive" else 0)
+        print(f"label: {result['label']}, with score: {round(result['score'], 4)}, Actual: {y[i]}")
+    acc = (np.array(y_pred) == np.array(y)).mean()
+    print(acc)
 
 
 def main():
@@ -176,18 +211,17 @@ def main():
         preds[model_type] = model_pred
         model_metrics = evaluate(model_pred, y_test)
         metrics[model_type] = model_metrics
-    print(metrics)
 
-    # Create results dataframe with features and model predictions
-    output_df = compas_df.iloc[X_test.index]
-    output_df = output_df.reset_index().rename(columns={"index": "id"})
-    for model_type in model_types:
-        output_df = pd.concat(
-            [output_df, pd.Series(preds[model_type]).rename(f"{model_type}_pred")],
-            axis=1,
-        )
-    output_df["gam_pred"] = (output_df["gam_pred"]).astype(int)
-    print(output_df)
+    # Statsmodels lgr has a different syntax
+    sm_lgr_model = sm.Logit(y_train, X_train).fit()
+    model_pred = predict(sm_lgr_model, X_test.values)  # probabilities
+    model_pred = list(map(round, model_pred))
+    preds["lgr-sm"] = model_pred
+    model_metrics = evaluate(model_pred, y_test)
+    metrics["lgr-sm"] = evaluate(model_pred, y_test)
+
+    # Print accuracies of all models
+    print(metrics)
 
     # Export global explanation for logistic regression model
     get_log_regr_global_expl(models["lgr"], feature_list)
@@ -197,8 +231,81 @@ def main():
     with open("expl/dt_full_tree.txt", "w") as out:
         out.write(tree_rules)
 
+    # Export final JSON with select examples, model predictions, and explanations
+    dataset = "compas"
+    output = {}
+    n_examples = 50
+    indices = random.sample(range(0, len(X_test)), n_examples)
+    output_df = (
+        compas_df.iloc[X_test.index].reset_index().rename(columns={"index": "id"})
+    )
+    raw_output = output_df.iloc[indices].to_dict(orient="index")
+    output = defaultdict(list)
+
+    # Global explanation for logistic regression model
+    score = permutation_importance(
+        models["lgr"], X_train.values, y_train, n_repeats=30, random_state=0
+    )
+    ftr_importance = {feature_list[i]: v for i, v in enumerate(score.importances_mean)}
+
+    for i, ex in raw_output.items():
+        i = int(i)
+        sample = X_test.iloc[i].values.reshape(1, -1)
+
+        # Local exact explanation for logistic regression model
+        base_rate_ftrs = {
+            "age": 30,
+            "juv_fel_count": 0,
+            "juv_misd_count": 0,
+            "priors_count": 0,
+            "is_male": 0,
+            "is_felony": 0,
+        }
+        lgr_ftr_contr = {}
+        for ftr_i, feature in enumerate(feature_list):
+            odds = np.exp(sm_lgr_model.params[feature])
+            base_rate_delta = sample[0][ftr_i] - base_rate_ftrs[feature]
+            lgr_ftr_contr[feature] = odds ** base_rate_delta
+
+        # Local post-hoc explanation for SVC model
+        lime_explainer = LimeTabularExplainer(
+            X_train.values,
+            mode="classification",
+            class_names=[0, 1],
+            feature_names=feature_list,
+        )
+        lime_rules = lime_explainer.explain_instance(
+            sample.squeeze(),
+            models["svc"].predict_proba,
+            num_features=len(feature_list),
+        ).as_list()
+        rule_cleanup_map = {
+            "0.00 < is_felony <= 1.00": "is_felony = 1",
+            "is_felony <= 0.00": "is_felony = 0"
+        }
+
+        output[dataset].append(
+            {
+                "id": ex["id"],
+                "features": {
+                    feature: ex[feature] for feature in list(compas_df.columns)
+                },
+                "preds": {
+                    model_type: int(preds[model_type][i]) for model_type in model_types
+                },
+                "expls": {
+                    "logr_ftr_cont": lgr_ftr_contr,
+                    "svc_lime": lime_rules,
+                    # "logr_ftr_importance": ftr_importance,
+                },
+            }
+        )
+    with open("output/task_data.json", "w") as out:
+        json.dump(output, out, indent=2)
+
     def test_on_sample():
         idx = random.randint(1, len(X_test))
+        print(f"=== MODEL OUTPUTS ON TEST SAMPLE {idx} ===")
         X_sample = X_test.iloc[idx].values.reshape(1, -1)
         for i, feature in enumerate(feature_list):
             print(f"{feature} = {X_sample[0][i]}")
@@ -207,10 +314,10 @@ def main():
 
         # Print predictions for all models
         print("Decision Tree prediction: ", models["dt"].predict(X_sample))
-        print("SVC Prediction : ", models["svc"].predict(X_sample))
-        print("GAM Prediction : ", models["gam"].predict(X_sample))
-        print("Random Forest Prediction : ", models["rf"].predict(X_sample))
-        print("LogR Prediction : ", models["lgr"].predict(X_sample))
+        print("SVC Prediction: ", models["svc"].predict(X_sample))
+        print("GAM Prediction: ", models["gam"].predict(X_sample))
+        print("Random Forest Prediction: ", models["rf"].predict(X_sample))
+        print("LogR Prediction: ", models["lgr"].predict(X_sample))
 
         # Local, exact explanation for decision tree model
         dt_local_expl = get_dt_local_expl(
@@ -218,6 +325,26 @@ def main():
         )
         get_dt_tree_expl(X_sample, models["dt"], feature_list)
 
+        # Local explanation for logistic regression model
+        # print(sm_lgr_model.summary())
+        base_rate_ftrs = {
+            "age": 30,
+            "juv_fel_count": 0,
+            "juv_misd_count": 0,
+            "priors_count": 0,
+            "is_male": 0,
+            "is_felony": 0,
+        }
+        lgr_ftr_contr = {}
+        numerical_features = ["age", "juv_fel_count", "juv_misd_count", "priors_count"]
+        binary_features = ["is_male", "is_felony"]
+        for i, feature in enumerate(feature_list):
+            odds = np.exp(sm_lgr_model.params[feature])
+            base_rate_delta = X_sample[0][i] - base_rate_ftrs[feature]
+            lgr_ftr_contr[feature] = odds ** base_rate_delta
+        print("Logistic regression feature contributions:", lgr_ftr_contr)
+
+        # LIME expl. for "black-box" model
         print("SVC Pred. Prob. : ", models["svc"].predict_proba(X_sample))
         lime_explainer = LimeTabularExplainer(
             X_train.values,
@@ -235,7 +362,7 @@ def main():
         # Partial dependence plots for GAM
         get_gam_pdp(models["gam"], feature_list)
 
-    test_on_sample()
+    # test_on_sample()
 
 
 if __name__ == "__main__":

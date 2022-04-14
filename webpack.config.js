@@ -10,7 +10,8 @@ module.exports = {
     rules: [
       {
         loader: "babel-loader",
-        query: {
+        exclude: /node_modules/,
+        options: {
           presets: ["@babel/preset-env", "@babel/react"],
           plugins: ["@babel/plugin-proposal-class-properties"],
         },

@@ -13,3 +13,13 @@ CREATE TABLE IF NOT EXISTS responses (
     condition TEXT,
     created DATE DEFAULT (datetime('now','localtime'))
 );
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    workerId TEXT,
+    assignmentId TEXT,
+    hitId TEXT,
+    task TEXT,
+    condition TEXT,
+    created DATE DEFAULT (datetime('now','localtime'))
+);

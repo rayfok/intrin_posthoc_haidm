@@ -4,3 +4,4 @@ haidm/logs/
 __pycache__/
 *.py[cod]
 var/
+**/bundle.js

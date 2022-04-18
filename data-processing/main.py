@@ -188,6 +188,11 @@ def beer_review():
 def main():
     compas_df, compas_features_df = load_compas_data()
 
+    # Make c_charge_degree values more readable in output
+    compas_df.replace(
+        {"c_charge_degree": {"M": "Misdemeanor", "F": "Felony"}}, inplace=True
+    )
+
     labels = compas_features_df["two_year_recid"]
     features = compas_features_df.drop("two_year_recid", axis=1)
     feature_list = list(features.columns)

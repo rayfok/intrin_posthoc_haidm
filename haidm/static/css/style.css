@@ -1,0 +1,44 @@
+#main-task-container {
+  width: 70%;
+  min-width: 500px;
+  max-width: 1000px;
+  padding-top: 50px;
+  margin: 0 auto;
+}
+
+#task-features-container {
+  padding-top: 25px;
+  padding-bottom: 10px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+#task-choices-container #prompt-text {
+  font-weight: 600;
+  font-size: 20px;
+  text-align: center;
+  margin-bottom: 2px;
+}
+
+#task-choices-container #choices {
+  display: table;
+  margin: 0 auto;
+}
+
+#task-buttons-container {
+  width: 100%;
+  margin: 0 auto;
+}
+
+#exit-survey-container {
+  width: 70%;
+  min-width: 500px;
+  max-width: 1000px;
+  padding-top: 50px;
+  margin: 0 auto;
+}
+
+.centered.button {
+  display: table;
+  margin: 0 auto;
+}

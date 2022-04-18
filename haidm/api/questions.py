@@ -2,6 +2,7 @@ import json
 import os
 
 import flask
+import traceback
 import haidm
 import http
 
@@ -70,16 +71,15 @@ def submit_data():
                 "final_decision_time": r["final_decision_time"],
             }
             conn.execute(
-                f"INSERT INTO responses \
-                ({r_data.keys()}) \
-                VALUES ({','.join(['?'] * len(r_data))})",
+                f"INSERT INTO responses ({','.join(r_data.keys())}) VALUES ({','.join(['?'] * len(r_data))})",
                 tuple(r_data.values()),
             )
         conn.commit()
         context = {"success": True}
         return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)
     except Exception as e:
-        print("Error while submitting:", e, "responses:", responses)
+        traceback.print_exc()
+        print("Responses:", responses)
         context = {"success": False}
         return flask.make_response(
             flask.jsonify(**context), http.HTTPStatus.BAD_REQUEST

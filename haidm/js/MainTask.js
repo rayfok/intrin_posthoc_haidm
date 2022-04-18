@@ -1,21 +1,26 @@
 import Button from "@material-ui/core/Button";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
 import React, { Component } from "react";
-import FinishModal from "./FinishModal";
+import ExitSurvey from "./ExitSurvey";
+import ProgressIndicator from "./ProgressIndicator";
 
 const APPLICATION_ROOT = "";
+const N_QUESTIONS = 1;
 
 class MainTask extends Component {
   urlParams = new URLSearchParams(window.location.search);
   featureDisplayNameMap = {
     compas: {
       age: "Age",
+      sex: "Sex",
       c_charge_degree: "Charge Degree",
       juv_fel_count: "Juvenile Felony Count",
       juv_misd_count: "Juvenile Misdemeanor Count",
       priors_count: "Prior Charges Count",
-      sex: "Sex",
     },
   };
 
@@ -60,9 +65,9 @@ class MainTask extends Component {
       .then((data) => {
         this.setState(
           {
-            questions: Object.values(data).sort(
-              (a, b) => parseInt(a.id) - parseInt(b.id)
-            ),
+            questions: Object.values(data)
+              .sort((a, b) => parseInt(a.id) - parseInt(b.id))
+              .slice(0, N_QUESTIONS),
           },
           this.startTask
         );
@@ -83,6 +88,8 @@ class MainTask extends Component {
       curQuestion: this.state.questions[this.state.completedCount],
       questionStartTime: Date.now(),
       curDecision: null,
+      initialDecision: null,
+      initialDecisionTime: -1,
     });
   };
 
@@ -90,9 +97,13 @@ class MainTask extends Component {
     this.setState((prevState) => ({
       curDecision: e.target.value,
       initialDecision:
-        initialDecision === null ? e.target.value : prevState.initialDecision,
+        prevState.initialDecision === null
+          ? e.target.value
+          : prevState.initialDecision,
       initialDecisionTime:
-        initialDecisionTime === -1 ? Date.now() : prevState.initialDecisionTime,
+        prevState.initialDecisionTime === -1
+          ? Date.now() - prevState.questionStartTime
+          : prevState.initialDecisionTime,
     }));
   };
 
@@ -100,12 +111,13 @@ class MainTask extends Component {
     const response = {
       worker_id: this.state.workerId,
       hit_id: this.state.hitId,
-      assisgnment_id: this.state.assignmentId,
+      assignment_id: this.state.assignmentId,
       task: this.state.task,
       condition: this.state.condition,
       question_id: this.state.curQuestion["id"],
       initial_human_decision: this.state.initialDecision,
       final_human_decision: this.state.curDecision,
+      ai_decision: this.state.curQuestion["preds"]["lgr"],
       initial_decision_time: this.state.initialDecisionTime,
       final_decision_time: Date.now() - this.state.questionStartTime,
     };
@@ -118,6 +130,8 @@ class MainTask extends Component {
         if (this.state.completedCount >= this.state.questions.length) {
           this.submitData();
           this.setState({ finished: true });
+        } else {
+          this.setNextQuestion();
         }
       }
     );
@@ -207,47 +221,88 @@ class MainTask extends Component {
     }
 
     return (
-      <div id="question-outer">
-        <React.Fragment>
-          {this.getMTurkSubmitForm()}
+      <React.Fragment>
+        {this.getMTurkSubmitForm()}
 
-          <FinishModal submitMTurk={this.submitMTurk} open={finished} />
+        {finished && <ExitSurvey submitMTurk={this.submitMTurk} />}
 
-          {curQuestion && showMainTask && (
-            <Grid container justifyContent="center" alignItems="center">
-              <Grid item>
-                <Paper id="question-inner">
-                  <div id="features">
-                    {Object.entries(curQuestion["features"])
-                      .filter(([k, _]) =>
-                        this.featureDisplayNameMap["compas"].hasOwnProperty(k)
-                      )
-                      .map(([k, v]) => (
-                        <li key={k}>
-                          {this.featureDisplayNameMap["compas"][k]}: {v}
-                        </li>
-                      ))}
-                  </div>
-                  <div id="choices"></div>
-                  <div id="buttons">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={this.saveResponse}
-                      className="button"
-                      disabled={curDecision === null}
-                    >
-                      {completedCount === questions.length - 1
-                        ? "Submit"
-                        : "Next"}
-                    </Button>
-                  </div>
-                </Paper>
+        {!finished && curQuestion && showMainTask && (
+          <div id="main-task-container">
+            <ProgressIndicator
+              value={(completedCount / questions.length) * 100}
+            />
+
+            <div id="task-features-container">
+              <Grid container spacing={0} alignItems="center" justify="center">
+                <Grid item xs={6}>
+                  <b>Feature</b>
+                </Grid>
+                <Grid item xs={4}>
+                  <b>Value</b>
+                </Grid>
+                {Object.entries(curQuestion["features"])
+                  .filter(([k, _]) =>
+                    this.featureDisplayNameMap["compas"].hasOwnProperty(k)
+                  )
+                  .map(([k, v]) => (
+                    <React.Fragment key={k}>
+                      <Grid item xs={6}>
+                        {this.featureDisplayNameMap["compas"][k]}
+                      </Grid>
+                      <Grid item xs={4}>
+                        {v}
+                      </Grid>
+                    </React.Fragment>
+                  ))}
               </Grid>
-            </Grid>
-          )}
-        </React.Fragment>
-      </div>
+            </div>
+
+            <div id="task-choices-container">
+              <p id="prompt-text">
+                Will this defendant reoffend in the next two years?
+              </p>
+              <FormControl id="choices">
+                <RadioGroup row>
+                  <FormControlLabel
+                    value="yes"
+                    control={<Radio />}
+                    onChange={this.handleChoiceSelected}
+                    label={
+                      <span>
+                        Yes, they <b>will</b> reoffend.
+                      </span>
+                    }
+                  />
+                  <FormControlLabel
+                    value="no"
+                    control={<Radio />}
+                    onChange={this.handleChoiceSelected}
+                    label={
+                      <span>
+                        No, they <b>will not</b> reoffend.
+                      </span>
+                    }
+                  />
+                </RadioGroup>
+              </FormControl>
+            </div>
+
+            <div id="task-buttons-container">
+              <Button
+                variant="contained"
+                color="primary"
+                className="centered button"
+                onClick={this.saveResponse}
+                disabled={curDecision === null}
+              >
+                {completedCount === questions.length - 1
+                  ? "Submit"
+                  : "Next Case"}
+              </Button>
+            </div>
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }

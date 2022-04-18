@@ -1,3 +1,4 @@
+import { ButtonBase } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
 import DialogContent from "@material-ui/core/DialogContent";
@@ -19,17 +20,16 @@ class FinishModal extends Component {
       <div>
         <Dialog id="finish" open={this.props.open} scroll="body" maxWidth="lg">
           <DialogTitle id="finish-title">
-            {"Thank You for Completing Our Task!"}
+            {
+              "Thank you for completing our task.Please submit the HIT with the button below."
+            }
           </DialogTitle>
           <DialogContent id="finish-description">
             <Button
-              style={{ marginTop: "10px", marginBottom: "20px" }}
               variant="contained"
               color="primary"
               className="button"
-              onClick={() => {
-                this.props.submitMTurk();
-              }}
+              onClick={this.props.submitMTurk}
             >
               Submit HIT
             </Button>

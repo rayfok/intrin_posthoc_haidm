@@ -7,6 +7,7 @@ import haidm.model as model
 
 
 @haidm.app.route("/", methods=["GET"])
+@haidm.app.route("/task", methods=["GET"])
 def show_index():
     context = {}
     conn = model.get_db()
@@ -15,12 +16,15 @@ def show_index():
     workerId = flask.request.args.get("workerId", None)
     task = flask.request.args.get("task", None)
     condition = flask.request.args.get("condition", None)
-    conn.execute(
-        "INSERT INTO sessions (assignmentId, hitId, workerId, task, condition) VALUES (?,?,?,?,?)",
-        (assignmentId, hitId, workerId, task, condition),
+    if assignmentId and hitId and workerId and task and condition:
+        conn.execute(
+            "INSERT INTO sessions (assignmentId, hitId, workerId, task, condition) VALUES (?,?,?,?,?)",
+            (assignmentId, hitId, workerId, task, condition),
+        )
+        conn.commit()
+    return flask.render_template(
+        "index.html", title=f"HAIDM | {task.upper()}", **context
     )
-    conn.commit()
-    return flask.render_template("index.html", **context)
 
 
 @haidm.app.route("/favicon.ico")

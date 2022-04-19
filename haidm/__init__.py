@@ -4,7 +4,7 @@ import flask
 
 app = flask.Flask(__name__)
 app.config.from_object("haidm.config")
-app.config.from_envvar("HAIDM_SETTINGS", silent=True)
+# app.config.from_envvar("HAIDM_SETTINGS", silent=True)
 
 
 from model import db, Response, Session

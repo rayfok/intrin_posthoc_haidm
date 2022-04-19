@@ -5,6 +5,7 @@ import flask
 import traceback
 import haidm
 import http
+from haidm.model import db, Response
 
 DATA_DIR = "data"
 task_data = {}
@@ -21,17 +22,17 @@ def load_data():
         task_data = reformatted
 
 
-@haidm.app.before_first_request
-def before_first_request():
-    load_data()
-
-
 def validate_task(task):
     return task in task_data
 
 
 def validate_qid(task, qid):
     return qid == "-1" or qid in task_data[task]
+
+
+@haidm.app.before_first_request
+def before_first_request():
+    load_data()
 
 
 @haidm.app.route("/api/v1/q/", methods=["GET"])
@@ -53,11 +54,10 @@ def get_question():
 
 @haidm.app.route("/api/v1/submit/", methods=["POST"])
 def submit_data():
-    conn = haidm.model.get_db()
     responses = flask.request.json["responses"]
     try:
-        for r in responses:
-            r_data = {
+        mappings = [
+            {
                 "worker_id": r["worker_id"],
                 "hit_id": r["hit_id"],
                 "assignment_id": r["assignment_id"],
@@ -70,11 +70,10 @@ def submit_data():
                 "initial_decision_time": r["initial_decision_time"],
                 "final_decision_time": r["final_decision_time"],
             }
-            conn.execute(
-                f"INSERT INTO responses ({','.join(r_data.keys())}) VALUES ({','.join(['?'] * len(r_data))})",
-                tuple(r_data.values()),
-            )
-        conn.commit()
+            for r in responses
+        ]
+        db.session.bulk_insert_mappings(Response, mappings)
+        db.session.commit()
         context = {"success": True}
         return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)
     except Exception as e:

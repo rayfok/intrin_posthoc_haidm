@@ -8,5 +8,5 @@ accesslog = f"logs/gunicorn-{time.time()}.log"
 preload = True
 
 
-def post_request(worker, req, environ, resp):
+def post_request(worker, req, _, resp):
     worker.log.info(f"{req.method} {req.path}?{req.query} {resp.status}")

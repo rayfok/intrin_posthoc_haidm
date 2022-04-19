@@ -6,3 +6,4 @@ __pycache__/
 var/
 **/bundle.js
 **/.DS_Store
+*.db

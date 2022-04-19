@@ -1,27 +1,27 @@
-import logging
-import os
-
 import flask
 import haidm
-import haidm.model as model
+from model import db, Session
 
 
 @haidm.app.route("/", methods=["GET"])
 @haidm.app.route("/task", methods=["GET"])
 def show_index():
     context = {}
-    conn = model.get_db()
     assignmentId = flask.request.args.get("assignmentId", None)
     hitId = flask.request.args.get("hitId", None)
     workerId = flask.request.args.get("workerId", None)
     task = flask.request.args.get("task", None)
     condition = flask.request.args.get("condition", None)
     if assignmentId and hitId and workerId and task and condition:
-        conn.execute(
-            "INSERT INTO sessions (assignmentId, hitId, workerId, task, condition) VALUES (?,?,?,?,?)",
-            (assignmentId, hitId, workerId, task, condition),
+        session = Session(
+            workerId=workerId,
+            hitId=hitId,
+            assignmentId=assignmentId,
+            task=task,
+            condition=condition,
         )
-        conn.commit()
+        db.session.add(session)
+        db.session.commit()
     title = "HAIDM"
     if task:
         title += f" | {task.upper()}"

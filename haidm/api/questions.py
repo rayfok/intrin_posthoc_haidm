@@ -83,3 +83,13 @@ def submit_data():
         return flask.make_response(
             flask.jsonify(**context), http.HTTPStatus.BAD_REQUEST
         )
+
+
+@haidm.app.route("/api/v1/completed/", methods=["GET"])
+def has_previously_completed():
+    context = {}
+    if flask.request.method == "GET":
+        worker_id = flask.request.args.get("workerId")
+        workers = [r.worker_id for r in db.session.query(Response.worker_id).distinct()]
+        context["completed"] = worker_id in workers
+    return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)

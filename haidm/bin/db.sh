@@ -14,7 +14,7 @@ create() {
   fi
 
   mkdir -p var
-  sqlite3 var/haidm.db < haidm/sql/schema.sql
+  sqlite3 var/haidm.db < sql/schema.sql
 }
 
 destroy() {

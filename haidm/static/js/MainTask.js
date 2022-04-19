@@ -233,7 +233,12 @@ class MainTask extends Component {
             />
 
             <div id="task-features-container">
-              <Grid container spacing={0} alignItems="center" justify="center">
+              <Grid
+                container
+                spacing={0}
+                alignItems="center"
+                justifyContent="center"
+              >
                 <Grid item xs={6}>
                   <b>Feature</b>
                 </Grid>

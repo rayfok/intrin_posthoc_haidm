@@ -5,3 +5,4 @@ __pycache__/
 *.py[cod]
 var/
 **/bundle.js
+**/.DS_Store

@@ -32,7 +32,10 @@
     ></script>
 
     <!-- Load CSS -->
-    <link rel="stylesheet" href="/static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
 
     <!-- Load favicon -->
     <link rel="shortcut icon" href="/static/favicon.ico" />
@@ -44,7 +47,7 @@
     <!-- Load JavaScript -->
     <script
       type="text/javascript"
-      src="/static/js/bundle.js?version=1"
+      src="{{ url_for('static', filename='dist/bundle.js') }}"
     ></script>
   </body>
 </html>

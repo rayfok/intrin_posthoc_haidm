@@ -22,9 +22,10 @@ def show_index():
             (assignmentId, hitId, workerId, task, condition),
         )
         conn.commit()
-    return flask.render_template(
-        "index.html", title=f"HAIDM | {task.upper()}", **context
-    )
+    title = "HAIDM"
+    if task:
+        title += f" | {task.upper()}"
+    return flask.render_template("index.html", title=f"{title}", **context)
 
 
 @haidm.app.route("/favicon.ico")

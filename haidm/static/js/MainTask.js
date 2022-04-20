@@ -52,7 +52,7 @@ class MainTask extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      questions: null,
+      questions: [],
       responses: [],
       completedCount: 0,
       workerId: this.urlParams.get("workerId"),
@@ -70,45 +70,38 @@ class MainTask extends Component {
       curQuestion: null,
       showMainTask: false,
       finished: false,
-      previouslyCompleted: false,
     };
   }
 
-  componentDidMount() {
-    this.checkHasPreviouslyCompleted();
-    this.getAllQuestions();
-  }
-
-  getAllQuestions = () => {
-    let url = `${APPLICATION_ROOT}/api/v1/q/?task=${this.state.task}&q=-1`;
-    fetch(url, { credentials: "same-origin" })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Something went wrong getting all questions...");
-        }
-      })
-      .then((data) => {
+  async componentDidMount() {
+    let previouslyCompleted = await this.checkHasPreviouslyCompleted();
+    if (!previouslyCompleted) {
+      let questions = await this.getAllQuestions();
+      if (questions) {
         this.setState(
           {
-            questions: Object.values(data)
-              .sort((a, b) => parseInt(a.id) - parseInt(b.id))
-              .slice(0, this.numberOfQuestions),
+            questions,
+            showMainTask: true,
           },
-          this.startTask
+          this.setNextQuestion
         );
-      });
-  };
+      }
+    }
+  }
 
-  startTask = () => {
-    this.setState(
-      {
-        showMainTask: true,
-      },
-      this.setNextQuestion
-    );
-  };
+  async getAllQuestions() {
+    let url = `${APPLICATION_ROOT}/api/v1/q/?task=${this.state.task}&q=-1`;
+    try {
+      let response = await fetch(url, { credentials: "same-origin" });
+      let data = await response.json();
+      let questions = Object.values(data)
+        .sort((a, b) => parseInt(a.id) - parseInt(b.id))
+        .slice(0, this.numberOfQuestions);
+      return questions;
+    } catch (err) {
+      return [];
+    }
+  }
 
   setNextQuestion = () => {
     this.setState({
@@ -195,31 +188,21 @@ class MainTask extends Component {
     }
   };
 
-  checkHasPreviouslyCompleted = () => {
-    if (this.state.workerId !== null) {
-      let url = `${APPLICATION_ROOT}/api/v1/completed/?workerId=${this.state.workerId}&task=${this.state.task}`;
-      fetch(url, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "same-origin",
-      })
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          } else {
-            throw new Error("Something went wrong ...");
-          }
-        })
-        .then((data) => {
-          this.setState({
-            previouslyCompleted: data["completed"],
-          });
-        });
-    }
-  };
+  async checkHasPreviouslyCompleted() {
+    if (this.state.workerId === null) return false;
+
+    let url = `${APPLICATION_ROOT}/api/v1/completed/?workerId=${this.state.workerId}&task=${this.state.task}`;
+    let response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin",
+    });
+    let data = await response.json();
+    return data["completed"];
+  }
 
   getMTurkSubmitForm = () => {
     return (
@@ -264,9 +247,16 @@ class MainTask extends Component {
       finished,
     } = this.state;
 
-    if (!questions) {
+    if (questions.length === 0) {
       return (
-        <div>If this page does not load, please return the HIT. Sorry!</div>
+        <div id="return-hit-message">
+          <p>
+            If this message does not go away in a few seconds, either something
+            has gone catastrophically wrong or our records indicate that you
+            have already previously completed our task. Please do not accept
+            this HIT, or return if already accepted. Thank you!
+          </p>
+        </div>
       );
     }
 

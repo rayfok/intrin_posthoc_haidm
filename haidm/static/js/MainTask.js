@@ -11,13 +11,13 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
+import Tooltip from "@mui/material/Tooltip";
+import classNames from "classnames";
 import React, { Component } from "react";
 import ExitSurvey from "./ExitSurvey";
 import ProgressIndicator from "./ProgressIndicator";
-import Tooltip from "@mui/material/Tooltip";
 
 const APPLICATION_ROOT = "";
-const N_QUESTIONS = 1;
 
 class MainTask extends Component {
   urlParams = new URLSearchParams(window.location.search);
@@ -26,6 +26,7 @@ class MainTask extends Component {
       age: "Age",
       sex: "Sex",
       c_charge_degree: "Charge Degree",
+      c_charge_desc: "Charge Description",
       juv_fel_count: "Juvenile Felony Count",
       juv_misd_count: "Juvenile Misdemeanor Count",
       priors_count: "Prior Charges Count",
@@ -37,6 +38,7 @@ class MainTask extends Component {
       sex: "Biological sex designated at birth.",
       c_charge_degree:
         "Severity of the charged crime. Crimes are classified as either misdemeanors (less serious crimes) or felonies (more serious crimes)",
+      c_charge_desc: "Description of the charged crime.",
       juv_fel_count:
         "Number of felony crimes commited while the defendant was a juvenile (under the age of eighteen).",
       juv_misd_count:
@@ -44,6 +46,8 @@ class MainTask extends Component {
       priors_count: "Total number of prior charges against the defendant.",
     },
   };
+  conditions = ["human", "human-ai", "human-ai-intrinsic", "human-ai-posthoc"];
+  numberOfQuestions = 5;
 
   constructor(props) {
     super(props);
@@ -56,7 +60,7 @@ class MainTask extends Component {
       hitId: this.urlParams.get("hitId"),
       turkSubmitTo: this.urlParams.get("turkSubmitTo"),
       task: this.urlParams.get("task"),
-      condition: this.urlParams.get("condition"),
+      condition: this.urlParams.get("condition") || "human-ai",
       questionStartTime: -1,
       initialDecisionTime: -1,
       finalDecisionTime: -1,
@@ -90,7 +94,7 @@ class MainTask extends Component {
           {
             questions: Object.values(data)
               .sort((a, b) => parseInt(a.id) - parseInt(b.id))
-              .slice(0, N_QUESTIONS),
+              .slice(0, this.numberOfQuestions),
           },
           this.startTask
         );
@@ -126,7 +130,10 @@ class MainTask extends Component {
   };
 
   handleNextClicked = () => {
-    if (this.state.initialDecision === null) {
+    if (
+      this.state.initialDecision === null &&
+      this.state.condition !== "human"
+    ) {
       this.setState({
         showMachineAssistance: true,
         initialDecision: this.state.curDecision,
@@ -231,6 +238,19 @@ class MainTask extends Component {
     );
   };
 
+  machineSuggestReoffend = () => {
+    if (
+      this.state.condition === "human-ai" ||
+      this.state.condition === "human-ai-posthoc"
+    ) {
+      return this.state.curQuestion["preds"]["svc"] === 1;
+    } else if (this.state.condition === "human-ai-intrinsic") {
+      return this.state.curQuestion["preds"]["lgr"] === 1;
+    } else {
+      return 0;
+    }
+  };
+
   render() {
     const {
       task,
@@ -270,9 +290,9 @@ class MainTask extends Component {
             </div>
 
             <div id="task-features-container">
-              <p id="task-section-header">Defendant Profile</p>
+              <p className="task-section-header">Defendant Profile</p>
               <TableContainer>
-                <Table sx={{ maxWidth: 400 }}>
+                <Table sx={{ maxWidth: 500 }} size="small">
                   <TableHead>
                     <TableRow>
                       <TableCell>{<b>Feature</b>}</TableCell>
@@ -303,15 +323,22 @@ class MainTask extends Component {
             </div>
 
             <div id="task-choices-container">
-              <p className="prompt-text">
+              <p
+                className={classNames("prompt-text", {
+                  "text-muted": initialDecision !== null,
+                })}
+              >
                 Do you think this defendant will reoffend within two years?
               </p>
               <FormControl className="choices">
-                <RadioGroup row>
+                <RadioGroup
+                  row
+                  value={initialDecision ? initialDecision : curDecision}
+                  onChange={this.handleChoiceSelected}
+                >
                   <FormControlLabel
                     value="yes"
                     control={<Radio />}
-                    onChange={this.handleChoiceSelected}
                     disabled={initialDecision !== null}
                     label={
                       <span>
@@ -322,7 +349,6 @@ class MainTask extends Component {
                   <FormControlLabel
                     value="no"
                     control={<Radio />}
-                    onChange={this.handleChoiceSelected}
                     disabled={initialDecision !== null}
                     label={
                       <span>
@@ -336,18 +362,28 @@ class MainTask extends Component {
 
             {showMachineAssistance && (
               <div id="ai-assist-container">
-                <div id="ai-decision">AI Decision</div>
-                <div id="ai-explanation">AI Explanation</div>
+                <div id="ai-decision">
+                  <p className="task-section-header">AI Prediction</p>
+                  <p>
+                    Our AI model predicts that this defendent{" "}
+                    <b>{this.machineSuggestReoffend() ? "will" : "will not"}</b>{" "}
+                    reoffend within two years.
+                  </p>
+                </div>
+                <div id="ai-explanation"></div>
                 <p className="prompt-text">
                   Now, do you think this defendant will reoffend within two
                   years?
                 </p>
                 <FormControl className="choices">
-                  <RadioGroup row>
+                  <RadioGroup
+                    row
+                    value={curDecision}
+                    onChange={this.handleChoiceSelected}
+                  >
                     <FormControlLabel
                       value="yes"
                       control={<Radio />}
-                      onChange={this.handleChoiceSelected}
                       label={
                         <span>
                           Yes, I think they <b>will</b> reoffend.
@@ -357,7 +393,6 @@ class MainTask extends Component {
                     <FormControlLabel
                       value="no"
                       control={<Radio />}
-                      onChange={this.handleChoiceSelected}
                       label={
                         <span>
                           No, I think they <b>will not</b> reoffend.

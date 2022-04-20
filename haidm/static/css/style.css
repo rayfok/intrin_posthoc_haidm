@@ -67,3 +67,13 @@
   margin: 0 auto;
   min-width: 600px;
 }
+
+#task-stepper {
+  padding-top: 15px;
+  width: 80%;
+  margin: 0 auto;
+  position: sticky;
+  background-color: white;
+  top: 0;
+  z-index: 10000;
+}

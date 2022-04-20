@@ -14,8 +14,10 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import classNames from "classnames";
 import React, { Component } from "react";
+import { TaskStep } from "./enums";
 import ExitSurvey from "./ExitSurvey";
 import ProgressIndicator from "./ProgressIndicator";
+import TaskStepper from "./TaskStepper";
 
 const APPLICATION_ROOT = "";
 
@@ -70,6 +72,7 @@ class MainTask extends Component {
       curQuestion: null,
       showMainTask: false,
       finished: false,
+      activeStep: TaskStep.TaskDescription,
     };
   }
 
@@ -82,6 +85,7 @@ class MainTask extends Component {
           {
             questions,
             showMainTask: true,
+            activeStep: TaskStep.MainTask,
           },
           this.setNextQuestion
         );
@@ -155,7 +159,7 @@ class MainTask extends Component {
         () => {
           if (this.state.completedCount >= this.state.questions.length) {
             this.submitData();
-            this.setState({ finished: true });
+            this.setState({ finished: true, activeStep: TaskStep.ExitSurvey });
           } else {
             this.setNextQuestion();
           }
@@ -245,6 +249,7 @@ class MainTask extends Component {
       completedCount,
       showMachineAssistance,
       finished,
+      activeStep,
     } = this.state;
 
     if (questions.length === 0) {
@@ -263,6 +268,10 @@ class MainTask extends Component {
     return (
       <React.Fragment>
         {this.getMTurkSubmitForm()}
+
+        <div id="task-stepper">
+          <TaskStepper activeStep={activeStep} />
+        </div>
 
         {finished && <ExitSurvey submitMTurk={this.submitMTurk} />}
 

@@ -6,27 +6,38 @@
   margin: 0 auto;
 }
 
+#task-description-container {
+  margin-top: 15px;
+  width: 95%;
+}
+
+#task-section-header {
+  font-weight: bold;
+}
+
 #task-features-container {
   padding-top: 25px;
-  padding-bottom: 10px;
+  padding-bottom: 30px;
   width: 100%;
   margin: 0 auto;
 }
 
-#task-choices-container #prompt-text {
+.prompt-text {
   font-weight: 600;
   font-size: 20px;
-  text-align: center;
   margin-bottom: 2px;
 }
 
-#task-choices-container #choices {
+/* #ai-assist-container .choices,
+#task-choices-container .choices {
   display: table;
   margin: 0 auto;
-}
+} */
 
 #task-buttons-container {
   width: 100%;
+  padding-top: 45px;
+  padding-bottom: 45px;
   margin: 0 auto;
 }
 

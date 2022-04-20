@@ -1,12 +1,20 @@
 import Button from "@material-ui/core/Button";
-import Grid from "@material-ui/core/Grid";
+import InfoIcon from "@mui/icons-material/Info";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import React, { Component } from "react";
 import ExitSurvey from "./ExitSurvey";
 import ProgressIndicator from "./ProgressIndicator";
+import Tooltip from "@mui/material/Tooltip";
 
 const APPLICATION_ROOT = "";
 const N_QUESTIONS = 1;
@@ -21,6 +29,19 @@ class MainTask extends Component {
       juv_fel_count: "Juvenile Felony Count",
       juv_misd_count: "Juvenile Misdemeanor Count",
       priors_count: "Prior Charges Count",
+    },
+  };
+  featureDescMap = {
+    compas: {
+      age: "Age of the defendant.",
+      sex: "Biological sex designated at birth.",
+      c_charge_degree:
+        "Severity of the charged crime. Crimes are classified as either misdemeanors (less serious crimes) or felonies (more serious crimes)",
+      juv_fel_count:
+        "Number of felony crimes commited while the defendant was a juvenile (under the age of eighteen).",
+      juv_misd_count:
+        "Number of misdemeanor crimes commited while the defendant was a juvenile (under the age of eighteen).",
+      priors_count: "Total number of prior charges against the defendant.",
     },
   };
 
@@ -38,7 +59,9 @@ class MainTask extends Component {
       condition: this.urlParams.get("condition"),
       questionStartTime: -1,
       initialDecisionTime: -1,
+      finalDecisionTime: -1,
       initialDecision: null,
+      finalDecision: null,
       curDecision: null,
       curQuestion: null,
       showMainTask: false,
@@ -90,51 +113,55 @@ class MainTask extends Component {
       curDecision: null,
       initialDecision: null,
       initialDecisionTime: -1,
+      finalDecision: null,
+      finalDecisionTime: -1,
+      showMachineAssistance: false,
     });
   };
 
   handleChoiceSelected = (e) => {
-    this.setState((prevState) => ({
+    this.setState({
       curDecision: e.target.value,
-      initialDecision:
-        prevState.initialDecision === null
-          ? e.target.value
-          : prevState.initialDecision,
-      initialDecisionTime:
-        prevState.initialDecisionTime === -1
-          ? Date.now() - prevState.questionStartTime
-          : prevState.initialDecisionTime,
-    }));
+    });
   };
 
-  saveResponse = () => {
-    const response = {
-      worker_id: this.state.workerId,
-      hit_id: this.state.hitId,
-      assignment_id: this.state.assignmentId,
-      task: this.state.task,
-      condition: this.state.condition,
-      question_id: this.state.curQuestion["id"],
-      initial_human_decision: this.state.initialDecision,
-      final_human_decision: this.state.curDecision,
-      ai_decision: this.state.curQuestion["preds"]["lgr"],
-      initial_decision_time: this.state.initialDecisionTime,
-      final_decision_time: Date.now() - this.state.questionStartTime,
-    };
-    this.setState(
-      (prevState) => ({
-        completedCount: prevState.completedCount + 1,
-        responses: [...prevState.responses, response],
-      }),
-      () => {
-        if (this.state.completedCount >= this.state.questions.length) {
-          this.submitData();
-          this.setState({ finished: true });
-        } else {
-          this.setNextQuestion();
+  handleNextClicked = () => {
+    if (this.state.initialDecision === null) {
+      this.setState({
+        showMachineAssistance: true,
+        initialDecision: this.state.curDecision,
+        initialDecisionTime: Date.now() - this.state.questionStartTime,
+        curDecision: null,
+      });
+    } else {
+      const response = {
+        worker_id: this.state.workerId,
+        hit_id: this.state.hitId,
+        assignment_id: this.state.assignmentId,
+        task: this.state.task,
+        condition: this.state.condition,
+        question_id: this.state.curQuestion["id"],
+        initial_human_decision: this.state.initialDecision,
+        final_human_decision: this.state.curDecision,
+        ai_decision: this.state.curQuestion["preds"]["lgr"],
+        initial_decision_time: this.state.initialDecisionTime,
+        final_decision_time: Date.now() - this.state.questionStartTime,
+      };
+      this.setState(
+        (prevState) => ({
+          completedCount: prevState.completedCount + 1,
+          responses: [...prevState.responses, response],
+        }),
+        () => {
+          if (this.state.completedCount >= this.state.questions.length) {
+            this.submitData();
+            this.setState({ finished: true });
+          } else {
+            this.setNextQuestion();
+          }
         }
-      }
-    );
+      );
+    }
   };
 
   submitData = () => {
@@ -206,11 +233,14 @@ class MainTask extends Component {
 
   render() {
     const {
+      task,
       questions,
       curQuestion,
       curDecision,
+      initialDecision,
       showMainTask,
       completedCount,
+      showMachineAssistance,
       finished,
     } = this.state;
 
@@ -232,49 +262,60 @@ class MainTask extends Component {
               value={(completedCount / questions.length) * 100}
             />
 
+            <div id="task-description-container">
+              <span id="task-description">
+                Please review the following profile and consider whether this
+                defendant is likely to reoffend within the next two years.
+              </span>
+            </div>
+
             <div id="task-features-container">
-              <Grid
-                container
-                spacing={0}
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Grid item xs={6}>
-                  <b>Feature</b>
-                </Grid>
-                <Grid item xs={4}>
-                  <b>Value</b>
-                </Grid>
-                {Object.entries(curQuestion["features"])
-                  .filter(([k, _]) =>
-                    this.featureDisplayNameMap["compas"].hasOwnProperty(k)
-                  )
-                  .map(([k, v]) => (
-                    <React.Fragment key={k}>
-                      <Grid item xs={6}>
-                        {this.featureDisplayNameMap["compas"][k]}
-                      </Grid>
-                      <Grid item xs={4}>
-                        {v}
-                      </Grid>
-                    </React.Fragment>
-                  ))}
-              </Grid>
+              <p id="task-section-header">Defendant Profile</p>
+              <TableContainer>
+                <Table sx={{ maxWidth: 400 }}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>{<b>Feature</b>}</TableCell>
+                      <TableCell align="right">{<b>Value</b>}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.entries(curQuestion["features"])
+                      .filter(([k, _]) =>
+                        this.featureDisplayNameMap[task].hasOwnProperty(k)
+                      )
+                      .map(([k, v]) => (
+                        <TableRow key={k}>
+                          <TableCell component="th" scope="row">
+                            {this.featureDisplayNameMap[task][k]}
+                            <Tooltip title={this.featureDescMap[task][k]}>
+                              <IconButton>
+                                <InfoIcon sx={{ fontSize: 18 }} />
+                              </IconButton>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell align="right">{v}</TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </div>
 
             <div id="task-choices-container">
-              <p id="prompt-text">
-                Will this defendant reoffend in the next two years?
+              <p className="prompt-text">
+                Do you think this defendant will reoffend within two years?
               </p>
-              <FormControl id="choices">
+              <FormControl className="choices">
                 <RadioGroup row>
                   <FormControlLabel
                     value="yes"
                     control={<Radio />}
                     onChange={this.handleChoiceSelected}
+                    disabled={initialDecision !== null}
                     label={
                       <span>
-                        Yes, they <b>will</b> reoffend.
+                        Yes, I think they <b>will</b> reoffend.
                       </span>
                     }
                   />
@@ -282,9 +323,10 @@ class MainTask extends Component {
                     value="no"
                     control={<Radio />}
                     onChange={this.handleChoiceSelected}
+                    disabled={initialDecision !== null}
                     label={
                       <span>
-                        No, they <b>will not</b> reoffend.
+                        No, I think they <b>will not</b> reoffend.
                       </span>
                     }
                   />
@@ -292,17 +334,50 @@ class MainTask extends Component {
               </FormControl>
             </div>
 
+            {showMachineAssistance && (
+              <div id="ai-assist-container">
+                <div id="ai-decision">AI Decision</div>
+                <div id="ai-explanation">AI Explanation</div>
+                <p className="prompt-text">
+                  Now, do you think this defendant will reoffend within two
+                  years?
+                </p>
+                <FormControl className="choices">
+                  <RadioGroup row>
+                    <FormControlLabel
+                      value="yes"
+                      control={<Radio />}
+                      onChange={this.handleChoiceSelected}
+                      label={
+                        <span>
+                          Yes, I think they <b>will</b> reoffend.
+                        </span>
+                      }
+                    />
+                    <FormControlLabel
+                      value="no"
+                      control={<Radio />}
+                      onChange={this.handleChoiceSelected}
+                      label={
+                        <span>
+                          No, I think they <b>will not</b> reoffend.
+                        </span>
+                      }
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
+            )}
+
             <div id="task-buttons-container">
               <Button
                 variant="contained"
                 color="primary"
                 className="centered button"
-                onClick={this.saveResponse}
+                onClick={this.handleNextClicked}
                 disabled={curDecision === null}
               >
-                {completedCount === questions.length - 1
-                  ? "Submit"
-                  : "Next Case"}
+                Next
               </Button>
             </div>
           </div>

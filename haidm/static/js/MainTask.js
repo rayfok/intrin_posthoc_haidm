@@ -322,6 +322,7 @@ class MainTask extends Component {
             </div>
 
             <div id="task-choices-container">
+              <p className="task-section-header">Make A Decision</p>
               <p
                 className={classNames("prompt-text", {
                   "text-muted": initialDecision !== null,
@@ -370,6 +371,7 @@ class MainTask extends Component {
                   </p>
                 </div>
                 <div id="ai-explanation"></div>
+                <p className="task-section-header">Make Your Final Decision</p>
                 <p className="prompt-text">
                   Now, do you think this defendant will reoffend within two
                   years?

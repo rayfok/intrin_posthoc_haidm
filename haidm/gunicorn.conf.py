@@ -1,11 +1,13 @@
 import os
 import time
 
-bind = "0.0.0.0:8878"
+bind = "127.0.0.1:8878"
 workers = os.environ.get("WORKERS", 1)
 loglevel = os.environ.get("LOG_LEVEL", "info")
-accesslog = f"logs/gunicorn-{time.time()}.log"
+errorlog = "logs/error-haidm.log"
+accesslog = "logs/access-haidm.log"
 preload = True
+proc_name = "gunicorn-haidm"
 
 
 def post_request(worker, req, _, resp):

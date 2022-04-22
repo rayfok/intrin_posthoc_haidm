@@ -1,6 +1,5 @@
 node_modules
 *.egg-info/
-logs/
 __pycache__/
 *.py[cod]
 var/

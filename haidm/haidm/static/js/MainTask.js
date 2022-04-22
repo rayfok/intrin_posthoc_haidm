@@ -159,6 +159,7 @@ class MainTask extends Component {
         ai_decision: this.state.curQuestion["preds"]["lgr"],
         initial_decision_time: this.state.initialDecisionTime,
         final_decision_time: Date.now() - this.state.questionStartTime,
+        ground_truth: this.state.curQuestion["label"],
       };
       this.setState(
         (prevState) => ({

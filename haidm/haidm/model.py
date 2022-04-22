@@ -13,11 +13,12 @@ class Response(db.Model):
     task = db.Column(db.String(80), nullable=False)
     condition = db.Column(db.String(80), nullable=True)
     question_id = db.Column(db.String(80), nullable=False)
-    initial_human_decision = db.Column(db.String(80), nullable=False)
+    initial_human_decision = db.Column(db.String(80), nullable=True)
     final_human_decision = db.Column(db.String(80), nullable=False)
     ai_decision = db.Column(db.String(80), nullable=True)
     initial_decision_time = db.Column(db.Integer, nullable=False)
     final_decision_time = db.Column(db.Integer, nullable=False)
+    ground_truth = db.Column(db.String(80), nullable=False)
     created = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):

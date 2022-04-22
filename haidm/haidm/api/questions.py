@@ -69,6 +69,7 @@ def submit_data():
                 "ai_decision": r["ai_decision"],
                 "initial_decision_time": r["initial_decision_time"],
                 "final_decision_time": r["final_decision_time"],
+                "ground_truth": r["ground_truth"],
             }
             for r in responses
         ]

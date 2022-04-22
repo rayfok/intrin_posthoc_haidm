@@ -1,3 +1,8 @@
+:root {
+  --light-blue: rgb(167, 202, 237);
+  --dark-blue: #1976d2;
+}
+
 #main-task-container {
   width: 70%;
   min-width: 500px;
@@ -28,14 +33,8 @@
   margin-bottom: 2px;
 }
 
-/* #ai-assist-container .choices,
-#task-choices-container .choices {
-  display: table;
-  margin: 0 auto;
-} */
-
 #ai-decision {
-  border: 1px solid rgb(150, 44, 44);
+  border: 1px solid var(--dark-blue);
   border-radius: 5px;
   padding: 5px;
   margin-bottom: 15px;
@@ -62,6 +61,10 @@
   margin: 0 auto;
 }
 
+#task-buttons-container .button:not(.Mui-disabled) {
+  background-color: var(--light-blue);
+}
+
 #return-hit-message {
   padding-top: 25%;
   width: 30%;
@@ -77,4 +80,12 @@
   background-color: white;
   top: 0;
   z-index: 10000;
+}
+
+#RFS-StepButton.completed {
+  background-color: var(--light-blue);
+}
+
+#RFS-StepButton.active {
+  background-color: var(--dark-blue);
 }

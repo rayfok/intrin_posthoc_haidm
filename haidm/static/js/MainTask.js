@@ -408,7 +408,6 @@ class MainTask extends Component {
             <div id="task-buttons-container">
               <Button
                 variant="contained"
-                color="primary"
                 className="centered button"
                 onClick={this.handleNextClicked}
                 disabled={curDecision === null}

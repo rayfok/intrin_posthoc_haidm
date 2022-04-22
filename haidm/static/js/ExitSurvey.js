@@ -15,7 +15,6 @@ class ExitSurvey extends Component {
       <div id="exit-survey-container">
         <Button
           variant="contained"
-          color="primary"
           className="centered button"
           onClick={this.props.submitMTurk}
         >

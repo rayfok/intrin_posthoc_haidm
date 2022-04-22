@@ -70,8 +70,6 @@ class MainTask extends Component {
       finalDecision: null,
       curDecision: null,
       curQuestion: null,
-      showMainTask: false,
-      finished: false,
       activeStep: TaskStep.TaskDescription,
     };
   }
@@ -81,17 +79,28 @@ class MainTask extends Component {
     if (!previouslyCompleted) {
       let questions = await this.getAllQuestions();
       if (questions) {
-        this.setState(
-          {
-            questions,
-            showMainTask: true,
-            activeStep: TaskStep.MainTask,
-          },
-          this.setNextQuestion
-        );
+        this.setState({
+          questions,
+          activeStep: TaskStep.TaskDescription,
+        });
       }
     }
   }
+
+  startOnboarding = () => {
+    this.setState({
+      activeStep: TaskStep.TaskOnboarding,
+    });
+  };
+
+  startMainTask = () => {
+    this.setState(
+      {
+        activeStep: TaskStep.MainTask,
+      },
+      this.setNextQuestion
+    );
+  };
 
   async getAllQuestions() {
     let url = `${APPLICATION_ROOT}/api/v1/q/?task=${this.state.task}&q=-1`;
@@ -158,8 +167,11 @@ class MainTask extends Component {
         }),
         () => {
           if (this.state.completedCount >= this.state.questions.length) {
-            this.submitData();
-            this.setState({ finished: true, activeStep: TaskStep.ExitSurvey });
+            this.submitData().then(() =>
+              this.setState({
+                activeStep: TaskStep.ExitSurvey,
+              })
+            );
           } else {
             this.setNextQuestion();
           }
@@ -168,9 +180,9 @@ class MainTask extends Component {
     }
   };
 
-  submitData = () => {
+  async submitData() {
     let url = `${APPLICATION_ROOT}/api/v1/submit/`;
-    fetch(url, {
+    let response = await fetch(url, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -180,8 +192,9 @@ class MainTask extends Component {
       body: JSON.stringify({
         responses: this.state.responses,
       }),
-    }).then(this.setState({ showMainTask: false, finished: true }));
-  };
+    });
+    return response["success"];
+  }
 
   submitMTurk = () => {
     if (this.state.turkSubmitTo !== null) {
@@ -245,10 +258,8 @@ class MainTask extends Component {
       curQuestion,
       curDecision,
       initialDecision,
-      showMainTask,
       completedCount,
       showMachineAssistance,
-      finished,
       activeStep,
     } = this.state;
 
@@ -269,13 +280,39 @@ class MainTask extends Component {
       <React.Fragment>
         {this.getMTurkSubmitForm()}
 
-        <div id="task-stepper">
-          <TaskStepper activeStep={activeStep} />
-        </div>
+        <TaskStepper activeStep={activeStep} />
 
-        {finished && <ExitSurvey submitMTurk={this.submitMTurk} />}
+        {activeStep === TaskStep.TaskDescription && (
+          <div id="hit-description">
+            <p>Here goes the description of the task.</p>
+            <Button
+              variant="contained"
+              className="centered button"
+              onClick={this.startOnboarding}
+            >
+              Start
+            </Button>
+          </div>
+        )}
 
-        {!finished && curQuestion && showMainTask && (
+        {activeStep === TaskStep.TaskOnboarding && (
+          <div id="onboarding">
+            <p>Here go the tutorial/gating questions.</p>
+            <Button
+              variant="contained"
+              className="centered button"
+              onClick={this.startMainTask}
+            >
+              Start
+            </Button>
+          </div>
+        )}
+
+        {activeStep === TaskStep.ExitSurvey && (
+          <ExitSurvey submitMTurk={this.submitMTurk} />
+        )}
+
+        {activeStep === TaskStep.MainTask && curQuestion && (
           <div id="main-task-container">
             <ProgressIndicator
               value={(completedCount / questions.length) * 100}

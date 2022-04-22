@@ -1,23 +1,21 @@
+/* Variables */
 :root {
   --light-blue: rgb(167, 202, 237);
   --dark-blue: #1976d2;
 }
 
+/* Main Task */
 #main-task-container {
   width: 70%;
   min-width: 500px;
   max-width: 1000px;
-  padding-top: 50px;
+  padding-top: 15px;
   margin: 0 auto;
 }
 
 #task-description-container {
-  margin-top: 15px;
+  margin-top: 20px;
   width: 95%;
-}
-
-.task-section-header {
-  font-weight: bold;
 }
 
 #task-features-container {
@@ -25,6 +23,17 @@
   padding-bottom: 30px;
   width: 100%;
   margin: 0 auto;
+}
+
+#task-buttons-container {
+  width: 100%;
+  padding-top: 45px;
+  padding-bottom: 45px;
+  margin: 0 auto;
+}
+
+#task-buttons-container .button:not(.Mui-disabled) {
+  background-color: var(--light-blue);
 }
 
 .prompt-text {
@@ -41,30 +50,18 @@
   width: fit-content;
 }
 
-#task-buttons-container {
-  width: 100%;
-  padding-top: 45px;
-  padding-bottom: 45px;
-  margin: 0 auto;
+/* General Text */
+.task-section-header {
+  font-weight: bold;
 }
 
-#exit-survey-container {
-  width: 70%;
-  min-width: 500px;
-  max-width: 1000px;
-  padding-top: 50px;
-  margin: 0 auto;
-}
-
+/* General Button */
 .centered.button {
   display: table;
   margin: 0 auto;
 }
 
-#task-buttons-container .button:not(.Mui-disabled) {
-  background-color: var(--light-blue);
-}
-
+/* Error */
 #return-hit-message {
   padding-top: 25%;
   width: 30%;
@@ -72,8 +69,9 @@
   min-width: 600px;
 }
 
+/* Stepper */
 #task-stepper {
-  padding-top: 15px;
+  padding-top: 5px;
   width: 80%;
   margin: 0 auto;
   position: sticky;
@@ -88,4 +86,32 @@
 
 #RFS-StepButton.active {
   background-color: var(--dark-blue);
+}
+
+/* Task Description */
+#hit-description {
+  text-align: center;
+}
+#hit-description .button {
+  background-color: var(--light-blue);
+}
+
+/* Tutorial */
+#onboarding {
+  text-align: center;
+}
+#onboarding .button {
+  background-color: var(--light-blue);
+}
+
+/* Exit Survey */
+#exit-survey-container {
+  width: 70%;
+  min-width: 500px;
+  max-width: 1000px;
+  padding-top: 50px;
+  margin: 0 auto;
+}
+#exit-survey-container .button {
+  background-color: var(--light-blue);
 }

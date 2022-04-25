@@ -1,2464 +1,53 @@
 {
   "compas": [
     {
-      "id": 70,
-      "features": {
-        "sex": "Male",
-        "age": 45,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 6,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Possession of Cocaine"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.5637629725327042,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.527666639390546,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2850974378376471
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11642713714735207
-          ],
-          [
-            "age > 42.00",
-            -0.10870683465405881
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05795979845310234
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.0037904323747830096
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 343,
-      "features": {
-        "sex": "Male",
-        "age": 51,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "Assault"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.4482653475794443,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.1149044908274619
-          ],
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.11489069246060625
-          ],
-          [
-            "age > 42.00",
-            -0.10400896317141083
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.056697095625473475
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.020640852996721214
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2913,
-      "features": {
-        "sex": "Male",
-        "age": 35,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Tampering With Physical Evidence"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8260991642503405,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.1666786570286442
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.1000065304262293
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.049204942197384256
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.04682184013304208
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.011037387794555684
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2507,
-      "features": {
-        "sex": "Female",
-        "age": 21,
-        "juv_fel_count": 0,
-        "juv_misd_count": 3,
-        "priors_count": 4,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "arrest case no charge"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.4103992585103002,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.4386941020715422,
-          "priors_count": 1.855580775361739,
-          "is_male": 1.0,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "age <= 25.00",
-            0.1575402081283519
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.08983133873174819
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.08576958994162658
-          ],
-          [
-            "juv_misd_count > 0.00",
-            0.0514108997937136
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.011200561012261663
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 4690,
-      "features": {
-        "sex": "Male",
-        "age": 58,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Possession of Cocaine"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.34306801022461086,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.1244807863833693
-          ],
-          [
-            "age > 42.00",
-            -0.11013171487752685
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10764051327845883
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06760349357222925
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.004860866523132492
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 954,
-      "features": {
-        "sex": "Male",
-        "age": 36,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 5,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "Viol Injunct Domestic Violence"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.7951308784356889,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.165707649378445,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.10650538995488922
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.07485368260518646
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.05249532266542146
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05206512683412517
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.008215800676270592
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3514,
-      "features": {
-        "sex": "Male",
-        "age": 20,
-        "juv_fel_count": 0,
-        "juv_misd_count": 2,
-        "priors_count": 3,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "Battery"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.465330652240411,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.2744192088763282,
-          "priors_count": 1.5898637172382246,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "age <= 25.00",
-            0.15623780044375435
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09667196392086715
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.09233557950599543
-          ],
-          [
-            "juv_misd_count > 0.00",
-            0.04033152329473569
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.009748640487659556
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 1998,
-      "features": {
-        "sex": "Male",
-        "age": 25,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 4,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Robbery / No Weapon"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.2105084271662099,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.855580775361739,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "age <= 25.00",
-            0.14709436185346195
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10456262078078069
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.09536285770965175
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.0620265700512511
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.0072699685270645005
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3584,
-      "features": {
-        "sex": "Male",
-        "age": 26,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "Operating W/O Valid License"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.165129648714659,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16763537755212854
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11872152026570622
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04800009119617745
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.016880427528130185
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.007493850117488373
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 4321,
-      "features": {
-        "sex": "Female",
-        "age": 65,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Grand Theft in the 3rd Degree"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.2625580145220013,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.0,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16666505135090992
-          ],
-          [
-            "age > 42.00",
-            -0.09763893406831307
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09578494815769067
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.047295690823141064
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.007923945266284699
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3889,
-      "features": {
-        "sex": "Male",
-        "age": 45,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Aggravated Assault W/Dead Weap"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.5637629725327042,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.11727545679931546
-          ],
-          [
-            "age > 42.00",
-            -0.10663925704501
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10329154120053369
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.042018732355241714
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.01571506077022194
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3972,
-      "features": {
-        "sex": "Male",
-        "age": 57,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 6,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Grand Theft in the 3rd Degree"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 1,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.3564296195931229,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.527666639390546,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2799919030914565
-          ],
-          [
-            "age > 42.00",
-            -0.10911485604875834
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10059681700748814
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06095639788151822
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.01915763220663727
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 198,
-      "features": {
-        "sex": "Female",
-        "age": 23,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "Battery"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.3066369763999839,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.0,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "age <= 25.00",
-            0.1474821858359612
-          ],
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.11062254390158247
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10569742680361736
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.043114737945918094
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.003849913889878691
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3478,
+      "id": 310,
       "features": {
         "sex": "Male",
         "age": 37,
         "juv_fel_count": 0,
         "juv_misd_count": 0,
-        "priors_count": 4,
+        "priors_count": 5,
         "c_charge_degree": "Felony",
         "two_year_recid": 0,
-        "c_charge_desc": "Aggravated Battery / Pregnant"
+        "c_charge_desc": "Battery on Law Enforc Officer"
       },
       "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.7653235122391661,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.855580775361739,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.10861373273357734
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.07981011228278306
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.05771537177501863
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05511572001066604
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.0028160243926788463
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2832,
-      "features": {
-        "sex": "Male",
-        "age": 42,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "Viol Pretrial Release Dom Viol"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.6322331138419103,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.1250745524516241
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09922559048111601
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.04816627984838836
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.0463321861653404
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.016339152197109283
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2981,
-      "features": {
-        "sex": "Male",
-        "age": 33,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "arrest case no charge"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8917011149682885,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.11989979445710242
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09657376637454418
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.0528764861230306
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.050699734547869524
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.008820892250689483
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 6712,
-      "features": {
-        "sex": "Male",
-        "age": 21,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Burglary Conveyance Unoccup"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.4103992585103002,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16868954746727344
-          ],
-          [
-            "age <= 25.00",
-            0.1454388464356828
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09480356656648341
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.055253652366913285
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.010340928924986096
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5122,
-      "features": {
-        "sex": "Male",
-        "age": 25,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 11,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "arrest case no charge"
-      },
-      "label": 1,
       "preds": {
         "rf": 1,
         "lgr": 1,
-        "dt": 1,
+        "dt": 0,
         "svc": 1,
         "gam": 1
       },
       "expls": {
         "logr_ftr_cont": {
-          "age": 1.2105084271662099,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 5.474186976006813,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
+          "sex": 0.4470498588178006,
+          "age": -0.2674566427332403,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.772747166883051,
+          "c_charge_degree": 0.2786191619860262
         },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2796395754789198
-          ],
-          [
-            "age <= 25.00",
-            0.14173333323396212
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11260593887027698
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05777338847416669
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.008196850963998113
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.126,
+          "juv_fel_count": -0.109,
+          "juv_misd_count": -0.064,
+          "age": -0.06,
+          "c_charge_degree": 0.015,
+          "sex": 0.0
+        }
       }
     },
     {
-      "id": 1520,
+      "id": 5234,
       "features": {
         "sex": "Male",
         "age": 24,
         "juv_fel_count": 0,
         "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "DUI Level 0.15 Or Minor In Veh"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.2576545913640822,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.1654536204703045
-          ],
-          [
-            "age <= 25.00",
-            0.14724091547072687
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11280272429874914
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05404561669213304
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.010269186777230922
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2646,
-      "features": {
-        "sex": "Male",
-        "age": 30,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "arrest case no charge"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.0,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.11588660014489265
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10825492558757298
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.058228797538311214
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.01610274733326626
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.004789673819043013
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 1312,
-      "features": {
-        "sex": "Male",
-        "age": 28,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 11,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "Battery"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.0794117141826185,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 5.474186976006813,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2933601317358234
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11718493253770858
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04004489402538733
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.01940968282675262
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.005921163707084567
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2290,
-      "features": {
-        "sex": "Male",
-        "age": 49,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 7,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Possession of Cocaine"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.48386286723939526,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.9501205491524014,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.28563413352852735
-          ],
-          [
-            "age > 42.00",
-            -0.10664338709737509
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09184790946106454
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05938226892883347
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.010110878368106195
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5455,
-      "features": {
-        "sex": "Male",
-        "age": 27,
-        "juv_fel_count": 1,
-        "juv_misd_count": 0,
-        "priors_count": 6,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Issuing a Worthless Draft"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.1214520013643394,
-          "juv_fel_count": 1.1938377779700509,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.527666639390546,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.288372704193565
-          ],
-          [
-            "juv_fel_count > 0.00",
-            0.12335827399477783
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04373298693479319
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.01542609232189157
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.012817234382362127
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 6447,
-      "features": {
-        "sex": "Male",
-        "age": 67,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Cruelty Toward Child"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.2432417687080806,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16455761386167114
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11617248097505052
-          ],
-          [
-            "age > 42.00",
-            -0.09948989536684551
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.0534739756577042
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.016974532869840315
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2916,
-      "features": {
-        "sex": "Male",
-        "age": 26,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 6,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Aggravated Battery / Pregnant"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.165129648714659,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.527666639390546,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2908759503010224
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10980565061779315
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.053634160875366106
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.016599043482247486
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.009870406951052206
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5984,
-      "features": {
-        "sex": "Female",
-        "age": 26,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Possession of Cocaine"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.165129648714659,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.0,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16964239713128101
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11607384655091811
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04873168228240046
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.01592336674543285
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.004023198165528361
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 975,
-      "features": {
-        "sex": "Male",
-        "age": 52,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 1,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Possession Child Pornography"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.43146105820912173,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.1671319719058029,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.10294692398080553
-          ],
-          [
-            "age > 42.00",
-            -0.10267402124832653
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10065114539249054
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.060574478275372386
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.014258292691323182
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5088,
-      "features": {
-        "sex": "Male",
-        "age": 21,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Burglary Dwelling Occupied"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.4103992585103002,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16880322343711412
-          ],
-          [
-            "age <= 25.00",
-            0.14286397100150938
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10100723512374056
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04715402694165537
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.007083366539231601
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 1649,
-      "features": {
-        "sex": "Male",
-        "age": 44,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 9,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "arrest case no charge"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 0,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.585720078386093,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 4.018645479240504,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2794524612384893
-          ],
-          [
-            "age > 42.00",
-            -0.1128082897737433
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.07825782961690285
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05789912531187369
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.019777911069558077
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3342,
-      "features": {
-        "sex": "Male",
-        "age": 25,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "Battery"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.2105084271662099,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.1646993729011951
-          ],
-          [
-            "age <= 25.00",
-            0.14638179797233103
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.08890516543788858
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06104041791612879
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.015541808691568099
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 1683,
-      "features": {
-        "sex": "Male",
-        "age": 35,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 3,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "Battery"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8260991642503405,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.5898637172382246,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.10302909308861764
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.0778831171950066
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.06309924611097893
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.047801533077340315
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.018255710161535273
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5924,
-      "features": {
-        "sex": "Male",
-        "age": 34,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 3,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Aggravated Battery / Pregnant"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 0,
-        "dt": 1,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8582735844917982,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.5898637172382246,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.09190322779932356
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.08320985456524523
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.05693996074299343
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.047501476590667335
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.012960976863478574
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5427,
-      "features": {
-        "sex": "Male",
-        "age": 26,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 3,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "arrest case no charge"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.165129648714659,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.5898637172382246,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.07851778740821848
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.07594999656895388
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.056057695361034714
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.020091714652759805
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.012776364398446833
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 311,
-      "features": {
-        "sex": "Male",
-        "age": 43,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
         "priors_count": 2,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Grand Theft in the 3rd Degree"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.6085323565742148,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.3621970398447278,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "0.00 < priors_count <= 2.00",
-            -0.11383747436609733
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10520661231689513
-          ],
-          [
-            "age > 42.00",
-            -0.09915130311739243
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06047723558681521
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.013190349160729578
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5540,
-      "features": {
-        "sex": "Female",
-        "age": 34,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 12,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Possession of Cocaine"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8582735844917982,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 6.389098639887895,
-          "is_male": 1.0,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2891160753050282
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.0971491982146406
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.05386092138277982
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04907050289734385
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.014903328891307351
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5489,
-      "features": {
-        "sex": "Male",
-        "age": 31,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 5,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Tampering With Physical Evidence"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.9625126290464725,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.165707649378445,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "juv_fel_count <= 0.00",
-            -0.10152851852048328
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.07898816402764884
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04524694654040904
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.02114902541974803
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.008698976281012098
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 2261,
-      "features": {
-        "sex": "Male",
-        "age": 44,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Possession of Cocaine"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.585720078386093,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.15827060143751553
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.1080296333491999
-          ],
-          [
-            "age > 42.00",
-            -0.10639697417699329
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05983157317602719
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.006707471864667286
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 804,
-      "features": {
-        "sex": "Male",
-        "age": 39,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Driving While License Revoked"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.7090190908468185,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16809587894224787
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.0972961131255826
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04741933414258012
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.040192096466982644
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.011255286186409301
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 4314,
-      "features": {
-        "sex": "Male",
-        "age": 31,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Grand Theft in the 3rd Degree"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.9625126290464725,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16831572858633778
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.0788009873946318
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.0582123598618879
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.016245054695964246
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.01135270397001547
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 4009,
-      "features": {
-        "sex": "Male",
-        "age": 34,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "Driving Under The Influence"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8582735844917982,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16275395896952616
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.10926198828137736
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05473876112077939
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.04958064944355178
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.012939333731297478
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 54,
-      "features": {
-        "sex": "Male",
-        "age": 31,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 15,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Attempt Armed Burglary Dwell"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.9625126290464725,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 10.157796113413854,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.29610413070469827
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11057867428299122
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.046149199872349965
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.0164590886438269
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.007606639821811555
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 5893,
-      "features": {
-        "sex": "Male",
-        "age": 34,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 0,
-        "c_charge_desc": "Operating W/O Valid License"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.8582735844917982,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16087754400343
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11246984388976371
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.0630627797043948
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05041135791772456
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.01255945278248981
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 3837,
-      "features": {
-        "sex": "Male",
-        "age": 39,
-        "juv_fel_count": 2,
-        "juv_misd_count": 2,
-        "priors_count": 19,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 1,
-        "c_charge_desc": "Driving While License Revoked"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.7090190908468185,
-          "juv_fel_count": 1.4252486401084685,
-          "juv_misd_count": 1.2744192088763282,
-          "priors_count": 18.84861118809494,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.28439860557826785
-          ],
-          [
-            "juv_fel_count > 0.00",
-            0.10725822939193971
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.053834103469511924
-          ],
-          [
-            "juv_misd_count > 0.00",
-            0.052482082196720396
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.006681791032896079
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 1772,
-      "features": {
-        "sex": "Male",
-        "age": 54,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 0,
         "c_charge_degree": "Misdemeanor",
         "two_year_recid": 0,
         "c_charge_desc": "Battery"
@@ -2466,63 +55,6 @@
       "label": 0,
       "preds": {
         "rf": 0,
-        "lgr": 0,
-        "dt": 0,
-        "svc": 0,
-        "gam": 0
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 0.39971871023823785,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
-        },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.15895952859663517
-          ],
-          [
-            "age > 42.00",
-            -0.1045729670902162
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09871931653735976
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06315481082650308
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.009482743568928748
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 1931,
-      "features": {
-        "sex": "Male",
-        "age": 29,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 10,
-        "c_charge_degree": "Misdemeanor",
-        "two_year_recid": 1,
-        "c_charge_desc": "Assault"
-      },
-      "label": 1,
-      "preds": {
-        "rf": 1,
         "lgr": 1,
         "dt": 1,
         "svc": 1,
@@ -2530,109 +62,35 @@
       },
       "expls": {
         "logr_ftr_cont": {
-          "age": 1.0389474068414717,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 4.6902896225763095,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
+          "sex": 0.4470498588178006,
+          "age": 0.22924855091420598,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.0
         },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2891083421156389
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.08825211677552178
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.05201467181937041
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.007732214017266668
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.006800965482799676
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.157,
+          "juv_fel_count": -0.102,
+          "juv_misd_count": -0.072,
+          "priors_count": -0.026,
+          "c_charge_degree": -0.014,
+          "sex": 0.0
+        }
       }
     },
     {
-      "id": 2597,
+      "id": 1041,
       "features": {
-        "sex": "Male",
-        "age": 30,
-        "juv_fel_count": 0,
-        "juv_misd_count": 0,
-        "priors_count": 7,
-        "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Driving While License Revoked"
-      },
-      "label": 0,
-      "preds": {
-        "rf": 1,
-        "lgr": 1,
-        "dt": 1,
-        "svc": 1,
-        "gam": 1
-      },
-      "expls": {
-        "logr_ftr_cont": {
-          "age": 1.0,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.9501205491524014,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
-        },
-        "svc_lime": [
-          [
-            "priors_count > 5.00",
-            0.2873894468966881
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.1083899483783609
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.054448524794243
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.00840094118777642
-          ],
-          [
-            "25.00 < age <= 31.00",
-            0.004672285210303747
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
-      }
-    },
-    {
-      "id": 6944,
-      "features": {
-        "sex": "Male",
-        "age": 45,
+        "sex": "Female",
+        "age": 37,
         "juv_fel_count": 0,
         "juv_misd_count": 0,
         "priors_count": 0,
-        "c_charge_degree": "Felony",
+        "c_charge_degree": "Misdemeanor",
         "two_year_recid": 0,
-        "c_charge_desc": "Possession Of Heroin"
+        "c_charge_desc": "Lve/Scen/Acc/Veh/Prop/Damage"
       },
       "label": 0,
       "preds": {
@@ -2644,54 +102,37 @@
       },
       "expls": {
         "logr_ftr_cont": {
-          "age": 0.5637629725327042,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
+          "sex": 0.0,
+          "age": -0.2674566427332403,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
         },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16663113212673059
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.1052734126729418
-          ],
-          [
-            "age > 42.00",
-            -0.09828625938124674
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06007589338518963
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.00728268090331885
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.163,
+          "juv_fel_count": -0.094,
+          "age": -0.064,
+          "juv_misd_count": -0.049,
+          "c_charge_degree": -0.006,
+          "sex": 0.0
+        }
       }
     },
     {
-      "id": 2446,
+      "id": 2205,
       "features": {
-        "sex": "Female",
+        "sex": "Male",
         "age": 41,
         "juv_fel_count": 0,
         "juv_misd_count": 0,
         "priors_count": 0,
         "c_charge_degree": "Felony",
-        "two_year_recid": 0,
-        "c_charge_desc": "Burglary Structure Unoccup"
+        "two_year_recid": 1,
+        "c_charge_desc": "Escape"
       },
-      "label": 0,
+      "label": 1,
       "preds": {
         "rf": 0,
         "lgr": 0,
@@ -2701,56 +142,199 @@
       },
       "expls": {
         "logr_ftr_cont": {
-          "age": 0.6568569541453616,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.0,
-          "is_felony": 1.3213040452295544
+          "sex": 0.4470498588178006,
+          "age": -0.4202890100093777,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.2786191619860262
         },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16079940395118122
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11523740270119093
-          ],
-          [
-            "31.00 < age <= 42.00",
-            -0.05750065921431537
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.04958559361604235
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.013326367345174518
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.162,
+          "juv_fel_count": -0.102,
+          "age": -0.059,
+          "juv_misd_count": -0.054,
+          "c_charge_degree": 0.015,
+          "sex": 0.0
+        }
       }
     },
     {
-      "id": 7114,
+      "id": 4969,
       "features": {
         "sex": "Male",
-        "age": 43,
+        "age": 25,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 3,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 0,
+        "c_charge_desc": "Burglary Dwelling Assault/Batt"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.19104045909517167,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.4636483001298306,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.147,
+          "juv_fel_count": -0.111,
+          "juv_misd_count": -0.053,
+          "priors_count": 0.045,
+          "c_charge_degree": 0.015,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6587,
+      "features": {
+        "sex": "Male",
+        "age": 23,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Trespassing/Construction Site"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.2674566427332403,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.166,
+          "age": 0.145,
+          "juv_fel_count": -0.098,
+          "juv_misd_count": -0.05,
+          "c_charge_degree": 0.011,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 4044,
+      "features": {
+        "sex": "Male",
+        "age": 34,
         "juv_fel_count": 0,
         "juv_misd_count": 0,
         "priors_count": 5,
         "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 1,
+        "c_charge_desc": "Petit Theft"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 0,
+        "svc": 0,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.15283236727613733,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.772747166883051,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.137,
+          "juv_fel_count": -0.102,
+          "age": -0.063,
+          "juv_misd_count": -0.046,
+          "c_charge_degree": -0.012,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2561,
+      "features": {
+        "sex": "Male",
+        "age": 30,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 13,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Poss Pyrrolidinovalerophenone"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.0,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 2.009142633895933,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.24,
+          "juv_fel_count": -0.117,
+          "juv_misd_count": -0.071,
+          "age": 0.013,
+          "c_charge_degree": 0.009,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3385,
+      "features": {
+        "sex": "Female",
+        "age": 31,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 3,
+        "c_charge_degree": "Felony",
         "two_year_recid": 0,
         "c_charge_desc": "arrest case no charge"
       },
       "label": 0,
       "preds": {
-        "rf": 0,
+        "rf": 1,
         "lgr": 0,
         "dt": 0,
         "svc": 0,
@@ -2758,45 +342,28 @@
       },
       "expls": {
         "logr_ftr_cont": {
-          "age": 0.6085323565742148,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 2.165707649378445,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.0
+          "sex": 0.0,
+          "age": -0.03820809181903433,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.4636483001298306,
+          "c_charge_degree": 0.2786191619860262
         },
-        "svc_lime": [
-          [
-            "age > 42.00",
-            -0.11455648853522991
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.09899770147829332
-          ],
-          [
-            "2.00 < priors_count <= 5.00",
-            0.0847368314961452
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.0600309792601762
-          ],
-          [
-            "is_felony <= 0.00",
-            -0.013137435878933786
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.095,
+          "priors_count": 0.039,
+          "juv_misd_count": -0.034,
+          "age": 0.014,
+          "c_charge_degree": 0.011,
+          "sex": 0.0
+        }
       }
     },
     {
-      "id": 3361,
+      "id": 7079,
       "features": {
-        "sex": "Male",
+        "sex": "Female",
         "age": 22,
         "juv_fel_count": 0,
         "juv_misd_count": 0,
@@ -2815,39 +382,1622 @@
       },
       "expls": {
         "logr_ftr_cont": {
-          "age": 1.3575270983139445,
-          "juv_fel_count": 1.0,
-          "juv_misd_count": 1.0,
-          "priors_count": 1.0,
-          "is_male": 1.5636922611904047,
-          "is_felony": 1.3213040452295544
+          "sex": 0.0,
+          "age": 0.30566473455227466,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.2786191619860262
         },
-        "svc_lime": [
-          [
-            "priors_count <= 0.00",
-            -0.16552893115726658
-          ],
-          [
-            "age <= 25.00",
-            0.14942636079768795
-          ],
-          [
-            "juv_fel_count <= 0.00",
-            -0.11190103736326862
-          ],
-          [
-            "juv_misd_count <= 0.00",
-            -0.06542657086788874
-          ],
-          [
-            "0.00 < is_felony <= 1.00",
-            0.005647315115532835
-          ],
-          [
-            "is_male <= 1.00",
-            0.0
-          ]
-        ]
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.165,
+          "age": 0.156,
+          "juv_fel_count": -0.094,
+          "juv_misd_count": -0.058,
+          "c_charge_degree": 0.01,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6684,
+      "features": {
+        "sex": "Female",
+        "age": 49,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 25,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Felony Petit Theft"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": -0.7259537445616523,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 3.8637358344152553,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.227,
+          "age": -0.11,
+          "juv_fel_count": -0.098,
+          "juv_misd_count": -0.05,
+          "c_charge_degree": 0.002,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 5833,
+      "features": {
+        "sex": "Female",
+        "age": 27,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 5,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": 0.11462427545710299,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.772747166883051,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.141,
+          "juv_fel_count": -0.102,
+          "juv_misd_count": -0.041,
+          "c_charge_degree": 0.02,
+          "age": 0.011,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 4909,
+      "features": {
+        "sex": "Male",
+        "age": 68,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 6,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "DUI Property Damage/Injury"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 1,
+        "svc": 1,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -1.4519074891233046,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.9272966002596612,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.161,
+          "juv_fel_count": -0.12,
+          "age": -0.113,
+          "juv_misd_count": -0.045,
+          "c_charge_degree": -0.022,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 4131,
+      "features": {
+        "sex": "Male",
+        "age": 24,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Battery"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.22924855091420598,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.172,
+          "age": 0.153,
+          "juv_fel_count": -0.09,
+          "juv_misd_count": -0.047,
+          "c_charge_degree": -0.015,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1330,
+      "features": {
+        "sex": "Female",
+        "age": 29,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Resist Officer w/Violence"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": 0.03820809181903433,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.121,
+          "juv_fel_count": -0.097,
+          "juv_misd_count": -0.054,
+          "c_charge_degree": 0.022,
+          "age": 0.011,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1789,
+      "features": {
+        "sex": "Male",
+        "age": 45,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Battery"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.573121377285515,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.12,
+          "age": -0.11,
+          "juv_fel_count": -0.104,
+          "juv_misd_count": -0.044,
+          "c_charge_degree": -0.009,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6845,
+      "features": {
+        "sex": "Male",
+        "age": 41,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 3,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Driving Under The Influence"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 1,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.4202890100093777,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.4636483001298306,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.104,
+          "age": -0.06,
+          "juv_misd_count": -0.036,
+          "priors_count": 0.028,
+          "c_charge_degree": -0.008,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6562,
+      "features": {
+        "sex": "Male",
+        "age": 45,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 4,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 1,
+        "c_charge_desc": "Driving License Suspended"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.573121377285515,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.6181977335064408,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.115,
+          "age": -0.111,
+          "priors_count": 0.094,
+          "juv_misd_count": -0.064,
+          "c_charge_degree": -0.01,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2819,
+      "features": {
+        "sex": "Male",
+        "age": 21,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Carrying Concealed Firearm"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 1,
+        "dt": 0,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.343872826371309,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.148,
+          "priors_count": -0.123,
+          "juv_fel_count": -0.09,
+          "juv_misd_count": -0.045,
+          "c_charge_degree": 0.017,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6581,
+      "features": {
+        "sex": "Male",
+        "age": 63,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 22,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 1,
+        "c_charge_desc": "Trespass Struct/Convey Occupy"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -1.260867030028133,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 3.4000875342854244,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.24,
+          "age": -0.118,
+          "juv_fel_count": -0.099,
+          "juv_misd_count": -0.056,
+          "c_charge_degree": -0.018,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 5431,
+      "features": {
+        "sex": "Female",
+        "age": 23,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Battery"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": 0.2674566427332403,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.174,
+          "age": 0.15,
+          "juv_fel_count": -0.11,
+          "juv_misd_count": -0.055,
+          "c_charge_degree": -0.012,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3407,
+      "features": {
+        "sex": "Male",
+        "age": 24,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 8,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 0,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.22924855091420598,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 1.2363954670128816,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.213,
+          "age": 0.155,
+          "juv_fel_count": -0.105,
+          "juv_misd_count": -0.064,
+          "c_charge_degree": 0.021,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2398,
+      "features": {
+        "sex": "Male",
+        "age": 56,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Battery"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.9934103872948926,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.165,
+          "age": -0.115,
+          "juv_fel_count": -0.11,
+          "juv_misd_count": -0.039,
+          "c_charge_degree": -0.014,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1538,
+      "features": {
+        "sex": "Male",
+        "age": 34,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 2,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Ride Tri-Rail Without Paying"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.15283236727613733,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.107,
+          "juv_misd_count": -0.059,
+          "age": -0.059,
+          "priors_count": -0.049,
+          "c_charge_degree": -0.009,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 4716,
+      "features": {
+        "sex": "Male",
+        "age": 32,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 2,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 0,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.07641618363806867,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.104,
+          "age": -0.061,
+          "juv_misd_count": -0.041,
+          "priors_count": -0.037,
+          "c_charge_degree": 0.015,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3875,
+      "features": {
+        "sex": "Male",
+        "age": 27,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 2,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 0,
+        "c_charge_desc": "Lease For Purpose Trafficking"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 1,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.11462427545710299,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.104,
+          "juv_misd_count": -0.052,
+          "priors_count": -0.04,
+          "age": 0.012,
+          "c_charge_degree": 0.011,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 4307,
+      "features": {
+        "sex": "Male",
+        "age": 25,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 0,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.19104045909517167,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.155,
+          "juv_fel_count": -0.122,
+          "priors_count": -0.121,
+          "juv_misd_count": -0.054,
+          "c_charge_degree": 0.005,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1899,
+      "features": {
+        "sex": "Male",
+        "age": 33,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 14,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Driving While License Revoked"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.11462427545710299,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 2.163692067272543,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.23,
+          "juv_fel_count": -0.115,
+          "juv_misd_count": -0.075,
+          "age": -0.058,
+          "c_charge_degree": 0.019,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3557,
+      "features": {
+        "sex": "Female",
+        "age": 54,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Driving Under The Influence"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": -0.9169942036568239,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.124,
+          "juv_fel_count": -0.113,
+          "age": -0.104,
+          "juv_misd_count": -0.053,
+          "c_charge_degree": -0.01,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1397,
+      "features": {
+        "sex": "Female",
+        "age": 28,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Possession of Cocaine"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": 0.07641618363806867,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.162,
+          "juv_fel_count": -0.1,
+          "juv_misd_count": -0.056,
+          "c_charge_degree": 0.013,
+          "age": 0.013,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2355,
+      "features": {
+        "sex": "Male",
+        "age": 51,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 1,
+        "c_charge_desc": "Possess Cannabis/20 Grams Or Less"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.802369928199721,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.122,
+          "juv_fel_count": -0.114,
+          "age": -0.106,
+          "juv_misd_count": -0.049,
+          "c_charge_degree": -0.009,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 208,
+      "features": {
+        "sex": "Male",
+        "age": 43,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 11,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.4967051936474463,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 1.7000437671427122,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.236,
+          "juv_fel_count": -0.107,
+          "age": -0.107,
+          "juv_misd_count": -0.057,
+          "c_charge_degree": 0.006,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3920,
+      "features": {
+        "sex": "Male",
+        "age": 21,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Burglary Conveyance Unoccup"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 1,
+        "dt": 0,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.343872826371309,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.148,
+          "priors_count": -0.12,
+          "juv_fel_count": -0.095,
+          "juv_misd_count": -0.054,
+          "c_charge_degree": 0.009,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3000,
+      "features": {
+        "sex": "Male",
+        "age": 62,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 3,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Battery"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -1.2226589382090987,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.4636483001298306,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": -0.109,
+          "juv_fel_count": -0.092,
+          "juv_misd_count": -0.05,
+          "priors_count": 0.029,
+          "c_charge_degree": -0.023,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 56,
+      "features": {
+        "sex": "Male",
+        "age": 30,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Possess Cannabis/20 Grams Or Less"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.0,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.174,
+          "juv_fel_count": -0.104,
+          "juv_misd_count": -0.062,
+          "c_charge_degree": -0.019,
+          "age": 0.012,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1643,
+      "features": {
+        "sex": "Male",
+        "age": 37,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 2,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Exposes Culpable Negligence"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.2674566427332403,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "juv_fel_count": -0.086,
+          "age": -0.063,
+          "priors_count": -0.037,
+          "juv_misd_count": -0.031,
+          "c_charge_degree": -0.017,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 5040,
+      "features": {
+        "sex": "Male",
+        "age": 20,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Leaving the Scene of Accident"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.38208091819034334,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.165,
+          "age": 0.149,
+          "juv_fel_count": -0.103,
+          "juv_misd_count": -0.039,
+          "c_charge_degree": 0.015,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2519,
+      "features": {
+        "sex": "Male",
+        "age": 53,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "DWLS Susp/Cancel Revoked"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.8787861118377897,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.123,
+          "age": -0.099,
+          "juv_fel_count": -0.093,
+          "juv_misd_count": -0.065,
+          "c_charge_degree": -0.016,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1847,
+      "features": {
+        "sex": "Male",
+        "age": 43,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Susp Drivers Lic 1st Offense"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.4967051936474463,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.167,
+          "age": -0.105,
+          "juv_fel_count": -0.104,
+          "juv_misd_count": -0.063,
+          "c_charge_degree": -0.017,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2416,
+      "features": {
+        "sex": "Male",
+        "age": 26,
+        "juv_fel_count": 0,
+        "juv_misd_count": 1,
+        "priors_count": 5,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Shoot In Occupied Dwell"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 0,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.15283236727613733,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.1212452761892907,
+          "priors_count": 0.772747166883051,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.133,
+          "juv_fel_count": -0.104,
+          "juv_misd_count": 0.057,
+          "c_charge_degree": 0.021,
+          "age": 0.004,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6632,
+      "features": {
+        "sex": "Male",
+        "age": 22,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 2,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Grand Theft Dwell Property"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.30566473455227466,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.151,
+          "juv_fel_count": -0.107,
+          "juv_misd_count": -0.045,
+          "priors_count": -0.022,
+          "c_charge_degree": 0.012,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 7139,
+      "features": {
+        "sex": "Male",
+        "age": 35,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 18,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.19104045909517167,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 2.7818898007789836,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.236,
+          "juv_fel_count": -0.1,
+          "age": -0.051,
+          "juv_misd_count": -0.046,
+          "c_charge_degree": 0.011,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 5676,
+      "features": {
+        "sex": "Male",
+        "age": 30,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 0,
+        "c_charge_desc": "Cruelty Toward Child"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.0,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.125,
+          "juv_fel_count": -0.089,
+          "juv_misd_count": -0.051,
+          "age": 0.007,
+          "c_charge_degree": 0.006,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6202,
+      "features": {
+        "sex": "Male",
+        "age": 24,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Possess Cannabis/20 Grams Or Less"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.22924855091420598,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.169,
+          "age": 0.146,
+          "juv_fel_count": -0.109,
+          "juv_misd_count": -0.035,
+          "c_charge_degree": -0.017,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 2207,
+      "features": {
+        "sex": "Female",
+        "age": 29,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 1,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Poss Contr Subst W/o Prescript"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.0,
+          "age": 0.03820809181903433,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.1545494333766102,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.134,
+          "juv_fel_count": -0.1,
+          "juv_misd_count": -0.037,
+          "c_charge_degree": 0.014,
+          "age": 0.012,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3112,
+      "features": {
+        "sex": "Male",
+        "age": 33,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Disorderly Conduct"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.11462427545710299,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.164,
+          "juv_fel_count": -0.084,
+          "age": -0.052,
+          "juv_misd_count": -0.05,
+          "c_charge_degree": -0.015,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 3094,
+      "features": {
+        "sex": "Male",
+        "age": 29,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 0,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Battery"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 0,
+        "svc": 0,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.03820809181903433,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.0,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": -0.161,
+          "juv_fel_count": -0.098,
+          "juv_misd_count": -0.051,
+          "c_charge_degree": -0.012,
+          "age": 0.003,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 5798,
+      "features": {
+        "sex": "Male",
+        "age": 33,
+        "juv_fel_count": 0,
+        "juv_misd_count": 2,
+        "priors_count": 11,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "arrest case no charge"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": -0.11462427545710299,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.2424905523785814,
+          "priors_count": 1.7000437671427122,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.228,
+          "juv_fel_count": -0.108,
+          "age": -0.061,
+          "juv_misd_count": 0.045,
+          "c_charge_degree": 0.009,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 6634,
+      "features": {
+        "sex": "Male",
+        "age": 25,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 7,
+        "c_charge_degree": "Felony",
+        "two_year_recid": 1,
+        "c_charge_desc": "Burglary Conveyance Unoccup"
+      },
+      "label": 1,
+      "preds": {
+        "rf": 1,
+        "lgr": 1,
+        "dt": 1,
+        "svc": 1,
+        "gam": 1
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.19104045909517167,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 1.0818460336362714,
+          "c_charge_degree": 0.2786191619860262
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "priors_count": 0.201,
+          "age": 0.149,
+          "juv_fel_count": -0.119,
+          "juv_misd_count": -0.038,
+          "c_charge_degree": 0.015,
+          "sex": 0.0
+        }
+      }
+    },
+    {
+      "id": 1084,
+      "features": {
+        "sex": "Male",
+        "age": 25,
+        "juv_fel_count": 0,
+        "juv_misd_count": 0,
+        "priors_count": 2,
+        "c_charge_degree": "Misdemeanor",
+        "two_year_recid": 0,
+        "c_charge_desc": "Opert With Susp DL 2nd Offens"
+      },
+      "label": 0,
+      "preds": {
+        "rf": 0,
+        "lgr": 0,
+        "dt": 1,
+        "svc": 1,
+        "gam": 0
+      },
+      "expls": {
+        "logr_ftr_cont": {
+          "sex": 0.4470498588178006,
+          "age": 0.19104045909517167,
+          "juv_fel_count": 0.0,
+          "juv_misd_count": 0.0,
+          "priors_count": 0.3090988667532204,
+          "c_charge_degree": 0.0
+        },
+        "logr_base_rate": -1.14624275457103,
+        "svc_lime": {
+          "age": 0.149,
+          "juv_fel_count": -0.115,
+          "juv_misd_count": -0.048,
+          "priors_count": -0.021,
+          "c_charge_degree": -0.014,
+          "sex": 0.0
+        }
       }
     }
   ]

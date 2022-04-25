@@ -14,6 +14,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import classNames from "classnames";
 import React, { Component } from "react";
+import ApexChart from "./DivergingBarChart";
 import { TaskStep } from "./enums";
 import ExitSurvey from "./ExitSurvey";
 import ProgressIndicator from "./ProgressIndicator";
@@ -32,6 +33,8 @@ class MainTask extends Component {
       juv_fel_count: "Juvenile Felony Count",
       juv_misd_count: "Juvenile Misdemeanor Count",
       priors_count: "Prior Charges Count",
+      is_male: "Sex",
+      is_felony: "Charge Degree",
     },
   };
   featureDescMap = {
@@ -46,6 +49,12 @@ class MainTask extends Component {
       juv_misd_count:
         "Number of misdemeanor crimes commited while the defendant was a juvenile (under the age of eighteen).",
       priors_count: "Total number of prior charges against the defendant.",
+    },
+  };
+  labelStringNames = {
+    compas: {
+      positive: "Will reoffend",
+      negative: "Will not reoffend",
     },
   };
   conditions = ["human", "human-ai", "human-ai-intrinsic", "human-ai-posthoc"];
@@ -252,6 +261,62 @@ class MainTask extends Component {
     }
   };
 
+  getFeatureContributions = () => {
+    const { condition, curQuestion, task } = this.state;
+    let expl = null;
+
+    if (condition === "human-ai-intrinsic") {
+      expl = curQuestion["expls"]["logr_ftr_cont"];
+      expl["Base Rate"] = curQuestion["expls"]["logr_base_rate"];
+    } else if (condition === "human-ai-posthoc") {
+      expl = curQuestion["expls"]["svc_lime"];
+    }
+    return Object.entries(expl).reduce((a, [k, v]) => {
+      if (k === "Base Rate") {
+        a[k] = v;
+      } else {
+        const ftrKey = this.featureDisplayNameMap[task][k];
+        const ftrValue = curQuestion["features"][k];
+        a[`${ftrKey} = ${ftrValue}`] = v;
+      }
+      return a;
+    }, {});
+  };
+
+  getExplanationDescription = () => {
+    if (this.state.task === "compas") {
+      return (
+        <p>
+          Our model has been previously trained with many profiles of other
+          defendants for which whether the defendant reoffends is known. Our
+          model has learned whether specific features of a defendant increase or
+          decrease the chance for a reoffense.
+          <br />
+          <br />
+          {this.state.condition === "human-ai-intrinsic" && (
+            <span>
+              Our model always compares a defendant to the following reference
+              defendant:
+              <br />
+              "A 30-year old female charged with a misdemeanor crime, with 0
+              prior charges, 0 juvenile misdemeanor charges, and 0 juvenile
+              felony charges."
+              <br />
+              <br />
+              The chance of the reference defendant is low, indicated by the
+              Base Rate bar below.
+              <br />
+            </span>
+          )}
+          Positive values (shown in blue) indicate that a feature{" "}
+          <b>increases</b> the chance that a defendant will reoffend. Negative
+          values (shown in red) indicate that a feature <b>decreases</b> the
+          chance that a defendant will reoffend.
+        </p>
+      );
+    }
+  };
+
   render() {
     const {
       task,
@@ -262,6 +327,7 @@ class MainTask extends Component {
       completedCount,
       showMachineAssistance,
       activeStep,
+      condition,
     } = this.state;
 
     if (questions.length === 0) {
@@ -403,12 +469,31 @@ class MainTask extends Component {
                 <div id="ai-decision">
                   <p className="task-section-header">AI Prediction</p>
                   <p>
-                    Our AI model predicts that this defendent{" "}
+                    Our model predicts that this defendent{" "}
                     <b>{this.machineSuggestReoffend() ? "will" : "will not"}</b>{" "}
                     reoffend within two years.
                   </p>
                 </div>
-                <div id="ai-explanation"></div>
+                {condition !== "human-ai" && (
+                  <div id="ai-explanation">
+                    <p className="task-section-header">
+                      Here's how the model made its prediction
+                    </p>
+                    {this.getExplanationDescription()}
+                    <ApexChart
+                      data={this.getFeatureContributions()}
+                      positiveLabel={this.labelStringNames[task]["positive"]}
+                      negativeLabel={this.labelStringNames[task]["negative"]}
+                      title={`AI Prediction: ${
+                        this.labelStringNames[task][
+                          this.machineSuggestReoffend()
+                            ? "positive"
+                            : "negative"
+                        ]
+                      }`}
+                    />
+                  </div>
+                )}
                 <p className="task-section-header">Make Your Final Decision</p>
                 <p className="prompt-text">
                   Now, do you think this defendant will reoffend within two

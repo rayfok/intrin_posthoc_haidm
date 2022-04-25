@@ -30,7 +30,7 @@ def load_compas_data(use_race=False):
     #     one_hot_df = one_hot_df.drop(x, axis=1)
     #     one_hot_df = one_hot_df.join(one_hot)
 
-    one_hot_df["is_male"] = one_hot_df["sex"].map({"Female": 0, "Male": 1})
-    one_hot_df["is_felony"] = one_hot_df["c_charge_degree"].map({"M": 0, "F": 1})
-    one_hot_df.drop(columns=["sex", "c_charge_degree", "c_charge_desc"], inplace=True)
+    one_hot_df["sex"] = one_hot_df["sex"].map({"Female": 0, "Male": 1})
+    one_hot_df["c_charge_degree"] = one_hot_df["c_charge_degree"].map({"M": 0, "F": 1})
+    one_hot_df.drop(columns=["c_charge_desc"], inplace=True)
     return df, one_hot_df

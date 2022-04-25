@@ -115,3 +115,7 @@
 #exit-survey-container .button {
   background-color: var(--light-blue);
 }
+
+#diverging-bar-chart-container {
+  width: 80%;
+}

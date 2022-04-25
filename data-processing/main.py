@@ -268,31 +268,44 @@ def main():
             "juv_fel_count": 0,
             "juv_misd_count": 0,
             "priors_count": 0,
-            "is_male": 0,
-            "is_felony": 0,
+            "sex": 0,
+            "c_charge_degree": 0,
         }
         lgr_ftr_contr = {}
         for ftr_i, feature in enumerate(feature_list):
-            odds = np.exp(sm_lgr_model.params[feature])
-            base_rate_delta = sample[0][ftr_i] - base_rate_ftrs[feature]
-            lgr_ftr_contr[feature] = odds ** base_rate_delta
+            ### Interpretation as odds-ratio
+            # odds = np.exp(sm_lgr_model.params[feature])
+            # base_rate_delta = sample[0][ftr_i] - base_rate_ftrs[feature]
+            # lgr_ftr_contr[feature] = odds ** base_rate_delta
+
+            ### Interpretation as log-odds
+            lgr_ftr_contr[feature] = (sample[0][ftr_i] - base_rate_ftrs[feature]) * sm_lgr_model.params[feature]
+        base_rate = sum(
+            base_rate_ftrs[feature] * sm_lgr_model.params[feature]
+            for feature in feature_list
+        )
 
         # Local post-hoc explanation for SVC model
         lime_explainer = LimeTabularExplainer(
             X_train.values,
             mode="classification",
-            class_names=[0, 1],
             feature_names=feature_list,
+            categorical_features=[
+                4,
+                5,
+            ],  # sex and c_charge_degree are 4th and 5th features
         )
         lime_rules = lime_explainer.explain_instance(
             sample.squeeze(),
             models["svc"].predict_proba,
             num_features=len(feature_list),
         ).as_list()
-        rule_cleanup_map = {
-            "0.00 < is_felony <= 1.00": "is_felony = 1",
-            "is_felony <= 0.00": "is_felony = 0",
-        }
+        lime_ftr_contr = {}
+        for rule, weight in lime_rules:
+            for feature in feature_list:
+                if feature in rule:
+                    lime_ftr_contr[feature] = round(weight, 3)
+                    break
 
         output[dataset].append(
             {
@@ -304,11 +317,7 @@ def main():
                 "preds": {
                     model_type: int(preds[model_type][i]) for model_type in model_types
                 },
-                "expls": {
-                    "logr_ftr_cont": lgr_ftr_contr,
-                    "svc_lime": lime_rules,
-                    # "logr_ftr_importance": ftr_importance,
-                },
+                "expls": {"logr_ftr_cont": lgr_ftr_contr, "logr_base_rate": base_rate, "svc_lime": lime_ftr_contr},
             }
         )
     with open("output/task_data.json", "w") as out:
@@ -343,12 +352,10 @@ def main():
             "juv_fel_count": 0,
             "juv_misd_count": 0,
             "priors_count": 0,
-            "is_male": 0,
-            "is_felony": 0,
+            "sex": 0,
+            "c_charge_degree": 0,
         }
         lgr_ftr_contr = {}
-        numerical_features = ["age", "juv_fel_count", "juv_misd_count", "priors_count"]
-        binary_features = ["is_male", "is_felony"]
         for i, feature in enumerate(feature_list):
             odds = np.exp(sm_lgr_model.params[feature])
             base_rate_delta = X_sample[0][i] - base_rate_ftrs[feature]

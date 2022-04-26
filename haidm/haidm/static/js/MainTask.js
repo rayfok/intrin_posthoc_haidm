@@ -58,14 +58,16 @@ class MainTask extends Component {
     },
   };
   conditions = ["human", "human-ai", "human-ai-intrinsic", "human-ai-posthoc"];
-  numberOfTrainingQuestions = 5;
+  numberOfTrainingQuestions = 3;
   numberOfQuestions = 20;
 
   constructor(props) {
     super(props);
     this.state = {
+      trainingQuestions: [],
       questions: [],
       responses: [],
+      trainingCompletedCount: 0,
       completedCount: 0,
       workerId: this.urlParams.get("workerId"),
       assignmentId: this.urlParams.get("assignmentId"),
@@ -87,9 +89,10 @@ class MainTask extends Component {
   async componentDidMount() {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
-      let questions = await this.getAllQuestions();
+      let [trainingQuestions, questions] = await this.getAllQuestions();
       if (questions) {
         this.setState({
+          trainingQuestions,
           questions,
           activeStep: TaskStep.Instructions,
         });
@@ -98,9 +101,12 @@ class MainTask extends Component {
   }
 
   startOnboarding = () => {
-    this.setState({
-      activeStep: TaskStep.TaskOnboarding,
-    });
+    this.setState(
+      {
+        activeStep: TaskStep.TaskOnboarding,
+      },
+      this.setNextQuestion
+    );
   };
 
   startMainTask = () => {
@@ -117,10 +123,15 @@ class MainTask extends Component {
     try {
       let response = await fetch(url, { credentials: "same-origin" });
       let data = await response.json();
-      let questions = Object.values(data)
-        .sort((a, b) => parseInt(a.id) - parseInt(b.id))
-        .slice(0, this.numberOfQuestions);
-      return questions;
+      const allQuestionsSorted = Object.values(data).sort(
+        (a, b) => parseInt(a.id) - parseInt(b.id)
+      );
+      let questions = allQuestionsSorted.slice(0, this.numberOfQuestions);
+      let trainingQuestions = allQuestionsSorted.slice(
+        this.numberOfQuestions,
+        this.numberOfQuestions + this.numberOfTrainingQuestions
+      );
+      return [trainingQuestions, questions];
     } catch (err) {
       return [];
     }
@@ -128,7 +139,10 @@ class MainTask extends Component {
 
   setNextQuestion = () => {
     this.setState({
-      curQuestion: this.state.questions[this.state.completedCount],
+      curQuestion:
+        this.state.activeStep === TaskStep.MainTask
+          ? this.state.questions[this.state.completedCount]
+          : this.state.trainingQuestions[this.state.trainingCompletedCount],
       questionStartTime: Date.now(),
       curDecision: null,
       initialDecision: null,
@@ -171,23 +185,41 @@ class MainTask extends Component {
         final_decision_time: Date.now() - this.state.questionStartTime,
         ground_truth: this.state.curQuestion["label"],
       };
-      this.setState(
-        (prevState) => ({
-          completedCount: prevState.completedCount + 1,
-          responses: [...prevState.responses, response],
-        }),
-        () => {
-          if (this.state.completedCount >= this.state.questions.length) {
-            this.submitData().then(() =>
-              this.setState({
-                activeStep: TaskStep.ExitSurvey,
-              })
-            );
-          } else {
-            this.setNextQuestion();
+      if (this.state.activeStep === TaskStep.TaskOnboarding) {
+        this.setState(
+          (prevState) => ({
+            trainingCompletedCount: prevState.trainingCompletedCount + 1,
+          }),
+          () => {
+            if (
+              this.state.trainingCompletedCount >=
+              this.state.trainingQuestions.length
+            ) {
+              this.startMainTask();
+            } else {
+              this.setNextQuestion();
+            }
           }
-        }
-      );
+        );
+      } else if (this.state.activeStep === TaskStep.MainTask) {
+        this.setState(
+          (prevState) => ({
+            completedCount: prevState.completedCount + 1,
+            responses: [...prevState.responses, response],
+          }),
+          () => {
+            if (this.state.completedCount >= this.state.questions.length) {
+              this.submitData().then(() =>
+                this.setState({
+                  activeStep: TaskStep.ExitSurvey,
+                })
+              );
+            } else {
+              this.setNextQuestion();
+            }
+          }
+        );
+      }
     }
   };
 
@@ -344,10 +376,12 @@ class MainTask extends Component {
   render() {
     const {
       task,
+      trainingQuestions,
       questions,
       curQuestion,
       curDecision,
       initialDecision,
+      trainingCompletedCount,
       completedCount,
       showMachineAssistance,
       activeStep,
@@ -391,9 +425,8 @@ class MainTask extends Component {
           </div>
         )}
 
-        {activeStep === TaskStep.TaskOnboarding && (
+        {/* {activeStep === TaskStep.TaskOnboarding && (
           <div id="onboarding">
-            <p>Here go the tutorial/gating questions.</p>
             <Button
               variant="contained"
               className="centered button"
@@ -402,142 +435,92 @@ class MainTask extends Component {
               Start
             </Button>
           </div>
-        )}
+        )} */}
 
         {activeStep === TaskStep.ExitSurvey && (
           <ExitSurvey submitMTurk={this.submitMTurk} />
         )}
 
-        {activeStep === TaskStep.MainTask && curQuestion && (
-          <div id="main-task-container">
-            <ProgressIndicator
-              completed={completedCount}
-              total={questions.length}
-            />
+        {(activeStep === TaskStep.MainTask ||
+          activeStep === TaskStep.TaskOnboarding) &&
+          curQuestion && (
+            <div id="main-task-container">
+              {activeStep === TaskStep.TaskOnboarding && (
+                <h4 style={{ textAlign: "center" }}>Practice</h4>
+              )}
+              <ProgressIndicator
+                completed={
+                  activeStep === TaskStep.TaskOnboarding
+                    ? trainingCompletedCount
+                    : completedCount
+                }
+                total={
+                  activeStep === TaskStep.TaskOnboarding
+                    ? trainingQuestions.length
+                    : questions.length
+                }
+              />
 
-            <div id="task-description-container">
-              <span id="task-description">
-                Please review the following profile and consider whether this
-                defendant is likely to reoffend within the next two years.
-              </span>
-            </div>
+              <div id="task-description-container">
+                <span id="task-description">
+                  Please review the following profile and{" "}
+                  <b>carefully consider</b> whether this defendant is likely to
+                  reoffend within the next two years.
+                </span>
+              </div>
 
-            <div id="task-features-container">
-              <p className="task-section-header">Defendant Profile</p>
-              <TableContainer>
-                <Table id="task-features-table" size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>{<b>Feature</b>}</TableCell>
-                      <TableCell align="right">{<b>Value</b>}</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {Object.entries(curQuestion["features"])
-                      .filter(([k, _]) =>
-                        this.featureDisplayNameMap[task].hasOwnProperty(k)
-                      )
-                      .map(([k, v]) => (
-                        <TableRow key={k}>
-                          <TableCell component="th" scope="row">
-                            {this.featureDisplayNameMap[task][k]}
-                            <Tooltip title={this.featureDescMap[task][k]}>
-                              <IconButton>
-                                <InfoIcon sx={{ fontSize: 18 }} />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                          <TableCell align="right">{v}</TableCell>
-                        </TableRow>
-                      ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </div>
+              <div id="task-features-container">
+                <p className="task-section-header">Defendant Profile</p>
+                <TableContainer>
+                  <Table id="task-features-table" size="small">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>{<b>Feature</b>}</TableCell>
+                        <TableCell align="right">{<b>Value</b>}</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Object.entries(curQuestion["features"])
+                        .filter(([k, _]) =>
+                          this.featureDisplayNameMap[task].hasOwnProperty(k)
+                        )
+                        .map(([k, v]) => (
+                          <TableRow key={k}>
+                            <TableCell component="th" scope="row">
+                              {this.featureDisplayNameMap[task][k]}
+                              <Tooltip title={this.featureDescMap[task][k]}>
+                                <IconButton>
+                                  <InfoIcon sx={{ fontSize: 18 }} />
+                                </IconButton>
+                              </Tooltip>
+                            </TableCell>
+                            <TableCell align="right">{v}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </div>
 
-            <div id="task-choices-container">
-              <p className="task-section-header">Make A Decision</p>
-              <p
-                className={classNames("prompt-text", {
-                  "text-muted": initialDecision !== null,
-                })}
-              >
-                Do you think this defendant will reoffend within two years?
-              </p>
-              <FormControl className="choices">
-                <RadioGroup
-                  row
-                  value={initialDecision ? initialDecision : curDecision}
-                  onChange={this.handleChoiceSelected}
+              <div id="task-choices-container">
+                <p className="task-section-header">Make A Decision</p>
+                <p
+                  className={classNames("prompt-text", {
+                    "text-muted": initialDecision !== null,
+                  })}
                 >
-                  <FormControlLabel
-                    value="yes"
-                    control={<Radio />}
-                    disabled={initialDecision !== null}
-                    label={
-                      <span>
-                        Yes, I think they <b>will</b> reoffend.
-                      </span>
-                    }
-                  />
-                  <FormControlLabel
-                    value="no"
-                    control={<Radio />}
-                    disabled={initialDecision !== null}
-                    label={
-                      <span>
-                        No, I think they <b>will not</b> reoffend.
-                      </span>
-                    }
-                  />
-                </RadioGroup>
-              </FormControl>
-            </div>
-
-            {showMachineAssistance && (
-              <div id="ai-assist-container">
-                <div id="ai-decision">
-                  <p className="task-section-header">AI Prediction</p>
-                  <p>
-                    Our model predicts that this defendent{" "}
-                    <b>{this.machineSuggestReoffend() ? "will" : "will not"}</b>{" "}
-                    reoffend within two years.
-                  </p>
-                </div>
-                {condition !== "human-ai" && (
-                  <div id="ai-explanation">
-                    <p className="task-section-header">
-                      Here's how the model made its prediction
-                    </p>
-                    {this.getExplanationDescription()}
-                    <ApexChart
-                      data={this.getFeatureContributions()}
-                      positiveLabel={this.labelStringNames[task]["positive"]}
-                      negativeLabel={this.labelStringNames[task]["negative"]}
-                      title={`AI Prediction: ${
-                        this.labelStringNames[task][
-                          this.machineSuggestReoffend()
-                            ? "positive"
-                            : "negative"
-                        ]
-                      }`}
-                    />
-                  </div>
-                )}
-                <p className="task-section-header">Make Your Final Decision</p>
-                <p className="prompt-text">
-                  Now, do you think this defendant will reoffend within two
-                  years?
+                  Do you think this defendant will reoffend within two years?
                 </p>
                 <FormControl className="choices">
                   <RadioGroup
                     row
-                    value={curDecision}
+                    value={initialDecision ? initialDecision : curDecision}
                     onChange={this.handleChoiceSelected}
                   >
                     <FormControlLabel
                       value="yes"
                       control={<Radio />}
+                      disabled={initialDecision !== null}
                       label={
                         <span>
                           Yes, I think they <b>will</b> reoffend.
@@ -547,6 +530,7 @@ class MainTask extends Component {
                     <FormControlLabel
                       value="no"
                       control={<Radio />}
+                      disabled={initialDecision !== null}
                       label={
                         <span>
                           No, I think they <b>will not</b> reoffend.
@@ -556,20 +540,87 @@ class MainTask extends Component {
                   </RadioGroup>
                 </FormControl>
               </div>
-            )}
 
-            <div id="task-buttons-container">
-              <Button
-                variant="contained"
-                className="centered button"
-                onClick={this.handleNextClicked}
-                disabled={curDecision === null}
-              >
-                Next
-              </Button>
+              {showMachineAssistance && (
+                <div id="ai-assist-container">
+                  <div id="ai-decision">
+                    <p className="task-section-header">AI Prediction</p>
+                    <p>
+                      Our model predicts that this defendent{" "}
+                      <b>
+                        {this.machineSuggestReoffend() ? "will" : "will not"}
+                      </b>{" "}
+                      reoffend within two years.
+                    </p>
+                  </div>
+                  {condition !== "human-ai" && (
+                    <div id="ai-explanation">
+                      <p className="task-section-header">
+                        Here's how the model made its prediction
+                      </p>
+                      {this.getExplanationDescription()}
+                      <ApexChart
+                        data={this.getFeatureContributions()}
+                        positiveLabel={this.labelStringNames[task]["positive"]}
+                        negativeLabel={this.labelStringNames[task]["negative"]}
+                        title={`AI Prediction: ${
+                          this.labelStringNames[task][
+                            this.machineSuggestReoffend()
+                              ? "positive"
+                              : "negative"
+                          ]
+                        }`}
+                      />
+                    </div>
+                  )}
+                  <p className="task-section-header">
+                    Make Your Final Decision
+                  </p>
+                  <p className="prompt-text">
+                    Now, do you think this defendant will reoffend within two
+                    years?
+                  </p>
+                  <FormControl className="choices">
+                    <RadioGroup
+                      row
+                      value={curDecision}
+                      onChange={this.handleChoiceSelected}
+                    >
+                      <FormControlLabel
+                        value="yes"
+                        control={<Radio />}
+                        label={
+                          <span>
+                            Yes, I think they <b>will</b> reoffend.
+                          </span>
+                        }
+                      />
+                      <FormControlLabel
+                        value="no"
+                        control={<Radio />}
+                        label={
+                          <span>
+                            No, I think they <b>will not</b> reoffend.
+                          </span>
+                        }
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </div>
+              )}
+
+              <div id="task-buttons-container">
+                <Button
+                  variant="contained"
+                  className="centered button"
+                  onClick={this.handleNextClicked}
+                  disabled={curDecision === null}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </React.Fragment>
     );
   }

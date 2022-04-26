@@ -425,18 +425,6 @@ class MainTask extends Component {
           </div>
         )}
 
-        {/* {activeStep === TaskStep.TaskOnboarding && (
-          <div id="onboarding">
-            <Button
-              variant="contained"
-              className="centered button"
-              onClick={this.startMainTask}
-            >
-              Start
-            </Button>
-          </div>
-        )} */}
-
         {activeStep === TaskStep.ExitSurvey && (
           <ExitSurvey submitMTurk={this.submitMTurk} />
         )}
@@ -616,7 +604,18 @@ class MainTask extends Component {
                   onClick={this.handleNextClicked}
                   disabled={curDecision === null}
                 >
-                  Next
+                  {(() => {
+                    if (activeStep === TaskStep.TaskOnboarding) {
+                      return trainingCompletedCount ===
+                        trainingQuestions.length - 1
+                        ? "Start Main Task"
+                        : "Next";
+                    } else if (activeStep === TaskStep.MainTask) {
+                      return completedCount === questions.length - 1
+                        ? "Finish Main Task"
+                        : "Next";
+                    }
+                  })()}
                 </Button>
               </div>
             </div>

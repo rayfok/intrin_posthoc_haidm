@@ -6,25 +6,32 @@ import Box from "@mui/material/Box";
 
 function LinearProgressWithLabel(props) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ minWidth: 70 }}>
-        <Typography variant="body" color="text.secondary">
-          Progress
-        </Typography>
-      </Box>
-      <Box sx={{ width: "80%", mr: 1 }}>
+    <div
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <Typography
+        variant="body"
+        color="text.secondary"
+        style={{ marginRight: "10px" }}
+      >
+        Progress
+      </Typography>
+      <div style={{ width: "70%" }}>
         <LinearProgress
           variant="determinate"
           value={(props.completed / props.total) * 100}
         />
-      </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-        >{`${props.completed} of ${props.total}`}</Typography>
-      </Box>
-    </Box>
+      </div>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        style={{ marginLeft: "10px" }}
+      >{`${props.completed} of ${props.total}`}</Typography>
+    </div>
   );
 }
 

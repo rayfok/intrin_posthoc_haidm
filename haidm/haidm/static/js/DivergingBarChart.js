@@ -38,6 +38,9 @@ class DivergingBarChart extends Component {
         toolbar: {
           show: false,
         },
+        animations: {
+          enabled: false,
+        },
       },
       colors: ["#008FFB", "#FF4560"],
       plotOptions: {
@@ -81,6 +84,13 @@ class DivergingBarChart extends Component {
       title: {
         text: this.props.title,
         align: "center",
+      },
+      tooltip: {
+        y: {
+          formatter: (val) => {
+            return +val.toFixed(2);
+          },
+        },
       },
     };
 

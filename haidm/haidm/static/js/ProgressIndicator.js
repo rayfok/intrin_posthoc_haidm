@@ -13,12 +13,16 @@ function LinearProgressWithLabel(props) {
         </Typography>
       </Box>
       <Box sx={{ width: "80%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+        <LinearProgress
+          variant="determinate"
+          value={(props.completed / props.total) * 100}
+        />
       </Box>
       <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+        >{`${props.completed} of ${props.total}`}</Typography>
       </Box>
     </Box>
   );
@@ -29,13 +33,17 @@ LinearProgressWithLabel.propTypes = {
    * The value of the progress indicator for the determinate and buffer variants.
    * Value between 0 and 100.
    */
-  value: PropTypes.number.isRequired,
+  completed: PropTypes.number.isRequired,
+  total: PropTypes.number.isRequired,
 };
 
 export default function ProgressIndicator(props) {
   return (
     <Box sx={{ width: "100%" }}>
-      <LinearProgressWithLabel value={props.value} />
+      <LinearProgressWithLabel
+        completed={props.completed}
+        total={props.total}
+      />
     </Box>
   );
 }

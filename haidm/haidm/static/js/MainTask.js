@@ -411,7 +411,8 @@ class MainTask extends Component {
         {activeStep === TaskStep.MainTask && curQuestion && (
           <div id="main-task-container">
             <ProgressIndicator
-              value={(completedCount / questions.length) * 100}
+              completed={completedCount}
+              total={questions.length}
             />
 
             <div id="task-description-container">

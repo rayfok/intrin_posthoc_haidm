@@ -63,6 +63,9 @@ class DivergingBarChart extends Component {
       yaxis: {
         labels: {
           maxWidth: 400,
+          style: {
+            fontSize: "14px",
+          },
         },
       },
       xaxis: {

@@ -1,10 +1,10 @@
 import flask
-import haidm
-from model import db, Session
+from haidm.model import db, Session
 
+views = flask.Blueprint("views", __name__, template_folder="templates", static_folder="static")
 
-@haidm.app.route("/", methods=["GET"])
-@haidm.app.route("/task", methods=["GET"])
+@views.route("/", methods=["GET"])
+@views.route("/task", methods=["GET"])
 def show_index():
     context = {}
     assignmentId = flask.request.args.get("assignmentId", None)
@@ -26,8 +26,3 @@ def show_index():
     if task:
         title += f" | {task.upper()}"
     return flask.render_template("index.html", title=f"{title}", **context)
-
-
-@haidm.app.route("/favicon.ico")
-def favicon():
-    return flask.send_from_directory("static", "favicon.ico")

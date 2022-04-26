@@ -1,4 +1,4 @@
-from haidm import app
+from haidm.app import app
 
 if __name__ == "__main__":
     app.run()

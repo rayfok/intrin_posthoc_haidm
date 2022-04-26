@@ -1,8 +1,7 @@
-from haidm import app
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 
-db = SQLAlchemy(app)
+db = SQLAlchemy()
 
 
 class Response(db.Model):

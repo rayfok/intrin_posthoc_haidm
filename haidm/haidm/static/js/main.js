@@ -6,10 +6,10 @@ import ReactDOM from "react-dom/client";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
+  <BrowserRouter basename="/haidm">
     <Routes>
       <Route path="/" element={<TaskSelector />} />
-      <Route path="task" element={<MainTask />} />
+      <Route path="/task/" element={<MainTask />} />
     </Routes>
   </BrowserRouter>
 );

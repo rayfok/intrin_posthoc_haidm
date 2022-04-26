@@ -6,8 +6,7 @@ front:
 	@npm run watch
 
 back:
-	# @pkill -f gunicorn
-	@gunicorn --reload -c gunicorn.conf.py haidm:app
+	@gunicorn --reload -c gunicorn.conf.py wsgi:app
 
 build:
 	@npm run build

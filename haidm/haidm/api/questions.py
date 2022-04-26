@@ -1,14 +1,15 @@
+import http
 import json
 import os
+import traceback
 
 import flask
-import traceback
-import haidm
-import http
-from haidm.model import db, Response
+from haidm.model import Response, db
 
 DATA_DIR = "data"
 task_data = {}
+
+api = flask.Blueprint("api", __name__)
 
 
 def load_data():
@@ -30,12 +31,12 @@ def validate_qid(task, qid):
     return qid == "-1" or qid in task_data[task]
 
 
-@haidm.app.before_first_request
+@api.before_app_first_request
 def before_first_request():
     load_data()
 
 
-@haidm.app.route("/api/v1/q/", methods=["GET"])
+@api.route("/api/v1/q/", methods=["GET"])
 def get_question():
     question_id = flask.request.args.get("q")
     task = flask.request.args.get("task")
@@ -52,7 +53,7 @@ def get_question():
     return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)
 
 
-@haidm.app.route("/api/v1/submit/", methods=["POST"])
+@api.route("/api/v1/submit/", methods=["POST"])
 def submit_data():
     responses = flask.request.json["responses"]
     try:
@@ -86,7 +87,7 @@ def submit_data():
         )
 
 
-@haidm.app.route("/api/v1/completed/", methods=["GET"])
+@api.route("/api/v1/completed/", methods=["GET"])
 def has_previously_completed():
     context = {}
     if flask.request.method == "GET":

@@ -20,7 +20,7 @@ import ExitSurvey from "./ExitSurvey";
 import ProgressIndicator from "./ProgressIndicator";
 import TaskStepper from "./TaskStepper";
 
-const APPLICATION_ROOT = "";
+const APPLICATION_ROOT = "/haidm";
 
 class MainTask extends Component {
   urlParams = new URLSearchParams(window.location.search);

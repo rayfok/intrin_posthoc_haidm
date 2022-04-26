@@ -1,5 +1,6 @@
 import Button from "@material-ui/core/Button";
 import InfoIcon from "@mui/icons-material/Info";
+import Checkbox from "@mui/material/Checkbox";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
@@ -83,6 +84,7 @@ class MainTask extends Component {
       curDecision: null,
       curQuestion: null,
       activeStep: TaskStep.Instructions,
+      acceptedTermsAndConds: false,
     };
   }
 
@@ -354,16 +356,17 @@ class MainTask extends Component {
     if (this.state.task === "compas") {
       return (
         <p>
-          You are here to help predict the likelihood that a defendant currently
-          charged with a crime will reoffend (i.e., commit another crime) within
-          the next two years.{" "}
+          You are here to help{" "}
+          <b>
+            predict whether a defendant currently charged with a crime will
+            reoffend within the next two years
+          </b>
+          . <br />
           {this.state.condition !== "human" && (
             <span>
-              You will be assisted by an AI model throughout the task.
+              You will be assisted by an AI model throughout the task.{" "}
             </span>
           )}
-          <br />
-          <br />
           You will first complete {this.numberOfTrainingQuestions} training
           questions to familiarize yourself with the interface and task
           requirements, and then complete an additional {this.numberOfQuestions}{" "}
@@ -371,6 +374,24 @@ class MainTask extends Component {
         </p>
       );
     }
+  };
+
+  getTermsAndConditions = () => {
+    return (
+      <p>
+        Participation is voluntary, you are free to release the HIT at any time,
+        and refusing to be in the study or stopping participation will involve
+        no penalty or loss of benefits to which you are otherwise entitled. Any
+        identifiable information, including your MTurk ID, will be treated as
+        confidential by the research team and will be deleted when no longer
+        needed for quality control. If you have concerns about any information
+        you see, please contact the researchers directly. If you have questions
+        about your rights as a research participant, or wish to obtain
+        information, ask questions, or discuss any concerns about this study
+        with someone other than the researchers, please contact the University
+        of Washington Human Subjects Division at +1-206-543-0098.
+      </p>
+    );
   };
 
   render() {
@@ -386,6 +407,7 @@ class MainTask extends Component {
       showMachineAssistance,
       activeStep,
       condition,
+      acceptedTermsAndConds,
     } = this.state;
 
     if (questions.length === 0) {
@@ -423,15 +445,29 @@ class MainTask extends Component {
 
         {activeStep === TaskStep.Instructions && (
           <div id="hit-description">
-            <h3>Instructions</h3>
             <h5>
               Please accept the HIT before starting the task, and make sure to
               complete the HIT before it expires in 60 minutes.
             </h5>
+
+            <strong>Task Description</strong>
             {this.getInstructions()}
+
+            <strong>Terms and Conditions</strong>
+            {this.getTermsAndConditions()}
+
+            <FormControlLabel
+              control={<Checkbox />}
+              onChange={(e) =>
+                this.setState({ acceptedTermsAndConds: e.target.checked })
+              }
+              label="I have read the task description and agree to the above terms and conditions."
+            />
+
             <Button
               variant="contained"
               className="centered button"
+              disabled={!acceptedTermsAndConds}
               onClick={this.startOnboarding}
             >
               Start

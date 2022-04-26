@@ -95,6 +95,7 @@
 /* Task Description */
 #hit-description {
   margin: 0 auto;
+  padding-top: 20px;
   width: 70%;
   min-width: 500px;
   max-width: 1050px;

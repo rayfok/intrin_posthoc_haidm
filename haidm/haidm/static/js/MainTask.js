@@ -425,7 +425,7 @@ class MainTask extends Component {
             <div id="task-features-container">
               <p className="task-section-header">Defendant Profile</p>
               <TableContainer>
-                <Table sx={{ maxWidth: 500 }} size="small">
+                <Table id="task-features-table" size="small">
                   <TableHead>
                     <TableRow>
                       <TableCell>{<b>Feature</b>}</TableCell>

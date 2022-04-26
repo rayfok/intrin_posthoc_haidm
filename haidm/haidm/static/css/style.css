@@ -50,6 +50,10 @@
   width: fit-content;
 }
 
+#task-features-table {
+  width: fit-content;
+}
+
 /* General Text */
 .task-section-header {
   font-weight: bold;

@@ -405,7 +405,21 @@ class MainTask extends Component {
       <React.Fragment>
         {this.getMTurkSubmitForm()}
 
-        <TaskStepper activeStep={activeStep} />
+        <div id="task-stepper">
+          <TaskStepper activeStep={activeStep} />
+          {activeStep === TaskStep.TaskOnboarding && (
+            <ProgressIndicator
+              completed={trainingCompletedCount}
+              total={trainingQuestions.length}
+            />
+          )}
+          {activeStep === TaskStep.MainTask && (
+            <ProgressIndicator
+              completed={completedCount}
+              total={questions.length}
+            />
+          )}
+        </div>
 
         {activeStep === TaskStep.Instructions && (
           <div id="hit-description">
@@ -434,20 +448,8 @@ class MainTask extends Component {
           curQuestion && (
             <div id="main-task-container">
               {activeStep === TaskStep.TaskOnboarding && (
-                <h4 style={{ textAlign: "center" }}>Practice</h4>
+                <h4 style={{ textAlign: "center" }}>PRACTICE</h4>
               )}
-              <ProgressIndicator
-                completed={
-                  activeStep === TaskStep.TaskOnboarding
-                    ? trainingCompletedCount
-                    : completedCount
-                }
-                total={
-                  activeStep === TaskStep.TaskOnboarding
-                    ? trainingQuestions.length
-                    : questions.length
-                }
-              />
 
               <div id="task-description-container">
                 <span id="task-description">

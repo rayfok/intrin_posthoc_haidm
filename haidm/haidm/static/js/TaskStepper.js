@@ -10,9 +10,5 @@ export default function TaskStepper(props) {
   const steps = Object.keys(TaskStep).map((k) => ({
     label: k.replace(/([a-z])([A-Z])/g, "$1 $2"), // Split camel-cased step names
   }));
-  return (
-    <div id="task-stepper">
-      <Stepper steps={steps} activeStep={props.activeStep} />
-    </div>
-  );
+  return <Stepper steps={steps} activeStep={props.activeStep} />;
 }

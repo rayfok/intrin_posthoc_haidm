@@ -58,7 +58,8 @@ class MainTask extends Component {
     },
   };
   conditions = ["human", "human-ai", "human-ai-intrinsic", "human-ai-posthoc"];
-  numberOfQuestions = 5;
+  numberOfTrainingQuestions = 5;
+  numberOfQuestions = 20;
 
   constructor(props) {
     super(props);
@@ -79,7 +80,7 @@ class MainTask extends Component {
       finalDecision: null,
       curDecision: null,
       curQuestion: null,
-      activeStep: TaskStep.TaskDescription,
+      activeStep: TaskStep.Instructions,
     };
   }
 
@@ -90,7 +91,7 @@ class MainTask extends Component {
       if (questions) {
         this.setState({
           questions,
-          activeStep: TaskStep.TaskDescription,
+          activeStep: TaskStep.Instructions,
         });
       }
     }
@@ -317,6 +318,29 @@ class MainTask extends Component {
     }
   };
 
+  getInstructions = () => {
+    if (this.state.task === "compas") {
+      return (
+        <p>
+          You are here to help predict the likelihood that a defendant currently
+          charged with a crime will reoffend (i.e., commit another crime) within
+          the next two years.{" "}
+          {this.state.condition !== "human" && (
+            <span>
+              You will be assisted by an AI model throughout the task.
+            </span>
+          )}
+          <br />
+          <br />
+          You will first complete {this.numberOfTrainingQuestions} training
+          questions to familiarize yourself with the interface and task
+          requirements, and then complete an additional {this.numberOfQuestions}{" "}
+          questions comprising the actual task.
+        </p>
+      );
+    }
+  };
+
   render() {
     const {
       task,
@@ -349,9 +373,14 @@ class MainTask extends Component {
 
         <TaskStepper activeStep={activeStep} />
 
-        {activeStep === TaskStep.TaskDescription && (
+        {activeStep === TaskStep.Instructions && (
           <div id="hit-description">
-            <p>Here goes the description of the task.</p>
+            <h3>Instructions</h3>
+            <h5>
+              Please accept the HIT before starting the task, and make sure to
+              complete the HIT before it expires in 60 minutes.
+            </h5>
+            {this.getInstructions()}
             <Button
               variant="contained"
               className="centered button"

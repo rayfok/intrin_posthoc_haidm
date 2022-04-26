@@ -66,7 +66,7 @@
   padding-top: 25%;
   width: 30%;
   margin: 0 auto;
-  min-width: 600px;
+  min-width: 500px;
 }
 
 /* Stepper */
@@ -90,7 +90,10 @@
 
 /* Task Description */
 #hit-description {
-  text-align: center;
+  margin: 0 auto;
+  width: 70%;
+  min-width: 500px;
+  max-width: 1050px;
 }
 #hit-description .button {
   background-color: var(--light-blue);
@@ -108,7 +111,6 @@
 #exit-survey-container {
   width: 70%;
   min-width: 500px;
-  max-width: 1000px;
   padding-top: 50px;
   margin: 0 auto;
 }

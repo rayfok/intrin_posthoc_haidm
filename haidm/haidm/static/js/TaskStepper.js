@@ -3,7 +3,7 @@ import { Stepper } from "react-form-stepper";
 import { TaskStep } from "./enums";
 
 TaskStepper.defaultProps = {
-  activeStep: TaskStep.TaskDescription,
+  activeStep: TaskStep.Instructions,
 };
 
 export default function TaskStepper(props) {

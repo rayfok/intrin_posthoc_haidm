@@ -572,7 +572,7 @@ class MainTask extends Component {
                   <div id="ai-decision">
                     <p className="task-section-header">AI Prediction</p>
                     <p>
-                      Our model predicts that this defendent{" "}
+                      Our model predicts that this defendant{" "}
                       <b>
                         {this.machineSuggestReoffend() ? "will" : "will not"}
                       </b>{" "}

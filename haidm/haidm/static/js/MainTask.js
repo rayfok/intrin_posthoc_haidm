@@ -15,7 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import classNames from "classnames";
 import React, { Component } from "react";
-import ApexChart from "./DivergingBarChart";
+import DivergingBarChart from "./DivergingBarChart";
 import { TaskStep } from "./enums";
 import ExitSurvey from "./ExitSurvey";
 import ProgressIndicator from "./ProgressIndicator";
@@ -34,8 +34,7 @@ class MainTask extends Component {
       juv_fel_count: "Juvenile Felony Count",
       juv_misd_count: "Juvenile Misdemeanor Count",
       priors_count: "Prior Charges Count",
-      is_male: "Sex",
-      is_felony: "Charge Degree",
+      intercept: "Offset",
     },
   };
   featureDescMap = {
@@ -302,20 +301,27 @@ class MainTask extends Component {
 
     if (condition === "human-ai-intrinsic") {
       expl = curQuestion["expls"]["logr_ftr_cont"];
-      expl["Base Rate"] = curQuestion["expls"]["logr_base_rate"];
     } else if (condition === "human-ai-posthoc") {
       expl = curQuestion["expls"]["svc_lime"];
     }
-    return Object.entries(expl).reduce((a, [k, v]) => {
-      if (k === "Base Rate") {
-        a[k] = v;
-      } else {
-        const ftrKey = this.featureDisplayNameMap[task][k];
-        const ftrValue = curQuestion["features"][k];
-        a[`${ftrKey} = ${ftrValue}`] = v;
-      }
-      return a;
-    }, {});
+    return Object.entries(this.featureDisplayNameMap[task]).reduce(
+      (a, [rawName, formattedName]) => {
+        if (rawName in expl) {
+          if (rawName === "intercept") {
+            // Few things to note here:
+            // 1. Sum of log odds in range [0, 1] with x > 0.5 => yes and x < 0.5 => no
+            //     so we shift it here since centering around 0 is more intuitive.
+            // 2. Intercept isn't a feature so it doesn't have a value.
+            a[formattedName] = expl["intercept"] - 0.5;
+          } else {
+            const featureValue = curQuestion["features"][rawName];
+            a[`${formattedName} = ${featureValue}`] = expl[rawName];
+          }
+        }
+        return a;
+      },
+      {}
+    );
   };
 
   getExplanationDescription = () => {
@@ -323,30 +329,25 @@ class MainTask extends Component {
       return (
         <p>
           Our model has been previously trained with many profiles of other
-          defendants for which whether the defendant reoffends is known. Our
-          model has learned whether specific features of a defendant increase or
-          decrease the chance for a reoffense.
+          defendants who are known to have reoffended or not. Our model has
+          learned whether specific features of a defendant increase or decrease
+          the chance for a reoffense.
           <br />
           <br />
-          {this.state.condition === "human-ai-intrinsic" && (
-            <span>
-              Our model always compares a defendant to the following reference
-              defendant:
-              <br />
-              "A 30-year old female charged with a misdemeanor crime, with 0
-              prior charges, 0 juvenile misdemeanor charges, and 0 juvenile
-              felony charges."
-              <br />
-              <br />
-              The chance of the reference defendant is low, indicated by the
-              Base Rate bar below.
-              <br />
-            </span>
-          )}
           Positive values (shown in blue) indicate that a feature{" "}
           <b>increases</b> the chance that a defendant will reoffend. Negative
           values (shown in red) indicate that a feature <b>decreases</b> the
-          chance that a defendant will reoffend.
+          chance that a defendant will reoffend.{" "}
+          {this.state.condition === "human-ai-intrinsic" && (
+            <span>
+              The last row in the graph (indicated "Offset") is a technicality
+              used by the model to function appropriately, and does not
+              correspond directly to any features in the defendant's profile.
+              The model makes its decision by adding together values from all
+              features , and predicting reoffense if the value is positive and
+              no reoffense if the value is negative.
+            </span>
+          )}
         </p>
       );
     }
@@ -361,7 +362,7 @@ class MainTask extends Component {
             predict whether a defendant currently charged with a crime will
             reoffend within the next two years
           </b>
-          . <br />
+          .{" "}
           {this.state.condition !== "human" && (
             <span>
               You will be assisted by an AI model throughout the task.{" "}
@@ -371,6 +372,13 @@ class MainTask extends Component {
           questions to familiarize yourself with the interface and task
           requirements, and then complete an additional {this.numberOfQuestions}{" "}
           questions comprising the actual task.
+          <br />
+          <br />
+          Disclaimer: Note that while your decisions will not directly influence
+          the lives of any defendants, they may be used to improve AI models
+          that support criminal justice professionals.
+          <br />
+          <br />
         </p>
       );
     }
@@ -585,7 +593,7 @@ class MainTask extends Component {
                         Here's how the model made its prediction
                       </p>
                       {this.getExplanationDescription()}
-                      <ApexChart
+                      <DivergingBarChart
                         data={this.getFeatureContributions()}
                         positiveLabel={this.labelStringNames[task]["positive"]}
                         negativeLabel={this.labelStringNames[task]["negative"]}

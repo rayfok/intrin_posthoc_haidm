@@ -17,18 +17,10 @@ def load_compas_data(use_race=False):
         "c_charge_desc",
     ]
 
-    one_hot_cols = ["sex", "c_charge_degree"]
-    if use_race:
-        keep_cols.append("race")
-        one_hot_cols.append("race")
-
     df = df[keep_cols]
+    df.dropna(subset=["c_charge_desc"], inplace=True)
+    df.reset_index(drop=True, inplace=True)
     one_hot_df = df.copy(deep=True)
-
-    # for x in one_hot_cols:
-    #     one_hot = pd.get_dummies(df[x], prefix=x)
-    #     one_hot_df = one_hot_df.drop(x, axis=1)
-    #     one_hot_df = one_hot_df.join(one_hot)
 
     one_hot_df["sex"] = one_hot_df["sex"].map({"Female": 0, "Male": 1})
     one_hot_df["c_charge_degree"] = one_hot_df["c_charge_degree"].map({"M": 0, "F": 1})

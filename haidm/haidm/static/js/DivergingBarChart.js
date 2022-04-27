@@ -31,6 +31,13 @@ class DivergingBarChart extends Component {
       },
     ];
     const options = {
+      annotations: {
+        xaxis: [
+          {
+            x: 0,
+          },
+        ],
+      },
       chart: {
         type: "bar",
         height: 440,

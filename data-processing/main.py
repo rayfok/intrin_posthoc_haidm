@@ -12,13 +12,13 @@ from lime.lime_tabular import LimeTabularExplainer
 from pygam import LogisticGAM
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier, export_graphviz, export_text
 from statsmodels.formula.api import ols
-from transformers import pipeline
+from transformers import MODEL_FOR_CAUSAL_IMAGE_MODELING_MAPPING, pipeline
 
 from utils import *
 
@@ -28,6 +28,8 @@ def build_model(model_type: str):
         model = RandomForestClassifier(n_estimators=100, random_state=0, max_depth=3)
     elif model_type == "lgr":
         model = LogisticRegression(solver="lbfgs", max_iter=500)
+    elif model_type == "ridge":
+        model = RidgeClassifier(random_state=0)
     elif model_type == "dt":
         model = DecisionTreeClassifier(
             criterion="entropy", max_depth=10, random_state=0
@@ -177,21 +179,15 @@ def main():
     )
     df_train = pd.concat([X_train, y_train], axis=1)
     df_test = pd.concat([X_test, y_test], axis=1)
-    model_types = [
-        "rf",
-        "lgr",
-        "dt",
-        "svc",
-        "gam",
-    ]
+    model_types = ["rf", "lgr", "dt", "svc", "gam", "ridge"]
     models = {}
     preds = {}
     metrics = {}
 
     for model_type in model_types:
         model = build_model(model_type)
-        models[model_type] = train(model, X_train.values, y_train)
-        preds[model_type] = predict(models[model_type], X_test.values)
+        models[model_type] = train(model, X_train, y_train)
+        preds[model_type] = predict(models[model_type], X_test)
         metrics[model_type] = evaluate(preds[model_type], y_test)
 
     # Statsmodels lgr has a different syntax
@@ -199,7 +195,7 @@ def main():
         "two_year_recid ~ C(sex) + C(c_charge_degree) + age + juv_fel_count + juv_misd_count + priors_count",
         data=df_train,
     ).fit()
-    print(logr_model.summary())
+    mean_df = X_train[["age", "juv_fel_count", "juv_misd_count", "priors_count"]].mean()
     models["lgr-sm"] = logr_model
     model_pred = predict(logr_model, X_test)  # probabilities
     preds["lgr-sm"] = list(map(round, model_pred))
@@ -224,55 +220,61 @@ def main():
     raw_output = output_df.iloc[indices].to_dict(orient="index")
     output = defaultdict(list)
 
-    # Global explanation for logistic regression model
-    # score = permutation_importance(
-    #     models["lgr"], X_train.values, y_train, n_repeats=30, random_state=0
-    # )
-    # ftr_importance = {feature_list[i]: v for i, v in enumerate(score.importances_mean)}
-
     bin_cat_ftrs = ["sex", "c_charge_degree"]
     for i, ex in raw_output.items():
         i = int(i)
-        sample = X_test.iloc[i].values.reshape(1, -1)
+        sample = X_test.iloc[i].values
         label = int(y_test.iloc[i])
 
-        # Local exact explanation for logistic regression model
-        # base_rate_ftrs = {
-        #     "age": 30,
-        #     "juv_fel_count": 0,
-        #     "juv_misd_count": 0,
-        #     "priors_count": 0,
-        #     "sex": 0,
-        #     "c_charge_degree": 0,
-        # }
-        lgr_ftr_contr = {}
+        # # Local exact explanation for logistic regression model (statsmodels)
+        # logr_mean_ref = {}
+        # for ftr_i, feature in enumerate(feature_list):
+        #     if feature in bin_cat_ftrs:
+        #         logr_mean_ref[feature] = models["lgr-sm"].params[f"C({feature})[T.1]"]
+        #         if sample[ftr_i] == 0:
+        #             logr_mean_ref[feature] *= -1
+        #     else:
+        #         logr_mean_ref[feature] = (
+        #             sample[ftr_i] - mean_df[feature]
+        #         ) * models["lgr-sm"].params[feature]
+        # logr_mean_ref["intercept"] = models["lgr-sm"].params["Intercept"]
+
+        # logr_zero_ref = {}
+        # for ftr_i, feature in enumerate(feature_list):
+        #     if feature in bin_cat_ftrs:
+        #         feature_name = f"C({feature})[T.1]"
+        #     else:
+        #         feature_name = feature
+        #     logr_zero_ref[feature] = sample[ftr_i] * models["lgr-sm"].params[feature_name]
+        # logr_zero_ref["intercept"] = models["lgr-sm"].params["Intercept"]
+
+        # Local exact explanation for logistic regression model (sklearn)
+        logr_mean_ref = {}
         for ftr_i, feature in enumerate(feature_list):
-            ### Interpretation as log-odds
-            # lgr_ftr_contr[feature] = (
-            #     sample[0][ftr_i] - base_rate_ftrs[feature]
-            # ) * logr_model.params[feature]
-            logr_feature = f"C({feature})[T.1]" if feature in bin_cat_ftrs else feature
-            lgr_ftr_contr[feature] = sample[0][ftr_i] * logr_model.params[logr_feature]
-        lgr_ftr_contr["intercept"] = logr_model.params["Intercept"]
-        # base_rate = sum(
-        #     base_rate_ftrs[feature] * logr_model.params[feature]
-        #     for feature in feature_list
-        # )
+            if feature in bin_cat_ftrs:
+                logr_mean_ref[feature] = models["lgr"].coef_[0][ftr_i]
+                if sample[ftr_i] == 0:
+                    logr_mean_ref[feature] *= -1
+            else:
+                logr_mean_ref[feature] = (sample[ftr_i] - mean_df[feature]) * models[
+                    "lgr"
+                ].coef_[0][ftr_i]
+        logr_mean_ref["intercept"] = models["lgr"].intercept_[0]
+
+        logr_zero_ref = {}
+        for ftr_i, feature in enumerate(feature_list):
+            logr_zero_ref[feature] = sample[ftr_i] * models["lgr"].coef_[0][ftr_i]
+        logr_zero_ref["intercept"] = models["lgr"].intercept_[0]
 
         # Local post-hoc explanation for SVC model
         lime_explainer = LimeTabularExplainer(
             X_train.values,
             mode="classification",
             feature_names=feature_list,
-            categorical_features=[
-                4,
-                5,
-            ],  # sex and c_charge_degree are 4th and 5th features
+            categorical_features=[feature_list.index(f) for f in bin_cat_ftrs],
         )
         lime_rules = lime_explainer.explain_instance(
-            sample.squeeze(),
-            models["svc"].predict_proba,
-            num_features=len(feature_list),
+            sample, models["svc"].predict_proba, num_features=10,
         ).as_list()
         lime_ftr_contr = {}
         for rule, weight in lime_rules:
@@ -289,10 +291,12 @@ def main():
                 },
                 "label": label,
                 "preds": {
-                    model_type: int(preds[model_type][i]) for model_type in model_types + ["lgr-sm"]
+                    model_type: int(preds[model_type][i])
+                    for model_type in model_types + ["lgr-sm"]
                 },
                 "expls": {
-                    "logr_ftr_cont": lgr_ftr_contr,
+                    "logr_mean_ref": logr_mean_ref,
+                    "logr_zero_ref": logr_zero_ref,
                     "svc_lime": lime_ftr_contr,
                 },
             }

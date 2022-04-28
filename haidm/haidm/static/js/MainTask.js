@@ -29,12 +29,11 @@ class MainTask extends Component {
     compas: {
       age: "Age",
       sex: "Sex",
+      priors_count: "Prior Charges Count",
       c_charge_degree: "Charge Degree",
       c_charge_desc: "Charge Description",
       juv_fel_count: "Juvenile Felony Count",
       juv_misd_count: "Juvenile Misdemeanor Count",
-      priors_count: "Prior Charges Count",
-      intercept: "Offset",
     },
   };
   featureDescMap = {
@@ -300,23 +299,15 @@ class MainTask extends Component {
     let expl = null;
 
     if (condition === "human-ai-intrinsic") {
-      expl = curQuestion["expls"]["logr_ftr_cont"];
+      expl = curQuestion["expls"]["logr_mean_ref"];
     } else if (condition === "human-ai-posthoc") {
       expl = curQuestion["expls"]["svc_lime"];
     }
     return Object.entries(this.featureDisplayNameMap[task]).reduce(
       (a, [rawName, formattedName]) => {
         if (rawName in expl) {
-          if (rawName === "intercept") {
-            // Few things to note here:
-            // 1. Sum of log odds in range [0, 1] with x > 0.5 => yes and x < 0.5 => no
-            //     so we shift it here since centering around 0 is more intuitive.
-            // 2. Intercept isn't a feature so it doesn't have a value.
-            a[formattedName] = expl["intercept"] - 0.5;
-          } else {
-            const featureValue = curQuestion["features"][rawName];
-            a[`${formattedName} = ${featureValue}`] = expl[rawName];
-          }
+          const featureValue = curQuestion["features"][rawName];
+          a[`${formattedName} = ${featureValue}`] = expl[rawName];
         }
         return a;
       },
@@ -338,16 +329,6 @@ class MainTask extends Component {
           <b>increases</b> the chance that a defendant will reoffend. Negative
           values (shown in red) indicate that a feature <b>decreases</b> the
           chance that a defendant will reoffend.{" "}
-          {this.state.condition === "human-ai-intrinsic" && (
-            <span>
-              The last row in the graph (indicated "Offset") is a technicality
-              used by the model to function appropriately, and does not
-              correspond directly to any features in the defendant's profile.
-              The model makes its decision by adding together values from all
-              features , and predicting reoffense if the value is positive and
-              no reoffense if the value is negative.
-            </span>
-          )}
         </p>
       );
     }

@@ -18,6 +18,7 @@ import React, { Component } from "react";
 import DivergingBarChart from "./DivergingBarChart";
 import { TaskStep } from "./enums";
 import ExitSurvey from "./ExitSurvey";
+import LineChart from "./LineChart";
 import ProgressIndicator from "./ProgressIndicator";
 import TaskStepper from "./TaskStepper";
 
@@ -56,13 +57,21 @@ class MainTask extends Component {
       negative: "Will not reoffend",
     },
   };
-  conditions = ["human", "human-ai", "human-ai-intrinsic", "human-ai-posthoc"];
+  conditions = [
+    "human",
+    "human-ai",
+    "human-ai-intrinsic",
+    "human-ai-posthoc",
+    "human-ai-intrinsic-global",
+    "human-ai-gam",
+  ];
   numberOfTrainingQuestions = 3;
   numberOfQuestions = 20;
 
   constructor(props) {
     super(props);
     this.state = {
+      data: null,
       trainingQuestions: [],
       questions: [],
       responses: [],
@@ -89,9 +98,18 @@ class MainTask extends Component {
   async componentDidMount() {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
-      let [trainingQuestions, questions] = await this.getAllQuestions();
+      let data = await this.getData();
+      const allQuestionsSorted = Object.values(data["instances"]).sort(
+        (a, b) => parseInt(a.id) - parseInt(b.id)
+      );
+      let questions = allQuestionsSorted.slice(0, this.numberOfQuestions);
+      let trainingQuestions = allQuestionsSorted.slice(
+        this.numberOfQuestions,
+        this.numberOfQuestions + this.numberOfTrainingQuestions
+      );
       if (questions) {
         this.setState({
+          data,
           trainingQuestions,
           questions,
           activeStep: TaskStep.Instructions,
@@ -118,20 +136,12 @@ class MainTask extends Component {
     );
   };
 
-  async getAllQuestions() {
+  async getData() {
     let url = `${APPLICATION_ROOT}/api/v1/q/?task=${this.state.task}&q=-1`;
     try {
       let response = await fetch(url, { credentials: "same-origin" });
       let data = await response.json();
-      const allQuestionsSorted = Object.values(data).sort(
-        (a, b) => parseInt(a.id) - parseInt(b.id)
-      );
-      let questions = allQuestionsSorted.slice(0, this.numberOfQuestions);
-      let trainingQuestions = allQuestionsSorted.slice(
-        this.numberOfQuestions,
-        this.numberOfQuestions + this.numberOfTrainingQuestions
-      );
-      return [trainingQuestions, questions];
+      return data;
     } catch (err) {
       return [];
     }
@@ -180,7 +190,7 @@ class MainTask extends Component {
         question_id: this.state.curQuestion["id"],
         initial_human_decision: this.state.initialDecision,
         final_human_decision: this.state.curDecision,
-        ai_decision: this.state.curQuestion["preds"]["lgr"],
+        ai_decision: this.state.curQuestion["preds"]["logr"],
         initial_decision_time: this.state.initialDecisionTime,
         final_decision_time: Date.now() - this.state.questionStartTime,
         ground_truth: this.state.curQuestion["label"],
@@ -286,9 +296,14 @@ class MainTask extends Component {
       this.state.condition === "human-ai" ||
       this.state.condition === "human-ai-posthoc"
     ) {
-      return this.state.curQuestion["preds"]["svc"] === 1;
-    } else if (this.state.condition === "human-ai-intrinsic") {
-      return this.state.curQuestion["preds"]["lgr"] === 1;
+      return this.state.curQuestion["preds"]["svm"] === 1;
+    } else if (
+      this.state.condition === "human-ai-intrinsic" ||
+      this.state.condition === "human-ai-intrinsic-global"
+    ) {
+      return this.state.curQuestion["preds"]["logr"] === 1;
+    } else if (this.state.condition === "human-ai-gam") {
+      return this.state.curQuestion["preds"]["gam"] === 1;
     } else {
       return 0;
     }
@@ -299,9 +314,11 @@ class MainTask extends Component {
     let expl = null;
 
     if (condition === "human-ai-intrinsic") {
-      expl = curQuestion["expls"]["logr_mean_ref"];
+      expl = curQuestion["expls"]["logr_prob"];
     } else if (condition === "human-ai-posthoc") {
       expl = curQuestion["expls"]["svc_lime"];
+    } else if (condition === "human-ai-intrinsic-global") {
+      expl = curQuestion["expls"]["logr_params"];
     }
     return Object.entries(this.featureDisplayNameMap[task]).reduce(
       (a, [rawName, formattedName]) => {
@@ -325,10 +342,19 @@ class MainTask extends Component {
           the chance for a reoffense.
           <br />
           <br />
-          Positive values (shown in blue) indicate that a feature{" "}
-          <b>increases</b> the chance that a defendant will reoffend. Negative
-          values (shown in red) indicate that a feature <b>decreases</b> the
-          chance that a defendant will reoffend.{" "}
+          {this.state.condition === "human-ai-gam" ? (
+            <span>
+              For each feature, a greater value in the chart indicates the model
+              predicts a higher chance of reoffense.
+            </span>
+          ) : (
+            <span>
+              Positive values (shown in blue) indicate that a feature{" "}
+              <b>increases</b> the chance that a defendant will reoffend.
+              Negative values (shown in red) indicate that a feature{" "}
+              <b>decreases</b> the chance that a defendant will reoffend.{" "}
+            </span>
+          )}
         </p>
       );
     }
@@ -385,6 +411,7 @@ class MainTask extends Component {
 
   render() {
     const {
+      data,
       task,
       trainingQuestions,
       questions,
@@ -574,18 +601,36 @@ class MainTask extends Component {
                         Here's how the model made its prediction
                       </p>
                       {this.getExplanationDescription()}
-                      <DivergingBarChart
-                        data={this.getFeatureContributions()}
-                        positiveLabel={this.labelStringNames[task]["positive"]}
-                        negativeLabel={this.labelStringNames[task]["negative"]}
-                        title={`AI Prediction: ${
-                          this.labelStringNames[task][
-                            this.machineSuggestReoffend()
-                              ? "positive"
-                              : "negative"
-                          ]
-                        }`}
-                      />
+
+                      {condition === "human-ai-gam" ? (
+                        Object.keys(data["explanations"]["gam_pdp"]).map(
+                          (feature) => (
+                            <LineChart
+                              key={feature}
+                              data={data["explanations"]["gam_pdp"][feature]}
+                              title={this.featureDisplayNameMap[task][feature]}
+                              currentValue={curQuestion["features"][feature]}
+                            />
+                          )
+                        )
+                      ) : (
+                        <DivergingBarChart
+                          data={this.getFeatureContributions()}
+                          positiveLabel={
+                            this.labelStringNames[task]["positive"]
+                          }
+                          negativeLabel={
+                            this.labelStringNames[task]["negative"]
+                          }
+                          title={`AI Prediction: ${
+                            this.labelStringNames[task][
+                              this.machineSuggestReoffend()
+                                ? "positive"
+                                : "negative"
+                            ]
+                          }`}
+                        />
+                      )}
                     </div>
                   )}
                   <p className="task-section-header">

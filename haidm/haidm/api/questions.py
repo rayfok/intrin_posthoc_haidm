@@ -13,14 +13,12 @@ api = flask.Blueprint("api", __name__)
 
 
 def load_data():
-    with open(os.path.join(DATA_DIR, "task_recidivism.json"), "r") as f:
+    with open(os.path.join(DATA_DIR, "task_data.json"), "r") as f:
         global task_data
         task_data = json.load(f)
-        reformatted = {}
-        for task, examples in task_data.items():
-            q_by_id = {str(ex["id"]): ex for ex in examples}
-            reformatted[task] = q_by_id
-        task_data = reformatted
+        for task, data in task_data.items():
+            q_by_id = {str(ex["id"]): ex for ex in data["instances"]}
+            task_data[task]["instances"] = q_by_id
 
 
 def validate_task(task):

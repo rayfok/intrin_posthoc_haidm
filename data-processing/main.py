@@ -1,9 +1,9 @@
 import json
 import os
 import random
-from collections import defaultdict
 
 import matplotlib.pyplot as plt
+import numpy as np
 from lime.lime_tabular import LimeTabularExplainer
 from pygam import LogisticGAM
 from sklearn.ensemble import RandomForestClassifier
@@ -13,7 +13,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from tqdm import tqdm
-import numpy as np
 
 from utils import CompasDataset
 
@@ -40,18 +39,6 @@ def build_model(model_type: str, random_state: int = 0):
     return model
 
 
-def train(model, X_train, y_train):
-    return model.fit(X_train.values, y_train)
-
-
-def predict(model, X_test):
-    return model.predict(X_test.values)
-
-
-def evaluate(y_pred, y_test):
-    return accuracy_score(y_pred, y_test)
-
-
 def visualize_gam_pdp(gam, dataset, feature_list):
     gam_expl_dir = "expl/gam"
     os.makedirs(gam_expl_dir, exist_ok=True)
@@ -65,9 +52,8 @@ def visualize_gam_pdp(gam, dataset, feature_list):
 
 def main():
     compas = CompasDataset("task_data/compas-scores-two-years.csv")
-    feature_df = compas.feature_df.copy(deep=True)
-    compas.drop_and_encode_categorical()
-    df = compas.feature_df
+    feature_df = compas.feature_df
+    df = compas.encoded_df
     labels = df[compas.target]
     features = df.drop(compas.target, axis=1)
 
@@ -83,9 +69,9 @@ def main():
 
     for model_type in model_types:
         model = build_model(model_type)
-        models[model_type] = train(model, X_train, y_train)
-        preds[model_type] = predict(models[model_type], X_test)
-        metrics[model_type] = evaluate(preds[model_type], y_test)
+        models[model_type] = model.fit(X_train.values, y_train)
+        preds[model_type] = model.predict(X_test.values)
+        metrics[model_type] = accuracy_score(preds[model_type], y_test)
 
     for m, acc in metrics.items():
         print(f"{m}: {acc:.3f}")

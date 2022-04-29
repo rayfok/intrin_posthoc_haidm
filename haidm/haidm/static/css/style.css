@@ -54,6 +54,13 @@
   width: fit-content;
 }
 
+#ai-explanation .line-chart-container {
+  display: inline-block;
+  border: 1px solid gray;
+  border-radius: 5px;
+  margin: 5px;
+}
+
 /* General Text */
 .task-section-header {
   font-weight: bold;

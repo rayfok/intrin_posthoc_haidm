@@ -14,13 +14,13 @@ class LineChart extends Component {
   }
 
   render() {
-    const { title, data } = this.props;
-    let { currentValue } = this.props;
+    const { title, data, currentValue } = this.props;
+    let currentValueOneHot = -1;
     if (title === "Sex") {
-      currentValue = currentValue === "Male" ? 1 : 0;
+      currentValueOneHot = currentValue === "Male" ? 1 : 0;
     }
     if (title === "Charge Degree") {
-      currentValue = currentValue === "Felony" ? 1 : 0;
+      currentValueOneHot = currentValue === "Felony" ? 1 : 0;
     }
 
     const series = [
@@ -33,7 +33,10 @@ class LineChart extends Component {
       annotations: {
         xaxis: [
           {
-            x: currentValue,
+            x:
+              title === "Sex" || title === "Charge Degree"
+                ? currentValueOneHot
+                : currentValue,
             borderColor: "#775DD0",
           },
         ],
@@ -84,7 +87,7 @@ class LineChart extends Component {
     };
 
     return (
-      <div className="line-chart-container" style={{ display: "inline-block" }}>
+      <div className="line-chart-container">
         <ReactApexChart
           options={options}
           series={series}

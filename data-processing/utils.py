@@ -1,5 +1,6 @@
 import pandas as pd
 
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
 
 class Dataset:
     def __init__(self, filepath):
@@ -77,6 +78,16 @@ class LoanDataset(Dataset):
         self.keep_other = []
         self.category_mapping = {
             "term": {" 36 months": 36, " 60 months": 60},
-            "loan_status": {"Fully Paid": 1, "Charged Off": 0},
+            "loan_status": {"Fully Paid": 0, "Charged Off": 1},
         }
         super().__init__(filepath)
+
+
+def print_score(true, pred, train=True):
+    clf_report = pd.DataFrame(classification_report(true, pred, output_dict=True))
+    print(f"{'Train' if train else 'Test'} Result:\n================================================")
+    print(f"Accuracy Score: {accuracy_score(true, pred) * 100:.2f}%")
+    print("_______________________________________________")
+    print(f"CLASSIFICATION REPORT:\n{clf_report}")
+    print("_______________________________________________")
+    print(f"Confusion Matrix: \n {confusion_matrix(true, pred)}\n")

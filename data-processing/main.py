@@ -4,11 +4,12 @@ import random
 
 import matplotlib.pyplot as plt
 import numpy as np
+import xgboost as xgb
 from lime.lime_tabular import LimeTabularExplainer
 from pygam import LogisticGAM
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, RidgeClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -23,7 +24,9 @@ def build_model(model_type: str, random_state: int = 0):
             n_estimators=100, random_state=random_state, max_depth=3
         )
     elif model_type == "logr":
-        model = LogisticRegression(solver="lbfgs", max_iter=500)
+        model = LogisticRegression(
+            class_weight="balanced", solver="lbfgs", max_iter=500, n_jobs=8
+        )
     elif model_type == "ridge":
         model = RidgeClassifier(random_state=random_state)
     elif model_type == "dt":
@@ -34,6 +37,8 @@ def build_model(model_type: str, random_state: int = 0):
         model = SVC(probability=True, gamma="auto")
     elif model_type == "gam":
         model = LogisticGAM()
+    elif model_type == "xgboost":
+        model = xgb.XGBClassifier(tree_method="gpu_hist", enable_categorical=True)
     else:
         raise Exception("Unknown model type:", model_type)
     return model
@@ -71,7 +76,7 @@ def main():
         model = build_model(model_type)
         models[model_type] = model.fit(X_train.values, y_train)
         preds[model_type] = model.predict(X_test.values)
-        metrics[model_type] = accuracy_score(preds[model_type], y_test)
+        metrics[model_type] = f1_score(preds[model_type], y_test)
 
     for m, acc in metrics.items():
         print(f"{m}: {acc:.3f}")

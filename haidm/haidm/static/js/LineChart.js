@@ -7,14 +7,58 @@ class LineChart extends Component {
     data: PropTypes.array,
     title: PropTypes.string,
     currentValue: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    splitColorOnSign: PropTypes.bool,
   };
 
   constructor(props) {
     super(props);
   }
 
+  red = "#DC143C";
+  blue = "#1976D2";
+
+  getSignSplitSeries = () => {
+    let colors = [];
+    let signSplitData = [];
+    let curSign = "positive";
+    let curData = [];
+    for (const [x, y] of this.props.data) {
+      if (curSign === "positive") {
+        if (y > 0) {
+          curData.push([x, y]);
+        } else {
+          if (curData.length > 0) {
+            signSplitData.push(curData);
+            colors.push(this.blue);
+          }
+          curSign = "negative";
+          curData = [[x, y]];
+        }
+      } else {
+        if (y <= 0) {
+          curData.push([x, y]);
+        } else {
+          if (curData.length > 0) {
+            signSplitData.push(curData);
+            colors.push(this.red);
+          }
+          curSign = "positive";
+          curData = [[x, y]];
+        }
+      }
+    }
+    if (curData.length > 0) {
+      signSplitData.push(curData);
+      colors.push(curSign === "positive" ? this.blue : this.red);
+    }
+    const series = signSplitData.map((d) => ({
+      data: d,
+    }));
+    return [series, colors];
+  };
+
   render() {
-    const { title, data, currentValue } = this.props;
+    const { title, data, currentValue, splitColorOnSign } = this.props;
     let currentValueOneHot = -1;
     if (title === "Sex") {
       currentValueOneHot = currentValue === "Male" ? 1 : 0;
@@ -23,6 +67,8 @@ class LineChart extends Component {
       currentValueOneHot = currentValue === "Felony" ? 1 : 0;
     }
 
+    const [signSplitSeries, colors] = this.getSignSplitSeries();
+
     const series = [
       {
         name: title,
@@ -30,6 +76,7 @@ class LineChart extends Component {
       },
     ];
     const options = {
+      colors: splitColorOnSign ? colors : [this.blue],
       annotations: {
         xaxis: [
           {
@@ -73,6 +120,12 @@ class LineChart extends Component {
           },
         },
       },
+      legend: {
+        show: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
       yaxis: {
         labels: {
           formatter: (value) => {
@@ -90,7 +143,7 @@ class LineChart extends Component {
       <div className="line-chart-container">
         <ReactApexChart
           options={options}
-          series={series}
+          series={splitColorOnSign ? signSplitSeries : series}
           type="line"
           width={440}
         />

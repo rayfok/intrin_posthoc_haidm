@@ -342,17 +342,18 @@ class MainTask extends Component {
           the chance for a reoffense.
           <br />
           <br />
-          {this.state.condition === "human-ai-gam" ? (
+          <span>
+            Positive values (shown in{" "}
+            <span style={{ color: "#1976D2" }}>blue</span>) indicate that a
+            feature <b>increases</b> the chance that a defendant will reoffend.
+            Negative values (shown in{" "}
+            <span style={{ color: "#DC143C" }}>red</span>) indicate that a
+            feature <b>decreases</b> the chance that a defendant will reoffend.{" "}
+          </span>
+          {this.state.condition === "human-ai-gam" && (
             <span>
-              For each feature, a greater value in the chart indicates the model
-              predicts a higher chance of reoffense.
-            </span>
-          ) : (
-            <span>
-              Positive values (shown in blue) indicate that a feature{" "}
-              <b>increases</b> the chance that a defendant will reoffend.
-              Negative values (shown in red) indicate that a feature{" "}
-              <b>decreases</b> the chance that a defendant will reoffend.{" "}
+              The purple dotted lines indicate feature values for the current
+              defendant.
             </span>
           )}
         </p>
@@ -608,6 +609,7 @@ class MainTask extends Component {
                             (feature) => (
                               <LineChart
                                 key={feature}
+                                splitColorOnSign={true}
                                 data={data["explanations"]["gam_pdp"][feature]}
                                 title={
                                   this.featureDisplayNameMap[task][feature]

@@ -603,16 +603,20 @@ class MainTask extends Component {
                       {this.getExplanationDescription()}
 
                       {condition === "human-ai-gam" ? (
-                        Object.keys(data["explanations"]["gam_pdp"]).map(
-                          (feature) => (
-                            <LineChart
-                              key={feature}
-                              data={data["explanations"]["gam_pdp"][feature]}
-                              title={this.featureDisplayNameMap[task][feature]}
-                              currentValue={curQuestion["features"][feature]}
-                            />
-                          )
-                        )
+                        <div id="gam-visualization">
+                          {Object.keys(data["explanations"]["gam_pdp"]).map(
+                            (feature) => (
+                              <LineChart
+                                key={feature}
+                                data={data["explanations"]["gam_pdp"][feature]}
+                                title={
+                                  this.featureDisplayNameMap[task][feature]
+                                }
+                                currentValue={curQuestion["features"][feature]}
+                              />
+                            )
+                          )}
+                        </div>
                       ) : (
                         <DivergingBarChart
                           data={this.getFeatureContributions()}
@@ -633,7 +637,7 @@ class MainTask extends Component {
                       )}
                     </div>
                   )}
-                  <p className="task-section-header">
+                  <p className="task-section-header" id="final-decision-prompt">
                     Make Your Final Decision
                   </p>
                   <p className="prompt-text">

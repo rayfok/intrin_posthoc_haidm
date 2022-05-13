@@ -157,3 +157,13 @@
 #diverging-bar-chart-container {
   width: 80%;
 }
+
+.exit-survey-select {
+  width: 400px;
+  margin-bottom: 15px;
+}
+
+.exit-survey-short-ans {
+  width: 600px;
+  margin-bottom: 15px;
+}

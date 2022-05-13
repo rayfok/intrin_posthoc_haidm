@@ -65,8 +65,8 @@ class MainTask extends Component {
     "human-ai-intrinsic-global",
     "human-ai-gam",
   ];
-  numberOfTrainingQuestions = 3;
-  numberOfQuestions = 20;
+  numberOfTrainingQuestions = 1;
+  numberOfQuestions = 1;
 
   constructor(props) {
     super(props);
@@ -92,6 +92,7 @@ class MainTask extends Component {
       curQuestion: null,
       activeStep: TaskStep.Instructions,
       acceptedTermsAndConds: false,
+      showMachineAssistance: false,
     };
   }
 
@@ -684,14 +685,25 @@ class MainTask extends Component {
                 >
                   {(() => {
                     if (activeStep === TaskStep.TaskOnboarding) {
-                      return trainingCompletedCount ===
-                        trainingQuestions.length - 1
-                        ? "Start Main Task"
-                        : "Next";
+                      if (
+                        (this.state.initialDecision === null &&
+                          this.state.condition !== "human") ||
+                        trainingCompletedCount < trainingQuestions.length - 1
+                      ) {
+                        return "Next";
+                      } else {
+                        return "Start Main Task";
+                      }
                     } else if (activeStep === TaskStep.MainTask) {
-                      return completedCount === questions.length - 1
-                        ? "Finish Main Task"
-                        : "Next";
+                      if (
+                        (this.state.initialDecision === null &&
+                          this.state.condition !== "human") ||
+                        completedCount < questions.length - 1
+                      ) {
+                        return "Next";
+                      } else {
+                        return "Finish Main Task";
+                      }
                     }
                   })()}
                 </Button>

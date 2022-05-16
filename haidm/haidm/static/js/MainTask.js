@@ -15,10 +15,10 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import classNames from "classnames";
 import React, { Component } from "react";
-import DivergingBarChart from "./DivergingBarChart";
+import DivergingBarChart from "./visualizations/DivergingBarChart";
 import { TaskStep } from "./enums";
-import ExitSurvey from "./ExitSurvey/ExitSurvey";
-import LineChart from "./LineChart";
+import ExitSurvey from "./exitsurvey/ExitSurvey";
+import LineChart from "./visualizations/LineChart";
 import ProgressIndicator from "./ProgressIndicator";
 import TaskStepper from "./TaskStepper";
 

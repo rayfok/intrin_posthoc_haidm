@@ -4,7 +4,7 @@ import os
 import traceback
 
 import flask
-from haidm.model import Response, db
+from haidm.model import ExitSurveyResponse, Response, db
 
 DATA_DIR = "data"
 task_data = {}
@@ -79,6 +79,39 @@ def submit_data():
     except Exception as e:
         traceback.print_exc()
         print("Responses:", responses)
+        context = {"success": False}
+        return flask.make_response(
+            flask.jsonify(**context), http.HTTPStatus.BAD_REQUEST
+        )
+
+
+@api.route("/api/v1/submit-exit-survey/", methods=["POST"])
+def submit_exit_survey_data():
+    r = flask.request.json["responses"]
+    try:
+        db.session.add(
+            ExitSurveyResponse(
+                worker_id=r["worker_id"],
+                hit_id=r["hit_id"],
+                assignment_id=r["assignment_id"],
+                task=r["task"],
+                condition=r["condition"],
+                recognizeIncorrect=r["recognizeIncorrect"],
+                recognizeCorrect=r["recognizeCorrect"],
+                influenceDecisionMaking=r["influenceDecisionMaking"],
+                influenceUnderstanding=r["influenceUnderstanding"],
+                age=r["age"],
+                race=r["race"],
+                gender=r["gender"],
+                education=r["education"],
+            )
+        )
+        db.session.commit()
+        context = {"success": True}
+        return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)
+    except Exception as e:
+        traceback.print_exc()
+        print("Exit survey responses:", r)
         context = {"success": False}
         return flask.make_response(
             flask.jsonify(**context), http.HTTPStatus.BAD_REQUEST

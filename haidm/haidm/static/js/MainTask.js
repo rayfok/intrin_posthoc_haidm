@@ -17,7 +17,7 @@ import classNames from "classnames";
 import React, { Component } from "react";
 import DivergingBarChart from "./DivergingBarChart";
 import { TaskStep } from "./enums";
-import ExitSurvey from "./ExitSurvey";
+import ExitSurvey from "./ExitSurvey/ExitSurvey";
 import LineChart from "./LineChart";
 import ProgressIndicator from "./ProgressIndicator";
 import TaskStepper from "./TaskStepper";
@@ -96,7 +96,7 @@ class MainTask extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
       let data = await this.getData();
@@ -117,7 +117,7 @@ class MainTask extends Component {
         });
       }
     }
-  }
+  };
 
   startOnboarding = () => {
     this.setState(
@@ -137,7 +137,7 @@ class MainTask extends Component {
     );
   };
 
-  async getData() {
+  getData = async () => {
     let url = `${APPLICATION_ROOT}/api/v1/q/?task=${this.state.task}&q=-1`;
     try {
       let response = await fetch(url, { credentials: "same-origin" });
@@ -146,7 +146,7 @@ class MainTask extends Component {
     } catch (err) {
       return [];
     }
-  }
+  };
 
   setNextQuestion = () => {
     this.setState({
@@ -234,7 +234,7 @@ class MainTask extends Component {
     }
   };
 
-  async submitData() {
+  submitData = async () => {
     let url = `${APPLICATION_ROOT}/api/v1/submit/`;
     let response = await fetch(url, {
       method: "POST",
@@ -248,7 +248,30 @@ class MainTask extends Component {
       }),
     });
     return response["success"];
-  }
+  };
+
+  saveExitSurveyResponses = async (exitSurveyResponses) => {
+    let url = `${APPLICATION_ROOT}/api/v1/submit-exit-survey/`;
+    let response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        responses: {
+          ...exitSurveyResponses,
+          worker_id: this.state.workerId,
+          hit_id: this.state.hitId,
+          assignment_id: this.state.assignmentId,
+          task: this.state.task,
+          condition: this.state.condition,
+        },
+      }),
+    });
+    return response["success"];
+  };
 
   submitMTurk = () => {
     if (this.state.turkSubmitTo !== null) {
@@ -259,7 +282,7 @@ class MainTask extends Component {
     }
   };
 
-  async checkHasPreviouslyCompleted() {
+  checkHasPreviouslyCompleted = async () => {
     if (this.state.workerId === null) return false;
 
     let url = `${APPLICATION_ROOT}/api/v1/completed/?workerId=${this.state.workerId}&task=${this.state.task}`;
@@ -273,7 +296,7 @@ class MainTask extends Component {
     });
     let data = await response.json();
     return data["completed"];
-  }
+  };
 
   getMTurkSubmitForm = () => {
     return (
@@ -494,7 +517,10 @@ class MainTask extends Component {
         )}
 
         {activeStep === TaskStep.ExitSurvey && (
-          <ExitSurvey submitMTurk={this.submitMTurk} />
+          <ExitSurvey
+            saveExitSurveyResponses={this.saveExitSurveyResponses}
+            submitMTurk={this.submitMTurk}
+          />
         )}
 
         {(activeStep === TaskStep.MainTask ||

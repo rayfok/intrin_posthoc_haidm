@@ -3,7 +3,7 @@ import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
 import * as React from "react";
 
-MUISelect.defaultProps = {
+MUISelect.propTypes = {
   label: PropTypes.string,
   callback: PropTypes.func,
 };
@@ -17,8 +17,9 @@ export default function MUISelect(props) {
   };
 
   return (
-    <Box>
+    <Box className={"exit-survey-short-answer"}>
       <TextField
+        required
         fullWidth
         id={`short-answer-${props.label}`}
         label={props.label}

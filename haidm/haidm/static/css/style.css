@@ -145,7 +145,7 @@
 
 /* Exit Survey */
 #exit-survey-container {
-  width: 70%;
+  width: 90%;
   min-width: 500px;
   padding-top: 50px;
   margin: 0 auto;
@@ -159,11 +159,18 @@
 }
 
 .exit-survey-select {
-  width: 400px;
+  width: fit-content;
+  min-width: 400px;
   margin-bottom: 15px;
 }
 
-.exit-survey-short-ans {
-  width: 600px;
+.exit-survey-short-answer {
+  min-width: 400px;
+  max-width: 800px;
+  width: 80%;
+  margin-bottom: 15px;
+}
+
+#submit-button {
   margin-bottom: 15px;
 }

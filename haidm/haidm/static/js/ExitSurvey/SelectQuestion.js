@@ -6,13 +6,13 @@ import Select from "@mui/material/Select";
 import PropTypes from "prop-types";
 import * as React from "react";
 
-MUISelect.defaultProps = {
+SelectQuestion.propTypes = {
   label: PropTypes.string,
   options: PropTypes.object,
   callback: PropTypes.func,
 };
 
-export default function MUISelect(props) {
+export default function SelectQuestion(props) {
   const [value, setValue] = React.useState("");
 
   const handleChange = (event) => {
@@ -21,7 +21,7 @@ export default function MUISelect(props) {
   };
 
   return (
-    <Box>
+    <Box className={"exit-survey-select"}>
       <FormControl fullWidth required>
         <InputLabel id={`select-${props.label}-label`}>
           {props.label}

@@ -6,3 +6,4 @@ var/
 **/bundle.js
 **/.DS_Store
 *.db
+**/scripts/*.json

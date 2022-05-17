@@ -1,4 +1,5 @@
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { questions } from "./exitSurveyQuestions";
@@ -35,6 +36,10 @@ class ExitSurvey extends Component {
   };
 
   render() {
+    const completedSurvey =
+      Object.keys(this.state.responses).length ===
+      Object.keys(questions).length;
+
     return (
       <div id="exit-survey-container">
         <h4 style={{ textAlign: "center" }}>Exit Survey</h4>
@@ -71,14 +76,22 @@ class ExitSurvey extends Component {
           }
         })}
 
-        <Button
-          variant="contained"
-          className="centered button"
-          id="submit-button"
-          onClick={this.submit}
+        <Tooltip
+          title={!completedSurvey ? "Please respond to all questions." : ""}
+          placement="bottom"
         >
-          Submit HIT
-        </Button>
+          <div>
+            <Button
+              variant="contained"
+              className="centered button"
+              id="submit-button"
+              onClick={this.submit}
+              disabled={!completedSurvey}
+            >
+              Submit HIT
+            </Button>
+          </div>
+        </Tooltip>
       </div>
     );
   }

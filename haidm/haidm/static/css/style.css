@@ -131,7 +131,7 @@
   min-width: 500px;
   max-width: 1050px;
 }
-#hit-description .button {
+#hit-description .button:not(.Mui-disabled) {
   background-color: var(--light-blue);
 }
 
@@ -149,9 +149,6 @@
   min-width: 500px;
   padding-top: 50px;
   margin: 0 auto;
-}
-#exit-survey-container .button {
-  background-color: var(--light-blue);
 }
 
 #diverging-bar-chart-container {
@@ -173,4 +170,8 @@
 
 #submit-button {
   margin-bottom: 15px;
+}
+
+#submit-button.button:not(.Mui-disabled) {
+  background-color: var(--light-blue);
 }

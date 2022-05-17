@@ -37,7 +37,6 @@
 #task-buttons-container {
   width: 70%;
   max-width: var(--max-width);
-  padding-top: 45px;
   padding-bottom: 45px;
   margin: 0 auto;
 }

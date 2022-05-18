@@ -15,12 +15,12 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import classNames from "classnames";
 import React, { Component } from "react";
-import DivergingBarChart from "./visualizations/DivergingBarChart";
 import { TaskStep } from "./enums";
 import ExitSurvey from "./exitsurvey/ExitSurvey";
-import LineChart from "./visualizations/LineChart";
 import ProgressIndicator from "./ProgressIndicator";
 import TaskStepper from "./TaskStepper";
+import DivergingBarChart from "./visualizations/DivergingBarChart";
+import LineChart from "./visualizations/LineChart";
 
 const APPLICATION_ROOT = "/haidm";
 
@@ -382,6 +382,19 @@ class MainTask extends Component {
           )}
         </p>
       );
+    } else if (this.state.task === "beer") {
+      return (
+        <p>
+          Our model has been previously trained with many other beer reviews for
+          which their sentiments are known. Words highlighted in{" "}
+          <span style={{ color: "#1976D2" }}>blue</span> indicate the model
+          believes those words contribute to a positive review. Words
+          highlighted in <span style={{ color: "#DC143C" }}>red</span> indicate
+          the model believes those words contribute to a negative review. The
+          intensity of highlights indicate how strongly each word affects the
+          model's decision.
+        </p>
+      );
     }
   };
 
@@ -413,6 +426,24 @@ class MainTask extends Component {
           <br />
         </p>
       );
+    } else if (this.state.task === "beer") {
+      return (
+        <p>
+          You are here to help{" "}
+          <b>predict whether a review of a beer is positive or negative</b>.{" "}
+          {this.state.condition !== "human" && (
+            <span>
+              You will be assisted by an AI model throughout the task.{" "}
+            </span>
+          )}
+          You will first complete {this.numberOfTrainingQuestions} training
+          questions to familiarize yourself with the interface and task
+          requirements, and then complete an additional {this.numberOfQuestions}{" "}
+          questions for the actual task.
+          <br />
+          <br />
+        </p>
+      );
     }
   };
 
@@ -432,6 +463,131 @@ class MainTask extends Component {
         of Washington Human Subjects Division at +1-206-543-0098.
       </p>
     );
+  };
+
+  getDecisionPrompt = () => {
+    if (this.state.task === "compas") {
+      return "Do you think this defendant will reoffend within two years?";
+    } else if (this.state.task === "beer") {
+      return "What do you think is the sentiment of this review?";
+    }
+  };
+
+  getPositiveDecisionText = () => {
+    if (this.state.task === "compas") {
+      return (
+        <span>
+          Yes, I think they <b>will</b> reoffend.
+        </span>
+      );
+    } else if (this.state.task === "beer") {
+      return <span>Positive</span>;
+    }
+  };
+
+  getNegativeDecisiontext = () => {
+    if (this.state.task === "compas") {
+      return (
+        <span>
+          No, I think they <b>will not</b> reoffend.
+        </span>
+      );
+    } else if (this.state.task === "beer") {
+      return <span>Negative</span>;
+    }
+  };
+
+  getTaskDescription = () => {
+    if (this.state.task === "compas") {
+      return (
+        <React.Fragment>
+          Please review the following profile and <b>carefully consider</b>{" "}
+          whether this defendant is likely to reoffend within the next two
+          years.
+        </React.Fragment>
+      );
+    } else if (this.state.task === "beer") {
+      return (
+        <React.Fragment>
+          Please read the following review of a beer to determine whether you
+          believe the review is more positive or negative.
+        </React.Fragment>
+      );
+    }
+  };
+
+  getAIDecisionText = () => {
+    if (this.state.task === "compas") {
+      return (
+        <React.Fragment>
+          Our model predicts that this defendant{" "}
+          <b>{this.machineSuggestReoffend() ? "will" : "will not"}</b> reoffend
+          within two years.
+        </React.Fragment>
+      );
+    } else if (this.state.task === "beer") {
+      return (
+        <React.Fragment>
+          Our model believes this review is more likely{" "}
+          <b>{this.machineSuggestReoffend() ? "positive" : "negative"}</b>.
+        </React.Fragment>
+      );
+    }
+  };
+
+  getTextWithHighlights = () => {
+    const topK = 10; // Max number of highlights to show per class (pos/neg)
+    const tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
+    const weights = this.state.curQuestion["expls"]["logr"]["weights"];
+
+    // Min-max normalization to use weights for determining highlight opacity
+    const maxWeight = Math.max(...weights);
+    const minWeight = Math.min(...weights);
+    const normalizedWeights = weights.map(
+      (w) => (w - minWeight) / (maxWeight - minWeight)
+    );
+
+    // Colorize the top-k highlights for each class
+    const sortedIndices = Array.from(Array(weights.length).keys()).sort(
+      (a, b) => (weights[a] < weights[b] ? -1 : (weights[b] < weights[a]) | 0)
+    );
+    const pos = sortedIndices.slice(-topK).filter((i) => weights[i] > 0);
+    const neg = sortedIndices.slice(0, topK).filter((i) => weights[i] < 0);
+    let colorized = [];
+    tokens.forEach((t, i) => {
+      if (pos.includes(i)) {
+        colorized.push(
+          <span
+            style={{
+              textDecoration: "underline",
+              textDecorationColor: `rgb(25, 118, 210, ${normalizedWeights[i]}`,
+              textDecorationThickness: "2px",
+            }}
+            key={i}
+          >
+            {t}
+          </span>
+        );
+        colorized.push(<span> </span>);
+      } else if (neg.includes(i)) {
+        colorized.push(
+          <span
+            style={{
+              textDecoration: "underline",
+              textDecorationColor: `rgb(220, 20, 60, ${normalizedWeights[i]})`,
+              textDecorationThickness: "2px",
+            }}
+            key={i}
+          >
+            {t}
+          </span>
+        );
+      } else {
+        colorized.push(<span key={i}>{t}</span>);
+      }
+      colorized.push(<span key={`space-${i}`}> </span>);
+    });
+    return colorized;
   };
 
   render() {
@@ -532,45 +688,51 @@ class MainTask extends Component {
               )}
 
               <div id="task-description-container">
-                <span id="task-description">
-                  Please review the following profile and{" "}
-                  <b>carefully consider</b> whether this defendant is likely to
-                  reoffend within the next two years.
-                </span>
+                <span id="task-description">{this.getTaskDescription()}</span>
               </div>
 
-              <div id="task-features-container">
-                <p className="task-section-header">Defendant Profile</p>
-                <TableContainer>
-                  <Table id="task-features-table" size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>{<b>Feature</b>}</TableCell>
-                        <TableCell align="right">{<b>Value</b>}</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {Object.entries(curQuestion["features"])
-                        .filter(([k, _]) =>
-                          this.featureDisplayNameMap[task].hasOwnProperty(k)
-                        )
-                        .map(([k, v]) => (
-                          <TableRow key={k}>
-                            <TableCell component="th" scope="row">
-                              {this.featureDisplayNameMap[task][k]}
-                              <Tooltip title={this.featureDescMap[task][k]}>
-                                <IconButton>
-                                  <InfoIcon sx={{ fontSize: 18 }} />
-                                </IconButton>
-                              </Tooltip>
-                            </TableCell>
-                            <TableCell align="right">{v}</TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
+              {this.state.task === "compas" && (
+                <div id="task-features-container">
+                  <p className="task-section-header">Defendant Profile</p>
+                  <TableContainer>
+                    <Table id="task-features-table" size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>{<b>Feature</b>}</TableCell>
+                          <TableCell align="right">{<b>Value</b>}</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {Object.entries(curQuestion["features"])
+                          .filter(([k, _]) =>
+                            this.featureDisplayNameMap[task].hasOwnProperty(k)
+                          )
+                          .map(([k, v]) => (
+                            <TableRow key={k}>
+                              <TableCell component="th" scope="row">
+                                {this.featureDisplayNameMap[task][k]}
+                                <Tooltip title={this.featureDescMap[task][k]}>
+                                  <IconButton>
+                                    <InfoIcon sx={{ fontSize: 18 }} />
+                                  </IconButton>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell align="right">{v}</TableCell>
+                            </TableRow>
+                          ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </div>
+              )}
+              {this.state.task === "beer" && (
+                <div id="task-features-container">
+                  <p className="task-section-header">Beer Review</p>
+                  <span>
+                    {curQuestion["expls"]["logr"]["tokens"].join(" ")}
+                  </span>
+                </div>
+              )}
 
               <div id="task-choices-container">
                 <p className="task-section-header">Make A Decision</p>
@@ -579,7 +741,7 @@ class MainTask extends Component {
                     "text-muted": initialDecision !== null,
                   })}
                 >
-                  Do you think this defendant will reoffend within two years?
+                  {this.getDecisionPrompt()}
                 </p>
                 <FormControl className="choices">
                   <RadioGroup
@@ -591,21 +753,13 @@ class MainTask extends Component {
                       value="yes"
                       control={<Radio />}
                       disabled={initialDecision !== null}
-                      label={
-                        <span>
-                          Yes, I think they <b>will</b> reoffend.
-                        </span>
-                      }
+                      label={this.getPositiveDecisionText()}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio />}
                       disabled={initialDecision !== null}
-                      label={
-                        <span>
-                          No, I think they <b>will not</b> reoffend.
-                        </span>
-                      }
+                      label={this.getNegativeDecisiontext()}
                     />
                   </RadioGroup>
                 </FormControl>
@@ -615,13 +769,7 @@ class MainTask extends Component {
                 <div id="ai-assist-container">
                   <div id="ai-decision">
                     <p className="task-section-header">AI Prediction</p>
-                    <p>
-                      Our model predicts that this defendant{" "}
-                      <b>
-                        {this.machineSuggestReoffend() ? "will" : "will not"}
-                      </b>{" "}
-                      reoffend within two years.
-                    </p>
+                    <p>{this.getAIDecisionText()}</p>
                   </div>
                   {condition !== "human-ai" && (
                     <div id="ai-explanation">
@@ -630,49 +778,56 @@ class MainTask extends Component {
                       </p>
                       {this.getExplanationDescription()}
 
-                      {condition === "human-ai-gam" ? (
-                        <div id="gam-visualization">
-                          {Object.keys(data["explanations"]["gam_pdp"]).map(
-                            (feature) => (
-                              <LineChart
-                                key={feature}
-                                splitColorOnSign={true}
-                                data={data["explanations"]["gam_pdp"][feature]}
-                                title={
-                                  this.featureDisplayNameMap[task][feature]
-                                }
-                                currentValue={curQuestion["features"][feature]}
-                              />
-                            )
-                          )}
-                        </div>
-                      ) : (
-                        <DivergingBarChart
-                          data={this.getFeatureContributions()}
-                          positiveLabel={
-                            this.labelStringNames[task]["positive"]
-                          }
-                          negativeLabel={
-                            this.labelStringNames[task]["negative"]
-                          }
-                          title={`AI Prediction: ${
-                            this.labelStringNames[task][
-                              this.machineSuggestReoffend()
-                                ? "positive"
-                                : "negative"
-                            ]
-                          }`}
-                        />
+                      {this.state.task === "compas" &&
+                        condition === "human-ai-gam" && (
+                          <div id="gam-visualization">
+                            {Object.keys(data["explanations"]["gam_pdp"]).map(
+                              (feature) => (
+                                <LineChart
+                                  key={feature}
+                                  splitColorOnSign={true}
+                                  data={
+                                    data["explanations"]["gam_pdp"][feature]
+                                  }
+                                  title={
+                                    this.featureDisplayNameMap[task][feature]
+                                  }
+                                  currentValue={
+                                    curQuestion["features"][feature]
+                                  }
+                                />
+                              )
+                            )}
+                          </div>
+                        )}
+                      {this.state.task === "compas" &&
+                        condition !== "human-ai-gam" && (
+                          <DivergingBarChart
+                            data={this.getFeatureContributions()}
+                            positiveLabel={
+                              this.labelStringNames[task]["positive"]
+                            }
+                            negativeLabel={
+                              this.labelStringNames[task]["negative"]
+                            }
+                            title={`AI Prediction: ${
+                              this.labelStringNames[task][
+                                this.machineSuggestReoffend()
+                                  ? "positive"
+                                  : "negative"
+                              ]
+                            }`}
+                          />
+                        )}
+                      {this.state.task === "beer" && (
+                        <div>{this.getTextWithHighlights()}</div>
                       )}
                     </div>
                   )}
                   <p className="task-section-header" id="final-decision-prompt">
                     Make Your Final Decision
                   </p>
-                  <p className="prompt-text">
-                    Now, do you think this defendant will reoffend within two
-                    years?
-                  </p>
+                  <p className="prompt-text">{this.getDecisionPrompt()}</p>
                   <FormControl className="choices">
                     <RadioGroup
                       row
@@ -682,20 +837,12 @@ class MainTask extends Component {
                       <FormControlLabel
                         value="yes"
                         control={<Radio />}
-                        label={
-                          <span>
-                            Yes, I think they <b>will</b> reoffend.
-                          </span>
-                        }
+                        label={this.getPositiveDecisionText()}
                       />
                       <FormControlLabel
                         value="no"
                         control={<Radio />}
-                        label={
-                          <span>
-                            No, I think they <b>will not</b> reoffend.
-                          </span>
-                        }
+                        label={this.getNegativeDecisiontext()}
                       />
                     </RadioGroup>
                   </FormControl>

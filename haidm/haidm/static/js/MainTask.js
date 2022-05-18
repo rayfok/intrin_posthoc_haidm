@@ -56,6 +56,10 @@ class MainTask extends Component {
       positive: "Will reoffend",
       negative: "Will not reoffend",
     },
+    beer: {
+      positive: "Positive",
+      negative: "Negative",
+    },
   };
   conditions = [
     "human",
@@ -385,14 +389,22 @@ class MainTask extends Component {
     } else if (this.state.task === "beer") {
       return (
         <p>
-          Our model has been previously trained with many other beer reviews for
+          {/* Our model has been previously trained with many other beer reviews for
           which their sentiments are known. Words highlighted in{" "}
           <span style={{ color: "#1976D2" }}>blue</span> indicate the model
           believes those words contribute to a positive review. Words
           highlighted in <span style={{ color: "#DC143C" }}>red</span> indicate
           the model believes those words contribute to a negative review. The
           intensity of highlights indicate how strongly each word affects the
-          model's decision.
+          model's decision. */}
+          Our model has been previously trained with many other beer reviews for
+          which their sentiments are known. Words with a positive{" "}
+          <span style={{ color: "#1976D2" }}>blue</span> value indicate the
+          model believes those words contribute to a positive review. Words with
+          a negative <span style={{ color: "#DC143C" }}>red</span> value
+          indicate the model believes those words contribute to a negative
+          review. The model makes a decision by adding together values for every
+          word in the review.
         </p>
       );
     }
@@ -588,6 +600,43 @@ class MainTask extends Component {
       colorized.push(<span key={`space-${i}`}> </span>);
     });
     return colorized;
+  };
+
+  getTextFeatureContributions = () => {
+    const topK = 20; // Max number of highlights to show per class (pos/neg)
+    const tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
+    const weights = this.state.curQuestion["expls"]["logr"]["weights"];
+
+    // Colorize the top-k / 2 highlights for each class
+    // const sortedIndices = Array.from(Array(weights.length).keys()).sort(
+    //   (a, b) => (weights[a] < weights[b] ? -1 : (weights[b] < weights[a]) | 0)
+    // );
+    // const pos = sortedIndices.slice(int(-topK / 2)).filter((i) => weights[i] > 0);
+    // const neg = sortedIndices.slice(0, int(topK / 2)).filter((i) => weights[i] < 0);
+    // const topIndicesByMagnitude = pos
+    //   .concat(neg)
+    //   .sort((a, b) => (Math.abs(weights[a]) > Math.abs(weights[b]) ? -1 : 1));
+
+    // Colorize the top-k highlights by absolute magnitude
+    const topIndicesByMagnitude = Array.from(Array(weights.length).keys())
+      .sort((a, b) => (Math.abs(weights[a]) > Math.abs(weights[b]) ? -1 : 1))
+      .slice(0, topK);
+
+    // Sum up all other feature contributions into a single value
+    const other = weights.reduce((sum, weight, i) => {
+      if (!topIndicesByMagnitude.includes(i)) {
+        return sum + weight;
+      } else {
+        return sum;
+      }
+    }, 0);
+
+    const textFeatureContributions = {};
+    for (const i of topIndicesByMagnitude) {
+      textFeatureContributions[tokens[i]] = weights[i];
+    }
+    textFeatureContributions["Total contribution of other words"] = other;
+    return textFeatureContributions;
   };
 
   render() {
@@ -819,8 +868,19 @@ class MainTask extends Component {
                             }`}
                           />
                         )}
-                      {this.state.task === "beer" && (
+                      {/* {this.state.task === "beer" && (
                         <div>{this.getTextWithHighlights()}</div>
+                      )} */}
+                      {this.state.task === "beer" && (
+                        <DivergingBarChart
+                          data={this.getTextFeatureContributions()}
+                          positiveLabel={
+                            this.labelStringNames[task]["positive"]
+                          }
+                          negativeLabel={
+                            this.labelStringNames[task]["negative"]
+                          }
+                        />
                       )}
                     </div>
                   )}

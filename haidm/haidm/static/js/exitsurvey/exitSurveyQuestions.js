@@ -17,6 +17,42 @@ export const questions = {
     label: "I easily recognized when the model was likely to be correct.",
     options: defaultLikertScaleOptions,
   },
+  perceivedImpact: {
+    type: "likert",
+    label: "The model influenced my decisions.",
+    options: defaultLikertScaleOptions,
+  },
+  perceivedAccuracy: {
+    type: "select",
+    label: "How many decisions do you believe you got correct during the task?",
+    options: {
+      "0-5": "0-5",
+      "6-10": "6-10",
+      "11-15": "11-15",
+      "16 or more": "16 or more",
+    },
+  },
+  perceivedModelUtility: {
+    type: "likert",
+    label: "My final decisions were primarily the result of.",
+    options: [
+      "Completely my capabilities",
+      "Mostly my capabilities",
+      "A combination of capabilities",
+      "Mostly the model's capabilities",
+      "Completely the model's capabilities",
+    ],
+  },
+  perceviedPredictionUtility: {
+    type: "likert",
+    label: "The model prediction improved my decision-making",
+    options: defaultLikertScaleOptions,
+  },
+  perceviedExplanationUtility: {
+    type: "likert",
+    label: "The model explanation improved my decision-making",
+    options: defaultLikertScaleOptions,
+  },
   influenceDecisionMaking: {
     type: "shortAnswer",
     label: "How did the AI's explanation influence your decision-making?",

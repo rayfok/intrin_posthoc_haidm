@@ -549,8 +549,15 @@ class MainTask extends Component {
 
   getTextWithHighlights = () => {
     const topK = 10; // Max number of highlights to show per class (pos/neg)
-    const tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
-    const weights = this.state.curQuestion["expls"]["logr"]["weights"];
+    let tokens = [];
+    let weights = [];
+    if (this.state.condition === "human-ai-intrinsic") {
+      tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
+      weights = this.state.curQuestion["expls"]["logr"]["weights"];
+    } else if (this.state.condition === "human-ai-posthoc") {
+      tokens = this.state.curQuestion["expls"]["opaque"]["tokens"];
+      weights = this.state.curQuestion["expls"]["opaque"]["weights"];
+    }
 
     // Min-max normalization to use weights for determining highlight opacity
     const maxWeight = Math.max(...weights);
@@ -604,8 +611,15 @@ class MainTask extends Component {
 
   getTextFeatureContributions = () => {
     const topK = 20; // Max number of highlights to show per class (pos/neg)
-    const tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
-    const weights = this.state.curQuestion["expls"]["logr"]["weights"];
+    let tokens = [];
+    let weights = [];
+    if (this.state.condition === "human-ai-intrinsic") {
+      tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
+      weights = this.state.curQuestion["expls"]["logr"]["weights"];
+    } else if (this.state.condition === "human-ai-posthoc") {
+      tokens = this.state.curQuestion["expls"]["opaque"]["tokens"];
+      weights = this.state.curQuestion["expls"]["opaque"]["weights"];
+    }
 
     // Colorize the top-k / 2 highlights for each class
     // const sortedIndices = Array.from(Array(weights.length).keys()).sort(

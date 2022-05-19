@@ -25,7 +25,6 @@ def convert_beer_data():
     instances = []
     with open("beer_logr_out.csv", "r") as f:
         reader = csv.reader(f, delimiter=",", quotechar='"')
-        next(f)  # Skip header
         for row in reader:
             id, label, pred = int(row[0]), int(row[1]), int(row[2])
             token_weights = row[3:]
@@ -41,6 +40,19 @@ def convert_beer_data():
                     "expls": {"logr": {"tokens": raw_tokens, "weights": weights}},
                 }
             )
+
+    with open("beer_opaque_out.csv", "r") as f:
+        reader = csv.reader(f, delimiter=",", quotechar='"')
+        for i, row in enumerate(reader):
+            id, label, pred, y_int = int(row[0]), int(row[1]), float(row[2]), float(row[3])
+            token_weights = row[4:]
+            token_weights = [tk for tk in token_weights if tk != ""]
+            raw_tokens, weights = token_weights[::2], token_weights[1::2]
+            assert len(raw_tokens) == len(weights)
+            weights = [float(w) for w in weights]
+            instances[i]["preds"]["opaque"] = pred
+            instances[i]["expls"]["opaque"] = {"tokens": raw_tokens, "weights": weights}
+
     pos_instances = [x for x in instances if x["label"] == 1]
     neg_instances = [x for x in instances if x["label"] == 0]
     selected_instances = (

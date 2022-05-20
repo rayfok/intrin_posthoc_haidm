@@ -1,0 +1,25 @@
+{
+  "name": "Help us improve models for recidivism forecasting",
+  "internal_name": "compas-human test version 1",
+  "description": "This study aims to understand how models can best assist human decision-making for recidivism forecsting.",
+  "external_study_url": "https://clam.cs.washington.edu/haidm/task?task=compas&condition=human&participant={{%PROLIFIC_PID%}}&study={{%STUDY_ID%}}&session={{%SESSION_ID%}}",
+  "prolific_id_option": "url_parameters",
+  "completion_code": "HAITEST2022",
+  "completion_option": "url",
+  "total_available_places": 5,
+  "estimated_completion_time": 15,
+  "reward": 1,
+  "device_compatibility": ["desktop"],
+  "peripheral_requirements": [],
+  "eligibility_requirements": [
+    {
+      "attributes": [
+        {
+          "name": "white_list",
+          "value": ["61f292141b0ec8b3b5ab353"]
+        }
+      ],
+      "_cls": "web.eligibility.models.CustomWhitelistEligibilityRequirement"
+    }
+  ]
+}

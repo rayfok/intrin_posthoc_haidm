@@ -122,10 +122,11 @@ def submit_exit_survey_data():
 def has_previously_completed():
     context = {}
     if flask.request.method == "GET":
-        participant_id = flask.request.args.get("participantId")
-        participants = [
+        test_ids = ["test"]
+        pid = flask.request.args.get("participantId")
+        completed = [
             r.participant_id
             for r in db.session.query(Response.participant_id).distinct()
         ]
-        context["completed"] = participant_id in participants
+        context["completed"] = pid in completed and pid not in test_ids
     return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)

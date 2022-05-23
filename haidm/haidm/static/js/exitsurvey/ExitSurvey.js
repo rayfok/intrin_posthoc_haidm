@@ -10,7 +10,7 @@ import ShortAnswerQuestion from "./ShortAnswerQuestion";
 class ExitSurvey extends Component {
   static propTypes = {
     saveExitSurveyResponses: PropTypes.func,
-    submitMTurk: PropTypes.func,
+    onSubmit: PropTypes.func,
   };
 
   constructor(props) {
@@ -32,7 +32,7 @@ class ExitSurvey extends Component {
   submit = () => {
     this.props
       .saveExitSurveyResponses(this.state.responses)
-      .then(this.props.submitMTurk);
+      .then(this.props.onSubmit);
   };
 
   render() {
@@ -88,7 +88,7 @@ class ExitSurvey extends Component {
               onClick={this.submit}
               disabled={!completedSurvey}
             >
-              Submit HIT
+              Submit Responses
             </Button>
           </div>
         </Tooltip>

@@ -9,9 +9,9 @@ db = SQLAlchemy()
 @dataclass
 class Response(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
-    worker_id: str = db.Column(db.String(80), nullable=True)
-    hit_id: str = db.Column(db.String(80), nullable=True)
-    assignment_id: str = db.Column(db.String(80), nullable=True)
+    participant_id: str = db.Column(db.String(80), nullable=True)
+    study_id: str = db.Column(db.String(80), nullable=True)
+    session_id: str = db.Column(db.String(80), nullable=True)
     task: str = db.Column(db.String(80), nullable=False)
     condition: str = db.Column(db.String(80), nullable=True)
     question_id: str = db.Column(db.String(80), nullable=False)
@@ -24,15 +24,15 @@ class Response(db.Model):
     created: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<Response {self.worker_id} - {self.task} - {self.condition}>"
+        return f"<Response {self.participant_id} - {self.task} - {self.condition}>"
 
 
 @dataclass
 class ExitSurveyResponse(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
-    worker_id: str = db.Column(db.String(80), nullable=True)
-    hit_id: str = db.Column(db.String(80), nullable=True)
-    assignment_id: str = db.Column(db.String(80), nullable=True)
+    participant_id: str = db.Column(db.String(80), nullable=True)
+    study_id: str = db.Column(db.String(80), nullable=True)
+    session_id: str = db.Column(db.String(80), nullable=True)
     task: str = db.Column(db.String(80), nullable=False)
     condition: str = db.Column(db.String(80), nullable=True)
     recognizeIncorrect: str = db.Column(db.Text, nullable=False)
@@ -46,18 +46,18 @@ class ExitSurveyResponse(db.Model):
     created: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<ExitSurveyResponse {self.worker_id} - {self.task} - {self.condition}>"
+        return f"<ExitSurveyResponse {self.participant_id} - {self.task} - {self.condition}>"
 
 
 @dataclass
 class Session(db.Model):
     id: int = db.Column(db.Integer, primary_key=True)
-    workerId: str = db.Column(db.String(80), nullable=True)
-    hitId: str = db.Column(db.String(80), nullable=True)
-    assignmentId: str = db.Column(db.String(80), nullable=True)
+    participant_id: str = db.Column(db.String(80), nullable=True)
+    study_id: str = db.Column(db.String(80), nullable=True)
+    session_id: str = db.Column(db.String(80), nullable=True)
     task: str = db.Column(db.String(80), nullable=True)
     condition: str = db.Column(db.String(80), nullable=True)
     created: datetime = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
-        return f"<Worker {self.workerId} - {self.hitId} - {self.assignmentId}>"
+        return f"<Session {self.participant_id} - {self.study_id} - {self.session_id}>"

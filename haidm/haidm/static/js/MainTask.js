@@ -81,10 +81,9 @@ class MainTask extends Component {
       responses: [],
       trainingCompletedCount: 0,
       completedCount: 0,
-      workerId: this.urlParams.get("workerId"),
-      assignmentId: this.urlParams.get("assignmentId"),
-      hitId: this.urlParams.get("hitId"),
-      turkSubmitTo: this.urlParams.get("turkSubmitTo"),
+      participantId: this.urlParams.get("participantId"),
+      studyId: this.urlParams.get("studyId"),
+      sessionId: this.urlParams.get("sessionId"),
       task: this.urlParams.get("task"),
       condition: this.urlParams.get("condition") || "human-ai",
       questionStartTime: -1,
@@ -187,9 +186,9 @@ class MainTask extends Component {
       });
     } else {
       const response = {
-        worker_id: this.state.workerId,
-        hit_id: this.state.hitId,
-        assignment_id: this.state.assignmentId,
+        participant_id: this.state.participantId,
+        study_id: this.state.studyId,
+        session_id: this.state.sessionId,
         task: this.state.task,
         condition: this.state.condition,
         question_id: this.state.curQuestion["id"],
@@ -266,9 +265,9 @@ class MainTask extends Component {
       body: JSON.stringify({
         responses: {
           ...exitSurveyResponses,
-          worker_id: this.state.workerId,
-          hit_id: this.state.hitId,
-          assignment_id: this.state.assignmentId,
+          participant_id: this.state.participantId,
+          study_id: this.state.studyId,
+          session_id: this.state.sessionId,
           task: this.state.task,
           condition: this.state.condition,
         },
@@ -277,19 +276,12 @@ class MainTask extends Component {
     return response["success"];
   };
 
-  submitMTurk = () => {
-    if (this.state.turkSubmitTo !== null) {
-      const form = document.getElementById("final-submit-form");
-      form.submit();
-    } else {
-      location.reload();
-    }
-  };
+  handleSubmit = () => {};
 
   checkHasPreviouslyCompleted = async () => {
-    if (this.state.workerId === null) return false;
+    if (this.state.participantId === null) return false;
 
-    let url = `${APPLICATION_ROOT}/api/v1/completed/?workerId=${this.state.workerId}&task=${this.state.task}`;
+    let url = `${APPLICATION_ROOT}/api/v1/completed/?participantId=${this.state.participantId}&task=${this.state.task}`;
     let response = await fetch(url, {
       method: "GET",
       headers: {
@@ -300,23 +292,6 @@ class MainTask extends Component {
     });
     let data = await response.json();
     return data["completed"];
-  };
-
-  getMTurkSubmitForm = () => {
-    return (
-      <form
-        id="final-submit-form"
-        action={this.state.turkSubmitTo + "/mturk/externalSubmit"}
-        method="POST"
-      >
-        <input
-          type="hidden"
-          name="assignmentId"
-          value={this.state.assignmentId || ""}
-        />
-        <input type="hidden" name="nonce" value={"ray" + Math.random()} />
-      </form>
-    );
   };
 
   machineSuggestReoffend = () => {
@@ -462,17 +437,17 @@ class MainTask extends Component {
   getTermsAndConditions = () => {
     return (
       <p>
-        Participation is voluntary, you are free to release the HIT at any time,
-        and refusing to be in the study or stopping participation will involve
-        no penalty or loss of benefits to which you are otherwise entitled. Any
-        identifiable information, including your MTurk ID, will be treated as
-        confidential by the research team and will be deleted when no longer
-        needed for quality control. If you have concerns about any information
-        you see, please contact the researchers directly. If you have questions
-        about your rights as a research participant, or wish to obtain
-        information, ask questions, or discuss any concerns about this study
-        with someone other than the researchers, please contact the University
-        of Washington Human Subjects Division at +1-206-543-0098.
+        Participation is voluntary, you are free to release the task at any
+        time, and refusing to be in the study or stopping participation will
+        involve no penalty or loss of benefits to which you are otherwise
+        entitled. Any identifiable information will be treated as confidential
+        by the research team and will be deleted when no longer needed for
+        quality control. If you have concerns about any information you see,
+        please contact the researchers directly. If you have questions about
+        your rights as a research participant, or wish to obtain information,
+        ask questions, or discuss any concerns about this study with someone
+        other than the researchers, please contact the University of Washington
+        Human Subjects Division at +1-206-543-0098.
       </p>
     );
   };
@@ -677,7 +652,7 @@ class MainTask extends Component {
             If this message does not go away in a few seconds, either something
             has gone catastrophically wrong or our records indicate that you
             have already previously completed our task. Please do not accept
-            this HIT, or return if already accepted. Thank you!
+            this task or return if already accepted. Thank you!
           </p>
         </div>
       );
@@ -685,8 +660,6 @@ class MainTask extends Component {
 
     return (
       <React.Fragment>
-        {this.getMTurkSubmitForm()}
-
         <div id="task-stepper">
           <TaskStepper activeStep={activeStep} />
           {activeStep === TaskStep.TaskOnboarding && (
@@ -705,11 +678,6 @@ class MainTask extends Component {
 
         {activeStep === TaskStep.Instructions && (
           <div id="hit-description">
-            <h5>
-              Please accept the HIT before starting the task, and make sure to
-              complete the HIT before it expires in 60 minutes.
-            </h5>
-
             <strong>Task Description</strong>
             {this.getInstructions()}
 
@@ -738,7 +706,7 @@ class MainTask extends Component {
         {activeStep === TaskStep.ExitSurvey && (
           <ExitSurvey
             saveExitSurveyResponses={this.saveExitSurveyResponses}
-            submitMTurk={this.submitMTurk}
+            onSubmit={this.handleSubmit}
           />
         )}
 

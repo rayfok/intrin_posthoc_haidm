@@ -57,9 +57,9 @@ def submit_data():
     try:
         mappings = [
             {
-                "worker_id": r["worker_id"],
-                "hit_id": r["hit_id"],
-                "assignment_id": r["assignment_id"],
+                "participant_id": r["participant_id"],
+                "study_id": r["study_id"],
+                "session_id": r["session_id"],
                 "task": r["task"],
                 "condition": r["condition"],
                 "question_id": r["question_id"],
@@ -91,9 +91,9 @@ def submit_exit_survey_data():
     try:
         db.session.add(
             ExitSurveyResponse(
-                worker_id=r["worker_id"],
-                hit_id=r["hit_id"],
-                assignment_id=r["assignment_id"],
+                participant_id=r["participant_id"],
+                study_id=r["study_id"],
+                session_id=r["session_id"],
                 task=r["task"],
                 condition=r["condition"],
                 recognizeIncorrect=r["recognizeIncorrect"],
@@ -122,7 +122,10 @@ def submit_exit_survey_data():
 def has_previously_completed():
     context = {}
     if flask.request.method == "GET":
-        worker_id = flask.request.args.get("workerId")
-        workers = [r.worker_id for r in db.session.query(Response.worker_id).distinct()]
-        context["completed"] = worker_id in workers
+        participant_id = flask.request.args.get("participantId")
+        participants = [
+            r.participant_id
+            for r in db.session.query(Response.participant_id).distinct()
+        ]
+        context["completed"] = participant_id in participants
     return flask.make_response(flask.jsonify(**context), http.HTTPStatus.OK)

@@ -370,22 +370,22 @@ class MainTask extends Component {
     } else if (this.state.task === "beer") {
       return (
         <p>
-          {/* Our model has been previously trained with many other beer reviews for
+          Our model has been previously trained with many other beer reviews for
           which their sentiments are known. Words highlighted in{" "}
           <span style={{ color: "#1976D2" }}>blue</span> indicate the model
           believes those words contribute to a positive review. Words
           highlighted in <span style={{ color: "#DC143C" }}>red</span> indicate
           the model believes those words contribute to a negative review. The
           intensity of highlights indicate how strongly each word affects the
-          model's decision. */}
-          Our model has been previously trained with many other beer reviews for
+          model's decision.
+          {/* Our model has been previously trained with many other beer reviews for
           which their sentiments are known. Words with a positive{" "}
           <span style={{ color: "#1976D2" }}>blue</span> value indicate the
           model believes those words contribute to a positive review. Words with
           a negative <span style={{ color: "#DC143C" }}>red</span> value
           indicate the model believes those words contribute to a negative
           review. The model makes a decision by adding together values for every
-          word in the review.
+          word in the review. */}
         </p>
       );
     }
@@ -559,31 +559,36 @@ class MainTask extends Component {
         colorized.push(
           <span
             style={{
-              textDecoration: "underline",
-              textDecorationColor: `rgb(25, 118, 210, ${normalizedWeights[i]}`,
-              textDecorationThickness: "2px",
+              // textDecoration: "underline",
+              // textDecorationColor: `rgb(25, 118, 210, ${normalizedWeights[i]}`,
+              // textDecorationThickness: "2px",
+              backgroundColor: `rgb(25, 118, 210, ${
+                normalizedWeights[i] * 0.75
+              })`,
             }}
-            key={i}
+            key={`positive-${i}`}
           >
             {t}
           </span>
         );
-        colorized.push(<span> </span>);
       } else if (neg.includes(i)) {
         colorized.push(
           <span
             style={{
-              textDecoration: "underline",
-              textDecorationColor: `rgb(220, 20, 60, ${normalizedWeights[i]})`,
-              textDecorationThickness: "2px",
+              // textDecoration: "underline",
+              // textDecorationColor: `rgb(220, 20, 60, ${normalizedWeights[i]})`,
+              // textDecorationThickness: "2px",
+              backgroundColor: `rgb(220, 20, 60, ${
+                normalizedWeights[i] * 0.75
+              })`,
             }}
-            key={i}
+            key={`negative-${i}`}
           >
             {t}
           </span>
         );
       } else {
-        colorized.push(<span key={i}>{t}</span>);
+        colorized.push(<span key={`neutral-${i}`}>{t}</span>);
       }
       colorized.push(<span key={`space-${i}`}> </span>);
     });
@@ -604,8 +609,6 @@ class MainTask extends Component {
       weights = this.state.curQuestion["expls"]["opaque"]["weights"];
       intercept = this.state.curQuestion["expls"]["opaque"]["intercept"];
     }
-
-    console.log(tokens, weights, intercept, this.state.curQuestion);
 
     // Colorize the top-k / 2 highlights for each class
     // const sortedIndices = Array.from(Array(weights.length).keys()).sort(
@@ -835,15 +838,26 @@ class MainTask extends Component {
               {showMachineAssistance && (
                 <div id="ai-assist-container">
                   <div id="ai-decision">
-                    <p className="task-section-header">AI Prediction</p>
+                    <span className="task-section-header">AI Prediction</span>
+                    {activeStep === TaskStep.MainTask && (
+                      <Tooltip title={this.getExplanationDescription()}>
+                        <IconButton>
+                          <InfoIcon sx={{ fontSize: 18 }} />
+                        </IconButton>
+                      </Tooltip>
+                    )}
                     <p>{this.getAIDecisionText()}</p>
                   </div>
                   {condition !== "human-ai" && (
                     <div id="ai-explanation">
-                      <p className="task-section-header">
-                        Here's how the model made its prediction
-                      </p>
-                      {this.getExplanationDescription()}
+                      {activeStep === TaskStep.TaskOnboarding && (
+                        <React.Fragment>
+                          <p className="task-section-header">
+                            Here's how the model made its prediction
+                          </p>
+                          {this.getExplanationDescription()}
+                        </React.Fragment>
+                      )}
 
                       {this.state.task === "compas" &&
                         condition === "human-ai-gam" && (
@@ -886,10 +900,10 @@ class MainTask extends Component {
                             }`}
                           />
                         )}
-                      {/* {this.state.task === "beer" && (
-                        <div>{this.getTextWithHighlights()}</div>
-                      )} */}
                       {this.state.task === "beer" && (
+                        <div>{this.getTextWithHighlights()}</div>
+                      )}
+                      {/* {this.state.task === "beer" && (
                         <DivergingBarChart
                           data={this.getTextFeatureContributions()}
                           positiveLabel={
@@ -899,7 +913,7 @@ class MainTask extends Component {
                             this.labelStringNames[task]["negative"]
                           }
                         />
-                      )}
+                      )} */}
                     </div>
                   )}
                   <p className="task-section-header" id="final-decision-prompt">

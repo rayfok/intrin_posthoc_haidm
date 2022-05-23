@@ -20,6 +20,10 @@ class ExitSurvey extends Component {
     };
   }
 
+  componentDidMount() {
+    window.scrollTo(0, 0);
+  }
+
   updateResponse = (questionKey, value) => {
     this.setState((prevState) => ({
       responses: {

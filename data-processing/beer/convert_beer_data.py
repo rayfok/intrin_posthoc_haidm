@@ -36,22 +36,37 @@ def convert_beer_data():
                 {
                     "id": id,
                     "label": label,
-                    "preds": {"logr": pred},
-                    "expls": {"logr": {"tokens": raw_tokens, "weights": weights}},
+                    "preds": {"logr": int(pred)},
+                    "expls": {
+                        "logr": {
+                            "tokens": raw_tokens,
+                            "weights": weights,
+                            "intercept": 0.8397366805904339,
+                        }
+                    },
                 }
             )
 
     with open("beer_opaque_out.csv", "r") as f:
         reader = csv.reader(f, delimiter=",", quotechar='"')
         for i, row in enumerate(reader):
-            id, label, pred, y_int = int(row[0]), int(row[1]), float(row[2]), float(row[3])
+            id, label, pred, y_int = (
+                int(row[0]),
+                int(row[1]),
+                float(row[2]),
+                float(row[3]),
+            )
             token_weights = row[4:]
             token_weights = [tk for tk in token_weights if tk != ""]
             raw_tokens, weights = token_weights[::2], token_weights[1::2]
             assert len(raw_tokens) == len(weights)
             weights = [float(w) for w in weights]
-            instances[i]["preds"]["opaque"] = pred
-            instances[i]["expls"]["opaque"] = {"tokens": raw_tokens, "weights": weights}
+            instances[i]["preds"]["opaque"] = int(pred)
+            instances[i]["expls"]["opaque"] = {
+                "tokens": raw_tokens,
+                "weights": weights,
+                "intercept": y_int,
+            }
 
     pos_instances = [x for x in instances if x["label"] == 1]
     neg_instances = [x for x in instances if x["label"] == 0]

@@ -305,7 +305,7 @@ class MainTask extends Component {
       this.state.condition === "human-ai" ||
       this.state.condition === "human-ai-posthoc"
     ) {
-      return this.state.curQuestion["preds"]["svm"] === 1;
+      return this.state.curQuestion["preds"]["opaque"] === 1;
     } else if (
       this.state.condition === "human-ai-intrinsic" ||
       this.state.condition === "human-ai-intrinsic-global"
@@ -594,13 +594,18 @@ class MainTask extends Component {
     const topK = 20; // Max number of highlights to show per class (pos/neg)
     let tokens = [];
     let weights = [];
+    let intercept = 0;
     if (this.state.condition === "human-ai-intrinsic") {
       tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
       weights = this.state.curQuestion["expls"]["logr"]["weights"];
+      intercept = this.state.curQuestion["expls"]["logr"]["intercept"];
     } else if (this.state.condition === "human-ai-posthoc") {
       tokens = this.state.curQuestion["expls"]["opaque"]["tokens"];
       weights = this.state.curQuestion["expls"]["opaque"]["weights"];
+      intercept = this.state.curQuestion["expls"]["opaque"]["intercept"];
     }
+
+    console.log(tokens, weights, intercept, this.state.curQuestion);
 
     // Colorize the top-k / 2 highlights for each class
     // const sortedIndices = Array.from(Array(weights.length).keys()).sort(
@@ -618,13 +623,14 @@ class MainTask extends Component {
       .slice(0, topK);
 
     // Sum up all other feature contributions into a single value
-    const other = weights.reduce((sum, weight, i) => {
+    // Initial value for accumulator sum is the intercept value from the underlying regression model
+    let other = weights.reduce((sum, weight, i) => {
       if (!topIndicesByMagnitude.includes(i)) {
         return sum + weight;
       } else {
         return sum;
       }
-    }, 0);
+    }, intercept);
 
     const textFeatureContributions = {};
     for (const i of topIndicesByMagnitude) {

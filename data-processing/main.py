@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression, RidgeClassifier
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
-from sklearn.svm import SVC
+from sklearn.opaque import SVC
 from sklearn.tree import DecisionTreeClassifier
 from tqdm import tqdm
 
@@ -33,7 +33,7 @@ def build_model(model_type: str, random_state: int = 0):
         model = DecisionTreeClassifier(
             criterion="entropy", max_depth=10, random_state=random_state
         )
-    elif model_type == "svm":
+    elif model_type == "opaque":
         model = SVC(probability=True, gamma="auto")
     elif model_type == "gam":
         model = LogisticGAM()
@@ -70,7 +70,7 @@ def main():
     models = {}
     preds = {}
     metrics = {}
-    model_types = ["logr", "svm", "gam"]
+    model_types = ["logr", "opaque", "gam"]
 
     for model_type in model_types:
         model = build_model(model_type)
@@ -172,7 +172,7 @@ def main():
             relative_feature_prob = feature_prob - 0.5
             logr_prob[feature] = relative_feature_prob
 
-        # LIME explanation for SVM classifier
+        # LIME explanation for opaque classifier
         lime_explainer = LimeTabularExplainer(
             X_train.values,
             mode="classification",
@@ -182,7 +182,7 @@ def main():
             ],
         )
         lime_rules = lime_explainer.explain_instance(
-            sample, models["svm"].predict_proba, num_features=10,
+            sample, models["opaque"].predict_proba, num_features=10,
         ).as_list()
         lime_ftr_contr = {}
         for rule, weight in lime_rules:

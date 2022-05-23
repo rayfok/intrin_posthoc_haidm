@@ -15,7 +15,7 @@ import csv
 import json
 from pathlib import Path
 
-NUM_EXAMPLES = 20
+NUM_EXAMPLES = 25
 POSITIVE_CLASS_RATIO = 0.5
 
 

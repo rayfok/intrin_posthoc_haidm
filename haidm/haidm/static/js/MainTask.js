@@ -86,6 +86,7 @@ class MainTask extends Component {
       sessionId: this.urlParams.get("sessionId"),
       task: this.urlParams.get("task"),
       condition: this.urlParams.get("condition") || "human-ai",
+      completionCode: this.urlParams.get("cc") || "NONE",
       questionStartTime: -1,
       initialDecisionTime: -1,
       finalDecisionTime: -1,
@@ -96,6 +97,7 @@ class MainTask extends Component {
       activeStep: TaskStep.Instructions,
       acceptedTermsAndConds: false,
       showMachineAssistance: false,
+      completedTask: false,
     };
   }
 
@@ -276,7 +278,11 @@ class MainTask extends Component {
     return response["success"];
   };
 
-  handleSubmit = () => {};
+  handleSubmit = () => {
+    this.setState({
+      completedTask: true,
+    });
+  };
 
   checkHasPreviouslyCompleted = async () => {
     if (this.state.participantId === null) return false;
@@ -643,6 +649,8 @@ class MainTask extends Component {
       activeStep,
       condition,
       acceptedTermsAndConds,
+      completedTask,
+      completionCode,
     } = this.state;
 
     if (questions.length === 0) {
@@ -658,10 +666,32 @@ class MainTask extends Component {
       );
     }
 
+    if (completedTask) {
+      return (
+        <div id="task-completed-message">
+          <p>
+            Your response has been successfully submitted. Please navigate to
+            the following link to register your completion with Prolific.
+            <br />
+            <br />
+            <a
+              href={`https://app.prolific.co/submissions/complete?cc=${completionCode}`}
+            >
+              https://app.prolific.co/submissions/complete
+            </a>
+            <br />
+            <br />
+            If you are not automatically redirected, please use the following
+            completion code: <b>{completionCode}</b>
+          </p>
+        </div>
+      );
+    }
+
     return (
       <React.Fragment>
         <div id="task-stepper">
-          <TaskStepper activeStep={activeStep} />
+          {!completedTask && <TaskStepper activeStep={activeStep} />}
           {activeStep === TaskStep.TaskOnboarding && (
             <ProgressIndicator
               completed={trainingCompletedCount}

@@ -174,3 +174,10 @@
 #submit-button.button:not(.Mui-disabled) {
   background-color: var(--light-blue);
 }
+
+#task-completed-message {
+  padding-top: 25%;
+  width: 30%;
+  margin: 0 auto;
+  min-width: 500px;
+}

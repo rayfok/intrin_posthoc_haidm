@@ -15,15 +15,13 @@ import csv
 import json
 from pathlib import Path
 
-NUM_EXAMPLES = 25
-POSITIVE_CLASS_RATIO = 0.5
-
 
 def convert_beer_data():
-    root_dir = Path().resolve().parent
+    file_dir = Path(__file__).parent.resolve()
+    root_dir = Path(__file__).parent.parent.resolve()
 
-    instances = []
-    with open("beer_logr_out.csv", "r") as f:
+    instances = {}
+    with open(Path(file_dir, "beer_logr_out.csv"), "r") as f:
         reader = csv.reader(f, delimiter=",", quotechar='"')
         for row in reader:
             id, label, pred = int(row[0]), int(row[1]), int(row[2])
@@ -32,22 +30,19 @@ def convert_beer_data():
             raw_tokens, weights = token_weights[::2], token_weights[1::2]
             assert len(raw_tokens) == len(weights)
             weights = [float(w) for w in weights]
-            instances.append(
-                {
-                    "id": id,
-                    "label": label,
-                    "preds": {"logr": int(pred)},
-                    "expls": {
-                        "logr": {
-                            "tokens": raw_tokens,
-                            "weights": weights,
-                            "intercept": 0.8397366805904339,
-                        }
-                    },
-                }
-            )
+            instances[id] = {
+                "label": label,
+                "preds": {"intrinsic": int(pred)},
+                "expls": {
+                    "intrinsic": {
+                        "tokens": raw_tokens,
+                        "weights": weights,
+                        "intercept": 0.8397366805904339,
+                    }
+                },
+            }
 
-    with open("beer_opaque_out.csv", "r") as f:
+    with open(Path(file_dir, "beer_opaque_out.csv"), "r") as f:
         reader = csv.reader(f, delimiter=",", quotechar='"')
         for i, row in enumerate(reader):
             id, label, pred, y_int = (
@@ -61,27 +56,20 @@ def convert_beer_data():
             raw_tokens, weights = token_weights[::2], token_weights[1::2]
             assert len(raw_tokens) == len(weights)
             weights = [float(w) for w in weights]
-            instances[i]["preds"]["opaque"] = int(pred)
-            instances[i]["expls"]["opaque"] = {
+            instances[id]["preds"]["opaque"] = int(pred)
+            instances[id]["expls"]["opaque"] = {
                 "tokens": raw_tokens,
                 "weights": weights,
                 "intercept": y_int,
             }
 
-    pos_instances = [x for x in instances if x["label"] == 1]
-    neg_instances = [x for x in instances if x["label"] == 0]
-    selected_instances = (
-        pos_instances[: int(NUM_EXAMPLES * POSITIVE_CLASS_RATIO)]
-        + neg_instances[: int(NUM_EXAMPLES * (1 - POSITIVE_CLASS_RATIO))]
-    )
-
-    task_data_file = Path(root_dir, "output", "task_data.json")
+    task_data_file = Path(root_dir, "output", "raw_task_data.json")
     if task_data_file.is_file():
         with open(task_data_file, "r") as f:
             task_data = json.load(f)
     else:
         task_data = {}
-    task_data["beer"] = {"instances": selected_instances}
+    task_data["beer"] = {"instances": instances}
     with open(task_data_file, "w") as out:
         json.dump(task_data, out, indent=2)
 

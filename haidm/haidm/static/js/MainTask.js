@@ -21,6 +21,7 @@ import ProgressIndicator from "./ProgressIndicator";
 import TaskStepper from "./TaskStepper";
 import DivergingBarChart from "./visualizations/DivergingBarChart";
 import LineChart from "./visualizations/LineChart";
+import { LightTooltip } from "./LightTooltip";
 
 const APPLICATION_ROOT = "/haidm";
 
@@ -66,11 +67,10 @@ class MainTask extends Component {
     "human-ai",
     "human-ai-intrinsic",
     "human-ai-posthoc",
-    "human-ai-intrinsic-global",
     "human-ai-gam",
   ];
   numberOfTrainingQuestions = 1;
-  numberOfQuestions = 1;
+  numberOfQuestions = 2;
 
   constructor(props) {
     super(props);
@@ -105,13 +105,13 @@ class MainTask extends Component {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
       let data = await this.getData();
-      const allQuestionsSorted = Object.values(data["instances"]).sort(
-        (a, b) => parseInt(a.id) - parseInt(b.id)
+      let questions = Object.values(data["instances"]).slice(
+        0,
+        this.numberOfQuestions
       );
-      let questions = allQuestionsSorted.slice(0, this.numberOfQuestions);
-      let trainingQuestions = allQuestionsSorted.slice(
-        this.numberOfQuestions,
-        this.numberOfQuestions + this.numberOfTrainingQuestions
+      let trainingQuestions = Object.values(data["training_instances"]).slice(
+        0,
+        this.numberOfTrainingQuestions
       );
       if (questions) {
         this.setState({
@@ -196,7 +196,7 @@ class MainTask extends Component {
         question_id: this.state.curQuestion["id"],
         initial_human_decision: this.state.initialDecision === "yes" ? 1 : 0,
         final_human_decision: this.state.curDecision === "yes" ? 1 : 0,
-        ai_decision: this.state.curQuestion["preds"]["logr"],
+        ai_decision: this.state.curQuestion["preds"]["intrinsic"],
         initial_decision_time: this.state.initialDecisionTime,
         final_decision_time: Date.now() - this.state.questionStartTime,
         ground_truth: this.state.curQuestion["label"],
@@ -306,11 +306,8 @@ class MainTask extends Component {
       this.state.condition === "human-ai-posthoc"
     ) {
       return this.state.curQuestion["preds"]["opaque"] === 1;
-    } else if (
-      this.state.condition === "human-ai-intrinsic" ||
-      this.state.condition === "human-ai-intrinsic-global"
-    ) {
-      return this.state.curQuestion["preds"]["logr"] === 1;
+    } else if (this.state.condition === "human-ai-intrinsic") {
+      return this.state.curQuestion["preds"]["intrinsic"] === 1;
     } else if (this.state.condition === "human-ai-gam") {
       return this.state.curQuestion["preds"]["gam"] === 1;
     } else {
@@ -323,11 +320,9 @@ class MainTask extends Component {
     let expl = null;
 
     if (condition === "human-ai-intrinsic") {
-      expl = curQuestion["expls"]["logr_prob"];
+      expl = curQuestion["expls"]["intrinsic"];
     } else if (condition === "human-ai-posthoc") {
       expl = curQuestion["expls"]["svc_lime"];
-    } else if (condition === "human-ai-intrinsic-global") {
-      expl = curQuestion["expls"]["logr_params"];
     }
     return Object.entries(this.featureDisplayNameMap[task]).reduce(
       (a, [rawName, formattedName]) => {
@@ -353,11 +348,12 @@ class MainTask extends Component {
           <br />
           <span>
             Positive values (shown in{" "}
-            <span style={{ color: "#1976D2" }}>blue</span>) indicate that a
-            feature <b>increases</b> the chance that a defendant will reoffend.
-            Negative values (shown in{" "}
-            <span style={{ color: "#DC143C" }}>red</span>) indicate that a
-            feature <b>decreases</b> the chance that a defendant will reoffend.{" "}
+            <span style={{ color: "rgb(173,216,230)" }}>blue</span>) indicate
+            that a feature <b>increases</b> the chance that a defendant will
+            reoffend. Negative values (shown in{" "}
+            <span style={{ color: "rgb(220, 20, 60)" }}>red</span>) indicate
+            that a feature <b>decreases</b> the chance that a defendant will
+            reoffend.{" "}
           </span>
           {this.state.condition === "human-ai-gam" && (
             <span>
@@ -369,24 +365,14 @@ class MainTask extends Component {
       );
     } else if (this.state.task === "beer") {
       return (
-        <p>
+        <span>
           Our model has been previously trained with many other beer reviews for
-          which their sentiments are known. Words highlighted in{" "}
-          <span style={{ color: "#1976D2" }}>blue</span> indicate the model
-          believes those words contribute to a positive review. Words
-          highlighted in <span style={{ color: "#DC143C" }}>red</span> indicate
-          the model believes those words contribute to a negative review. The
-          intensity of highlights indicate how strongly each word affects the
-          model's decision.
-          {/* Our model has been previously trained with many other beer reviews for
-          which their sentiments are known. Words with a positive{" "}
-          <span style={{ color: "#1976D2" }}>blue</span> value indicate the
-          model believes those words contribute to a positive review. Words with
-          a negative <span style={{ color: "#DC143C" }}>red</span> value
-          indicate the model believes those words contribute to a negative
-          review. The model makes a decision by adding together values for every
-          word in the review. */}
-        </p>
+          which their sentiments are known. Words highlighted in blue indicate
+          the model believes those words contribute to a positive review. Words
+          highlighted in red indicate the model believes those words contribute
+          to a negative review. The intensity of highlights indicate how
+          strongly each word affects the model's decision.
+        </span>
       );
     }
   };
@@ -533,8 +519,8 @@ class MainTask extends Component {
     let tokens = [];
     let weights = [];
     if (this.state.condition === "human-ai-intrinsic") {
-      tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
-      weights = this.state.curQuestion["expls"]["logr"]["weights"];
+      tokens = this.state.curQuestion["expls"]["intrinsic"]["tokens"];
+      weights = this.state.curQuestion["expls"]["intrinsic"]["weights"];
     } else if (this.state.condition === "human-ai-posthoc") {
       tokens = this.state.curQuestion["expls"]["opaque"]["tokens"];
       weights = this.state.curQuestion["expls"]["opaque"]["weights"];
@@ -562,9 +548,7 @@ class MainTask extends Component {
               // textDecoration: "underline",
               // textDecorationColor: `rgb(25, 118, 210, ${normalizedWeights[i]}`,
               // textDecorationThickness: "2px",
-              backgroundColor: `rgb(25, 118, 210, ${
-                normalizedWeights[i] * 0.75
-              })`,
+              backgroundColor: `rgb(173,216,230, ${normalizedWeights[i]})`,
             }}
             key={`positive-${i}`}
           >
@@ -578,9 +562,7 @@ class MainTask extends Component {
               // textDecoration: "underline",
               // textDecorationColor: `rgb(220, 20, 60, ${normalizedWeights[i]})`,
               // textDecorationThickness: "2px",
-              backgroundColor: `rgb(220, 20, 60, ${
-                normalizedWeights[i] * 0.75
-              })`,
+              backgroundColor: `rgb(220, 20, 60, ${normalizedWeights[i]})`,
             }}
             key={`negative-${i}`}
           >
@@ -601,9 +583,9 @@ class MainTask extends Component {
     let weights = [];
     let intercept = 0;
     if (this.state.condition === "human-ai-intrinsic") {
-      tokens = this.state.curQuestion["expls"]["logr"]["tokens"];
-      weights = this.state.curQuestion["expls"]["logr"]["weights"];
-      intercept = this.state.curQuestion["expls"]["logr"]["intercept"];
+      tokens = this.state.curQuestion["expls"]["intrinsic"]["tokens"];
+      weights = this.state.curQuestion["expls"]["intrinsic"]["weights"];
+      intercept = this.state.curQuestion["expls"]["intrinsic"]["intercept"];
     } else if (this.state.condition === "human-ai-posthoc") {
       tokens = this.state.curQuestion["expls"]["opaque"]["tokens"];
       weights = this.state.curQuestion["expls"]["opaque"]["weights"];
@@ -799,7 +781,7 @@ class MainTask extends Component {
                 <div id="task-features-container">
                   <p className="task-section-header">Beer Review</p>
                   <span>
-                    {curQuestion["expls"]["logr"]["tokens"].join(" ")}
+                    {curQuestion["expls"]["intrinsic"]["tokens"].join(" ")}
                   </span>
                 </div>
               )}
@@ -840,11 +822,11 @@ class MainTask extends Component {
                   <div id="ai-decision">
                     <span className="task-section-header">AI Prediction</span>
                     {activeStep === TaskStep.MainTask && (
-                      <Tooltip title={this.getExplanationDescription()}>
+                      <LightTooltip title={this.getExplanationDescription()}>
                         <IconButton>
                           <InfoIcon sx={{ fontSize: 18 }} />
                         </IconButton>
-                      </Tooltip>
+                      </LightTooltip>
                     )}
                     <p>{this.getAIDecisionText()}</p>
                   </div>
@@ -856,6 +838,8 @@ class MainTask extends Component {
                             Here's how the model made its prediction
                           </p>
                           {this.getExplanationDescription()}
+                          <br />
+                          <br />
                         </React.Fragment>
                       )}
 

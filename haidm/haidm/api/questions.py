@@ -17,8 +17,10 @@ def load_data():
         global task_data
         task_data = json.load(f)
         for task, data in task_data.items():
-            q_by_id = {str(ex["id"]): ex for ex in data["instances"]}
-            task_data[task]["instances"] = q_by_id
+            for id, x in data["instances"].items():
+                x["id"] = id
+            for id, x in data["training_instances"].items():
+                x["id"] = id
 
 
 def validate_task(task):

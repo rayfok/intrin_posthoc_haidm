@@ -3,5 +3,6 @@ __pycache__/
 expl/
 output/
 task_data/
-beer/*.csv
-beer/*.json
+*.csv
+*.json
+private/

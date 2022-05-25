@@ -69,8 +69,8 @@ class MainTask extends Component {
     "human-ai-posthoc",
     "human-ai-gam",
   ];
-  numberOfTrainingQuestions = 1;
-  numberOfQuestions = 2;
+  numberOfTrainingQuestions = 3;
+  numberOfQuestions = 20;
 
   constructor(props) {
     super(props);
@@ -105,14 +105,12 @@ class MainTask extends Component {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
       let data = await this.getData();
-      let questions = Object.values(data["instances"]).slice(
-        0,
-        this.numberOfQuestions
-      );
-      let trainingQuestions = Object.values(data["training_instances"]).slice(
-        0,
-        this.numberOfTrainingQuestions
-      );
+      let questions = Object.values(data["instances"])
+        .slice(0, this.numberOfQuestions)
+        .sort(() => Math.random() - 0.5); // Shuffle
+      let trainingQuestions = Object.values(data["training_instances"])
+        .slice(0, this.numberOfTrainingQuestions)
+        .sort(() => Math.random() - 0.5); // Shuffle
       if (questions) {
         this.setState({
           data,
@@ -348,9 +346,10 @@ class MainTask extends Component {
           <br />
           <span>
             Positive values (shown in{" "}
-            <span style={{ color: "rgb(173,216,230)" }}>blue</span>) indicate
-            that a feature <b>increases</b> the chance that a defendant will
-            reoffend. Negative values (shown in{" "}
+            <span style={{ color: "blue" }}>blue</span>) indicate that a feature{" "}
+            <b>increases</b> the chance that a defendant will reoffend.
+            <br />
+            Negative values (shown in{" "}
             <span style={{ color: "rgb(220, 20, 60)" }}>red</span>) indicate
             that a feature <b>decreases</b> the chance that a defendant will
             reoffend.{" "}
@@ -625,6 +624,16 @@ class MainTask extends Component {
     return textFeatureContributions;
   };
 
+  colorizeWithSign = (value) => {
+    if (value < 0) {
+      return <span style={{ color: "rgb(220, 20, 60)" }}>{value}</span>;
+    } else if (value > 0) {
+      return <span style={{ color: "blue" }}>{value}</span>;
+    } else {
+      return <span>{value}</span>;
+    }
+  };
+
   render() {
     const {
       data,
@@ -777,7 +786,7 @@ class MainTask extends Component {
                   </TableContainer>
                 </div>
               )}
-              {this.state.task === "beer" && (
+              {task === "beer" && (
                 <div id="task-features-container">
                   <p className="task-section-header">Beer Review</p>
                   <span>
@@ -843,51 +852,134 @@ class MainTask extends Component {
                         </React.Fragment>
                       )}
 
-                      {this.state.task === "compas" &&
-                        condition === "human-ai-gam" && (
-                          <div id="gam-visualization">
-                            {Object.keys(data["explanations"]["gam_pdp"]).map(
-                              (feature) => (
-                                <LineChart
-                                  key={feature}
-                                  splitColorOnSign={true}
-                                  data={
-                                    data["explanations"]["gam_pdp"][feature]
-                                  }
-                                  title={
-                                    this.featureDisplayNameMap[task][feature]
-                                  }
-                                  currentValue={
-                                    curQuestion["features"][feature]
-                                  }
-                                />
-                              )
-                            )}
-                          </div>
+                      {task === "compas" && condition === "human-ai-gam" && (
+                        <div id="gam-visualization">
+                          {Object.keys(data["explanations"]["gam_pdp"]).map(
+                            (feature) => (
+                              <LineChart
+                                key={feature}
+                                splitColorOnSign={true}
+                                data={data["explanations"]["gam_pdp"][feature]}
+                                title={
+                                  this.featureDisplayNameMap[task][feature]
+                                }
+                                currentValue={curQuestion["features"][feature]}
+                              />
+                            )
+                          )}
+                        </div>
+                      )}
+                      {task === "compas" &&
+                        ["human-ai-intrinsic", "human-ai-posthoc"].includes(
+                          condition
+                        ) && (
+                          // <DivergingBarChart
+                          //   data={this.getFeatureContributions()}
+                          //   positiveLabel={
+                          //     this.labelStringNames[task]["positive"]
+                          //   }
+                          //   negativeLabel={
+                          //     this.labelStringNames[task]["negative"]
+                          //   }
+                          //   title={`AI Prediction: ${
+                          //     this.labelStringNames[task][
+                          //       this.machineSuggestReoffend()
+                          //         ? "positive"
+                          //         : "negative"
+                          //     ]
+                          //   }`}
+                          // />
+                          <TableContainer>
+                            <Table id="task-features-table" size="small">
+                              <TableHead>
+                                <TableRow>
+                                  <TableCell>{<b>Feature</b>}</TableCell>
+                                  <TableCell align="right">
+                                    {<b>Value</b>}
+                                  </TableCell>
+                                  {condition === "human-ai-intrinsic" && (
+                                    <TableCell align="right">
+                                      {<b>Feature Weight</b>}
+                                    </TableCell>
+                                  )}
+                                  <TableCell align="right">
+                                    {<b>Total Weight</b>}
+                                  </TableCell>
+                                </TableRow>
+                              </TableHead>
+                              <TableBody>
+                                {Object.entries(curQuestion["features"])
+                                  .filter(([k, _]) =>
+                                    this.featureDisplayNameMap[
+                                      task
+                                    ].hasOwnProperty(k)
+                                  )
+                                  .map(([k, v]) => (
+                                    <TableRow key={k}>
+                                      <TableCell component="th" scope="row">
+                                        {this.featureDisplayNameMap[task][k]}
+                                        <Tooltip
+                                          title={this.featureDescMap[task][k]}
+                                        >
+                                          <IconButton>
+                                            <InfoIcon sx={{ fontSize: 18 }} />
+                                          </IconButton>
+                                        </Tooltip>
+                                      </TableCell>
+                                      <TableCell align="right">{v}</TableCell>
+                                      {condition === "human-ai-intrinsic" && (
+                                        <TableCell align="right">
+                                          {curQuestion["expls"][
+                                            "intrinsic_params"
+                                          ][k]?.toFixed(2) || "--"}
+                                        </TableCell>
+                                      )}
+                                      <TableCell align="right">
+                                        {this.colorizeWithSign(
+                                          condition === "human-ai-intrinsic"
+                                            ? curQuestion["expls"]["intrinsic"][
+                                                k
+                                              ]?.toFixed(2) || "--"
+                                            : curQuestion["expls"]["opaque"][
+                                                k
+                                              ]?.toFixed(2) || "--"
+                                        )}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                {condition === "human-ai-intrinsic" && (
+                                  <TableRow>
+                                    <TableCell component="th" scope="row">
+                                      Model Base Rate
+                                      <Tooltip
+                                        title={
+                                          "Base rate offset used by the model. Constant for every defendant."
+                                        }
+                                      >
+                                        <IconButton>
+                                          <InfoIcon sx={{ fontSize: 18 }} />
+                                        </IconButton>
+                                      </Tooltip>
+                                    </TableCell>
+                                    <TableCell align="right">--</TableCell>
+                                    <TableCell align="right">--</TableCell>
+                                    <TableCell align="right">
+                                      {this.colorizeWithSign(
+                                        curQuestion["expls"]["intrinsic"][
+                                          "intercept"
+                                        ].toFixed(2)
+                                      )}
+                                    </TableCell>
+                                  </TableRow>
+                                )}
+                              </TableBody>
+                            </Table>
+                          </TableContainer>
                         )}
-                      {this.state.task === "compas" &&
-                        condition !== "human-ai-gam" && (
-                          <DivergingBarChart
-                            data={this.getFeatureContributions()}
-                            positiveLabel={
-                              this.labelStringNames[task]["positive"]
-                            }
-                            negativeLabel={
-                              this.labelStringNames[task]["negative"]
-                            }
-                            title={`AI Prediction: ${
-                              this.labelStringNames[task][
-                                this.machineSuggestReoffend()
-                                  ? "positive"
-                                  : "negative"
-                              ]
-                            }`}
-                          />
-                        )}
-                      {this.state.task === "beer" && (
+                      {task === "beer" && (
                         <div>{this.getTextWithHighlights()}</div>
                       )}
-                      {/* {this.state.task === "beer" && (
+                      {/* {task === "beer" && (
                         <DivergingBarChart
                           data={this.getTextFeatureContributions()}
                           positiveLabel={

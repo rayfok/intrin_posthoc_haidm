@@ -23,6 +23,7 @@ def convert_beer_data():
     instances = {}
     with open(Path(file_dir, "beer_logr_out.csv"), "r") as f:
         reader = csv.reader(f, delimiter=",", quotechar='"')
+        next(reader)  # Skip header row
         for row in reader:
             id, label, pred = int(row[0]), int(row[1]), int(row[2])
             token_weights = row[3:]
@@ -44,7 +45,8 @@ def convert_beer_data():
 
     with open(Path(file_dir, "beer_opaque_out.csv"), "r") as f:
         reader = csv.reader(f, delimiter=",", quotechar='"')
-        for i, row in enumerate(reader):
+        next(reader)  # Skip header row
+        for row in reader:
             id, label, pred, y_int = (
                 int(row[0]),
                 int(row[1]),

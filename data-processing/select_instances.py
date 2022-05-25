@@ -53,11 +53,13 @@ def main():
             instance["preds"]["opaque"] == instance["label"]
             for instance in instances.values()
         ) / len(instances)
+
+        print(f"Task: {task}")
         print(f"Intrinsic acc: {intrinsic_acc} | Opaque acc: {opaque_acc}")
         print(
             f"Agree: {len(models_agree)} | Disagree: {len(models_disagree)} | Total: {len(instances)}"
         )
-        print(f"Positive: {len(positive)} | Negative: {len(negative)}\n")
+        print(f"Positive: {len(positive)} | Negative: {len(negative)}")
 
         # Selection criteria:
         # 1. Intrinsic and opaque models agree.
@@ -79,9 +81,9 @@ def main():
         selected = []
         selected += random.sample(pos_agree_correct, num_correct // 2)
         selected += random.sample(neg_agree_correct, num_correct - num_correct // 2)
-        selected += random.sample(pos_agree_incorrect, num_incorrect // 2)
+        selected += random.sample(neg_agree_incorrect, num_incorrect // 2)
         selected += random.sample(
-            neg_agree_incorrect, num_incorrect - num_incorrect // 2
+            pos_agree_incorrect, num_incorrect - num_incorrect // 2
         )
         assert len(selected) == NUM_EXAMPLES
 
@@ -104,6 +106,10 @@ def main():
         selected_training_instances = {id: instances[id] for id in selected_training}
         task_data[task]["instances"] = selected_instances
         task_data[task]["training_instances"] = selected_training_instances
+
+        print("Selected IDs (train):", sorted([int(x) for x in selected_training]))
+        print("Selected IDs (main):", sorted([int(x) for x in selected]))
+        print()
 
     with open("output/task_data.json", "w") as f:
         json.dump(task_data, f, indent=2)

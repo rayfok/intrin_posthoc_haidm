@@ -255,6 +255,7 @@ class MainTask extends Component {
 
   saveExitSurveyResponses = async (exitSurveyResponses) => {
     let url = `${APPLICATION_ROOT}/api/v1/submit-exit-survey/`;
+    const { age, race, gender, education, ...resp } = exitSurveyResponses;
     let response = await fetch(url, {
       method: "POST",
       headers: {
@@ -264,7 +265,11 @@ class MainTask extends Component {
       credentials: "same-origin",
       body: JSON.stringify({
         responses: {
-          ...exitSurveyResponses,
+          resp,
+          age,
+          race,
+          gender,
+          education,
           participant_id: this.state.participantId,
           study_id: this.state.studyId,
           session_id: this.state.sessionId,
@@ -735,6 +740,7 @@ class MainTask extends Component {
 
         {activeStep === TaskStep.ExitSurvey && (
           <ExitSurvey
+            task={task}
             saveExitSurveyResponses={this.saveExitSurveyResponses}
             onSubmit={this.handleSubmit}
           />

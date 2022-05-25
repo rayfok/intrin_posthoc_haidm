@@ -4,11 +4,14 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { questions } from "./exitSurveyQuestions";
 import LikertScaleQuestion from "./LikertScaleQuestion";
+import MultipleChoiceQuestion from "./MultipleChoiceQuestion";
+import MultiSelectQuestion from "./MultiSelectQuestion";
 import SelectQuestion from "./SelectQuestion";
 import ShortAnswerQuestion from "./ShortAnswerQuestion";
 
 class ExitSurvey extends Component {
   static propTypes = {
+    task: PropTypes.string,
     saveExitSurveyResponses: PropTypes.func,
     onSubmit: PropTypes.func,
   };
@@ -51,6 +54,8 @@ class ExitSurvey extends Component {
           Please respond to all of the following questions.
         </p>
         {Object.entries(questions).map(([name, q]) => {
+          if ("task" in q && q.task !== this.props.task) return;
+
           if (q.type === "select") {
             return (
               <SelectQuestion
@@ -76,6 +81,46 @@ class ExitSurvey extends Component {
                 callback={(v) => this.updateResponse(name, v)}
                 key={name}
               />
+            );
+          } else if (q.type === "multipleChoice") {
+            return (
+              <div
+                style={{
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                  padding: "10px",
+                  marginBottom: "10px",
+                }}
+                key={name}
+              >
+                <MultipleChoiceQuestion
+                  context={q.context}
+                  prompt={q.prompt}
+                  options={q.options}
+                  callback={(v) => this.updateResponse(name, v)}
+                  key={name}
+                />
+              </div>
+            );
+          } else if (q.type === "multiSelect") {
+            return (
+              <div
+                style={{
+                  border: "1px solid black",
+                  borderRadius: "5px",
+                  padding: "10px",
+                  marginBottom: "10px",
+                }}
+                key={name}
+              >
+                <MultiSelectQuestion
+                  context={q.context}
+                  prompt={q.prompt}
+                  options={q.options}
+                  callback={(v) => this.updateResponse(name, v)}
+                  key={name}
+                />
+              </div>
             );
           }
         })}

@@ -7,6 +7,72 @@ const defaultLikertScaleOptions = [
 ];
 
 export const questions = {
+  beer1: {
+    task: "beer",
+    type: "multipleChoice",
+    context:
+      "Consider the following review: <br/><br/> Bottle, courtesy of fonefan. A clear, golden beer topped by a small, dense, off-white head leaving some curtains. <b>Fruity on the nose, slighlty syrupy, with white sugar.</b> Weak. The flavor is fruity, with white sugar, grass and hints of spices. Some bitterness in the end. Medium body, effervescent. A rather boring and anonymous witbier. 091025",
+    prompt:
+      "When the rest of the review is kept the same, if the bolded sentence were removed, how would the model's prediction on the review's likelihood of being positive change?",
+    options: {
+      "More likely positive":
+        "The model would predict the review to be <b>more</b> likely to be positive.",
+      "Less likely positive":
+        "The model would predict the review to be <b>less</b> likely to be positive.",
+    },
+  },
+  beer2: {
+    task: "beer",
+    type: "multipleChoice",
+    context:
+      "Consider the following review: <br/><br/> <b>12h April 2011Bottle from Bier Koning.</b> Cloudy amber beer, small white head. Softish dry palate. Dry malt - trace of soap. A whisper of citrus. Dry minerally finish. Too dry!",
+    prompt:
+      "When the rest of the review is kept the same, if the bolded sentence were removed, how would the model's prediction on the review's likelihood of being positive change?",
+    options: {
+      "More likely positive":
+        "The model would predict the review to be <b>more</b> likely to be positive.",
+      "Less likely positive":
+        "The model would predict the review to be <b>less</b> likely to be positive.",
+    },
+  },
+  beer3: {
+    task: "beer",
+    type: "multiSelect",
+    context:
+      "Consider the following review: <br/><br/> Bottle 330ml @ fonefan. Pours clear amber with a off-white head. Aroma has notes of wheat and fruity hops. Taste is light to medium sweet. Body is medium, texture is thin, carbonation is soft.",
+    prompt:
+      "The model currently predicts that this review is positive. Which of the following sentences if removed would <b>increase</b> the model's prediction on the review's likelihood of being <b>positive</b>? Please check all that apply.",
+    options: {
+      "Sentence 1": "Remove the sentence: Bottle 330ml @ fonefan",
+      "Sentence 2":
+        "Remove the sentence: Pours clear amber with a off-white head.",
+      "Sentence 3":
+        "Remove the sentence: Aroma has notes of wheat and fruity hops.",
+      "Sentence 4": "Remove the sentence: Taste is light to medium sweet.",
+      "Sentence 5":
+        "Remove the sentence: Body is medium, texture is thin, carbonation is soft.",
+      "None of the above": "None of the above",
+    },
+  },
+  beer4: {
+    task: "beer",
+    type: "multiSelect",
+    context:
+      "Consider the following review: <br/><br/> Some lactose-sweetness in the aroma, with roasted malts. Very non-complex and typical for the average Impy Stout. Pretty thin and not very smooth. Lots of caramel and cocoa in the flavor. The alcohol is pretty obvious.",
+    prompt:
+      "The model currently predicts that this review is positive. Which of the following sentences if removed would <b>increase</b> the model's prediction on the review's likelihood of being <b>positive</b>? Please check all that apply.",
+    options: {
+      "Sentence 1":
+        "Remove the sentence: Some lactose-sweetness in the aroma, with roasted malts.",
+      "Sentence 2":
+        "Remove the sentence: Very non-complex and typical for the average Impy Stout.",
+      "Sentence 3": "Remove the sentence: Pretty thin and not very smooth.",
+      "Sentence 4":
+        "Remove the sentence: Lots of caramel and cocoa in the flavor.",
+      "Sentence 5": "Remove the sentence: The alcohol is pretty obvious.",
+      "None of the above": "None of the above",
+    },
+  },
   understandModel: {
     type: "likert",
     label: "I understand how the model makes predictions.",
@@ -69,8 +135,8 @@ export const questions = {
       "No high school diploma": "No high school diploma",
       "High school degree or equivalent": "High school degree or equivalent",
       "Associate degree": "Associate degree",
-      "Bachelor’s degree": "Bachelor’s degree",
-      "Master’s degree": "Master’s degree",
+      "Bachelor's degree": "Bachelor's degree",
+      "Master's degree": "Master's degree",
       Doctorate: "Doctorate",
       "Professional degree": "Professional degree",
       "Prefer not to say": "Prefer not to say",

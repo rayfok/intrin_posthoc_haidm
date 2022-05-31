@@ -25,22 +25,23 @@ def list_studies(config):
 
 
 def create_study(config, name):
-    with open(f"{name}.json", "r") as f:
+    with open(f"studies/{name}.json", "r") as f:
         study_config = json.load(f)
     resp = requests.post(
         "https://api.prolific.co/api/v1/studies/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data=study_config,
+        json=study_config,
     )
-    return resp.json() if resp.status_code == 201 else None
+    return resp.json()["id"] if resp.status_code == 201 else None
 
 
 def publish_study(config, id):
     resp = requests.post(
         f"https://api.prolific.co/api/v1/studies/{id}/transition/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"action": "PUBLISH"},
+        json={"action": "PUBLISH"},
     )
+    print(resp.json())
     return resp.status_code == 200
 
 
@@ -48,7 +49,7 @@ def pause_study(config, id):
     resp = requests.post(
         f"https://api.prolific.co/api/v1/studies/{id}/transition/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"action": "PAUSE"},
+        json={"action": "PAUSE"},
     )
     return resp.status_code == 200
 
@@ -57,7 +58,7 @@ def restart_paused_study(config, id):
     resp = requests.post(
         f"https://api.prolific.co/api/v1/studies/{id}/transition/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"action": "START"},
+        json={"action": "START"},
     )
     return resp.status_code == 200
 
@@ -66,7 +67,7 @@ def stop_study(config, id):
     resp = requests.post(
         f"https://api.prolific.co/api/v1/studies/{id}/transition/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"action": "STOP"},
+        json={"action": "STOP"},
     )
     return resp.status_code == 200
 
@@ -93,14 +94,14 @@ def list_study_submissions(config, id):
 
 
 def get_study_cost(config, name):
-    with open(f"{name}.json", "r") as f:
+    with open(f"studies/{name}.json", "r") as f:
         study_config = json.load(f)
     resp = requests.post(
         "https://api.prolific.co/api/v1/study-cost-calculator/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"reward": study_config["reward"], "total_available_places": 5},
+        json={"reward": study_config["reward"], "total_available_places": 5},
     )
-    return resp.json()["total_cost"] if resp.response_code == 200 else None
+    return resp.json()["total_cost"] if resp.status_code == 200 else None
 
 
 def list_all_requirements(config):
@@ -112,14 +113,14 @@ def list_all_requirements(config):
 
 
 def count_eligible_participants(config, name):
-    with open(f"{name}.json", "r") as f:
+    with open(f"studies/{name}.json", "r") as f:
         study_config = json.load(f)
     resp = requests.post(
         "https://api.prolific.co/api/v1/eligibility-count/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"eligibility_requirements": study_config["eligibility_requirements"]},
+        json={"eligibility_requirements": study_config["eligibility_requirements"]},
     )
-    return resp.json()["count"] if resp.response_code == 200 else None
+    return resp.json()["count"] if resp.status_code == 200 else None
 
 
 def list_submissions(config, study_id=None):
@@ -142,7 +143,7 @@ def approve_submission(config, id):
     resp = requests.post(
         f"https://api.prolific.co/api/v1/submissions/{id}/transition/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"action": "APPROVE"},
+        json={"action": "APPROVE"},
     )
     return resp.status_code == 200
 
@@ -151,7 +152,7 @@ def reject_submission(config, id, message, rejection_category):
     resp = requests.post(
         f"https://api.prolific.co/api/v1/submissions/{id}/transition/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={
+        json={
             "action": "REJECT",
             "message": message,
             "rejection_category": rejection_category,
@@ -164,7 +165,7 @@ def bulk_approve_submissions(config, study_id, participant_ids):
     resp = requests.post(
         "https://api.prolific.co/api/v1/submissions/bulk-approve/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"study_id": study_id, "participant_ids": participant_ids},
+        json={"study_id": study_id, "participant_ids": participant_ids},
     )
     return resp.status_code == 200
 
@@ -173,7 +174,7 @@ def setup_bonus(config, study_id, csv_bonuses):
     resp = requests.post(
         "https://api.prolific.co/api/v1/submissions/bonus-payments/",
         headers={"Authorization": f"Token {config['api_token']}"},
-        data={"study_id": study_id, "csv_bonuses": csv_bonuses},
+        json={"study_id": study_id, "csv_bonuses": csv_bonuses},
     )
     return resp.json() if resp.status_code == 201 else None
 

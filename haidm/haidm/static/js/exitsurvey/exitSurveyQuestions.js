@@ -16,9 +16,9 @@ export const questions = {
       "When all other features are kept the same, if the defendant’s age were 35 instead of 25, how would the model’s prediction on the defendant’s likelihood of reoffending change?",
     options: {
       "More likely reoffend":
-        "The model would predict a 35-year old defendant to be <b>more</b> likely to be reoffend.",
+        "The model would predict a 35-year old defendant to be <b>more</b> likely to reoffend.",
       "Less likely reoffend":
-        "The model would predict a 35-year old defendant to be <b>less</b> likely to be reoffend.",
+        "The model would predict a 35-year old defendant to be <b>less</b> likely to reoffend.",
     },
   },
   compas2: {
@@ -30,9 +30,9 @@ export const questions = {
       "When all other features are kept the same, if the defendant had 2 prior charges instead of 4, how would the model’s prediction on the defendant’s likelihood of reoffending change?",
     options: {
       "More likely reoffend":
-        "The model would predict a defendant with 2 prior charges instead of 4 to be <b>more</b> likely to be reoffend.",
+        "The model would predict a defendant with 2 prior charges instead of 4 to be <b>more</b> likely to reoffend.",
       "Less likely reoffend":
-        "The model would predict a defendant with 2 prior charges instead of 4 to be <b>less</b> likely to be reoffend.",
+        "The model would predict a defendant with 2 prior charges instead of 4 to be <b>less</b> likely to reoffend.",
     },
   },
   compas3: {
@@ -44,9 +44,9 @@ export const questions = {
       "When all other features are kept the same, if the defendant were instead charged with a felony crime, how would the model’s prediction on the defendant’s likelihood of reoffending change?",
     options: {
       "More likely reoffend":
-        "The model would predict a defendant charged with a felony to be <b>more</b> likely to be reoffend.",
+        "The model would predict a defendant charged with a felony to be <b>more</b> likely to reoffend.",
       "Less likely reoffend":
-        "The model would predict a defendant charged with a felony to be <b>less</b> likely to be reoffend.",
+        "The model would predict a defendant charged with a felony to be <b>less</b> likely to reoffend.",
     },
   },
   beer1: {

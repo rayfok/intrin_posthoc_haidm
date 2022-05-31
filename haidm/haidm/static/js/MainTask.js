@@ -105,12 +105,16 @@ class MainTask extends Component {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
       let data = await this.getData();
-      let questions = Object.values(data["instances"])
-        .slice(0, this.numberOfQuestions)
-        .sort(() => Math.random() - 0.5); // Shuffle
-      let trainingQuestions = Object.values(data["training_instances"])
-        .slice(0, this.numberOfTrainingQuestions)
-        .sort(() => Math.random() - 0.5); // Shuffle
+      let questions = Object.values(data["instances"]).slice(
+        0,
+        this.numberOfQuestions
+      );
+      // .sort(() => Math.random() - 0.5); // Shuffle
+      let trainingQuestions = Object.values(data["training_instances"]).slice(
+        0,
+        this.numberOfTrainingQuestions
+      );
+      // .sort(() => Math.random() - 0.5); // Shuffle
       if (questions) {
         this.setState({
           data,
@@ -657,6 +661,14 @@ class MainTask extends Component {
       completedTask,
       completionCode,
     } = this.state;
+
+    if (curQuestion) {
+      console.log(
+        curQuestion["label"] === curQuestion["preds"]["intrinsic"]
+          ? "Correct"
+          : "Wrong"
+      );
+    }
 
     if (questions.length === 0) {
       return (

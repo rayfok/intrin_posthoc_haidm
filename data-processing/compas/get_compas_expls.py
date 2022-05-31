@@ -8,32 +8,58 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
+from sklearn.utils import resample
 from tqdm import tqdm
+import pandas as pd
 
 from utils import CompasDataset
 
 
+SEED = 0
+
+
 def main():
+    random.seed(SEED)
     file_dir = Path(__file__).parent.resolve()
     root_dir = Path(__file__).parent.parent.resolve()
 
     compas = CompasDataset(f"{file_dir}/compas-scores-two-years.csv")
     feature_df = compas.feature_df
     df = compas.encoded_df
+
+    # resample to balance classes within dataset
+    print("Class distribution before sampling")
+    class_dist = df[compas.target].value_counts()
+    print(class_dist)
+    minority_class = 0 if class_dist[0] < class_dist[1] else 1
+
+    df_minority = df[df[compas.target] == minority_class]
+    df_majority = df[df[compas.target] != minority_class]
+    df_majority_downsampled = resample(
+        df_majority,
+        replace=False,  # sample without replacement
+        n_samples=len(df_minority),  # to match minority class
+        random_state=SEED,
+    )
+    df = pd.concat([df_majority_downsampled, df_minority])
+    print("Class distribution after sampling")
+    class_dist = df[compas.target].value_counts()
+    print(class_dist)
+
     labels = df[compas.target]
     features = df.drop(compas.target, axis=1)
 
     X_train, X_test, y_train, y_test = train_test_split(
-        features, labels, test_size=0.2, random_state=0, stratify=labels
+        features, labels, test_size=0.2, random_state=SEED, stratify=labels
     )
     print("Number of train examples:", len(y_train))
     print("Number of test examples:", len(y_test))
-    print(f"Class distribution: 0: {sum(y_test == 0)}, 1: {sum(y_test == 1)}")
+    print(f"Train class distribution: 0: {sum(y_train == 0)}, 1: {sum(y_train == 1)}")
+    print(f"Test class distribution: 0: {sum(y_test == 0)}, 1: {sum(y_test == 1)}")
 
     feature_list = compas.numerical_features + compas.categorical_features
 
-    n_examples = 250
-    random.seed(0)
+    n_examples = 1000
     indices = random.sample(range(0, len(X_test)), n_examples)
     output_df = (
         feature_df.iloc[X_test.index].reset_index().rename(columns={"index": "id"})

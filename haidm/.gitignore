@@ -7,3 +7,4 @@ var/
 **/.DS_Store
 *.db
 **/scripts/*.json
+haidm/data/agree_incorrect.json

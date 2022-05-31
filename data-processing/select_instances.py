@@ -1,5 +1,6 @@
 import json
 import random
+import copy
 
 
 def main():
@@ -15,11 +16,15 @@ def main():
 
     NUM_TRAINING_EXAMPLES = 3
     NUM_EXAMPLES = 20
-    NUM_CORRECT_BEER = 17
-    NUM_CORRECT_COMPAS = 13
+    NUM_CORRECT_BEER = 16
+    NUM_CORRECT_COMPAS = 14
+
+    REJECT_BEER_IDS = ["915", "95", "481"]
+    REJECT_COMPAS_IDS = []
 
     with open("output/raw_task_data.json", "r") as f:
         task_data = json.load(f)
+        agree_incorrect_data = copy.deepcopy(task_data)
     for task, data in task_data.items():
         if task == "beer":
             num_correct = NUM_CORRECT_BEER
@@ -32,6 +37,7 @@ def main():
             return
 
         instances = data["instances"]
+        instances = { k: v for k, v in instances.items() if k not in REJECT_BEER_IDS}
         models_agree, models_disagree = [], []
         positive, negative = [], []
         for id, instance in instances.items():
@@ -110,6 +116,24 @@ def main():
         print("Selected IDs (train):", sorted([int(x) for x in selected_training]))
         print("Selected IDs (main):", sorted([int(x) for x in selected]))
         print()
+
+        agree_incorrect_ids = pos_agree_incorrect + neg_agree_incorrect
+        agree_incorrect_instances = {
+            id: instances[id]
+            for id in random.sample(
+                agree_incorrect_ids, min(len(agree_incorrect_ids), 100)
+            )
+        }
+        agree_incorrect_data[task]["instances"] = agree_incorrect_instances
+        agree_incorrect_data[task]["training_instances"] = {
+            agree_incorrect_ids[0]: instances[agree_incorrect_ids[0]]
+        }
+        # if task == "beer":
+        #     for id in agree_incorrect_ids:
+        #         print(" ".join(instances[id]["expls"]["intrinsic"]["tokens"]), instances[id]["label"])
+        #         print()
+    with open("output/agree_incorrect.json", "w") as f:
+        json.dump(agree_incorrect_data, f, indent=2)
 
     with open("output/task_data.json", "w") as f:
         json.dump(task_data, f, indent=2)

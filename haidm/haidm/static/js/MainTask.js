@@ -662,14 +662,6 @@ class MainTask extends Component {
       completionCode,
     } = this.state;
 
-    if (curQuestion) {
-      console.log(
-        curQuestion["label"] === curQuestion["preds"]["intrinsic"]
-          ? "Correct"
-          : "Wrong"
-      );
-    }
-
     if (questions.length === 0) {
       return (
         <div id="return-hit-message">

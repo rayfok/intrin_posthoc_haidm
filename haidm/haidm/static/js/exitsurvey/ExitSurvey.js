@@ -20,11 +20,20 @@ class ExitSurvey extends Component {
     super(props);
     this.state = {
       responses: {},
+      questions: {},
     };
   }
 
   componentDidMount() {
     window.scrollTo(0, 0);
+    this.setState({
+      questions: Object.entries(questions)
+        .filter(([_, q]) => !("task" in q) || q.task === this.props.task)
+        .reduce((acc, [k, v]) => {
+          acc[k] = v;
+          return acc;
+        }, {}),
+    });
   }
 
   updateResponse = (questionKey, value) => {
@@ -42,20 +51,21 @@ class ExitSurvey extends Component {
       .then(this.props.onSubmit);
   };
 
-  render() {
-    const completedSurvey =
+  isSurveyCompleted = () => {
+    return (
       Object.keys(this.state.responses).length ===
-      Object.keys(questions).length;
+      Object.keys(this.state.questions).length
+    );
+  };
 
+  render() {
     return (
       <div id="exit-survey-container">
         <h4 style={{ textAlign: "center" }}>Exit Survey</h4>
         <p className="task-section-header">
           Please respond to all of the following questions.
         </p>
-        {Object.entries(questions).map(([name, q]) => {
-          if ("task" in q && q.task !== this.props.task) return;
-
+        {Object.entries(this.state.questions).map(([name, q]) => {
           if (q.type === "select") {
             return (
               <SelectQuestion
@@ -126,7 +136,9 @@ class ExitSurvey extends Component {
         })}
 
         <Tooltip
-          title={!completedSurvey ? "Please respond to all questions." : ""}
+          title={
+            !this.isSurveyCompleted() ? "Please respond to all questions." : ""
+          }
           placement="bottom"
         >
           <div>
@@ -135,7 +147,7 @@ class ExitSurvey extends Component {
               className="centered button"
               id="submit-button"
               onClick={this.submit}
-              disabled={!completedSurvey}
+              disabled={!this.isSurveyCompleted()}
             >
               Submit Responses
             </Button>

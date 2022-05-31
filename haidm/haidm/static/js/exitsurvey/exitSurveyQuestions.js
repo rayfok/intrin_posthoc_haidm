@@ -7,6 +7,48 @@ const defaultLikertScaleOptions = [
 ];
 
 export const questions = {
+  compas1: {
+    task: "compas",
+    type: "multipleChoice",
+    context:
+      "Consider the following defendant:<br/><br/> A 25-year old female charged with a felony crime for Possession of Oxycodone, with no prior charges, no prior juvenile felony charges, and no prior juvenile misdemeanor charges.",
+    prompt:
+      "When all other features are kept the same, if the defendant’s age were 35 instead of 25, how would the model’s prediction on the defendant’s likelihood of reoffending change?",
+    options: {
+      "More likely reoffend":
+        "The model would predict a 35-year old defendant to be <b>more</b> likely to be reoffend.",
+      "Less likely reoffend":
+        "The model would predict a 35-year old defendant to be <b>less</b> likely to be reoffend.",
+    },
+  },
+  compas2: {
+    task: "compas",
+    type: "multipleChoice",
+    context:
+      "Consider the following defendant:<br/><br/> A 34-year old male charged with a felony crime for Felony Battery w/Prior Convict, with 4 prior charges, 2 prior juvenile felony charges, and no prior juvenile misdemeanor charges.",
+    prompt:
+      "When all other features are kept the same, if the defendant had 2 prior charges instead of 4, how would the model’s prediction on the defendant’s likelihood of reoffending change?",
+    options: {
+      "More likely reoffend":
+        "The model would predict a defendant with 2 prior charges instead of 4 to be <b>more</b> likely to be reoffend.",
+      "Less likely reoffend":
+        "The model would predict a defendant with 2 prior charges instead of 4 to be <b>less</b> likely to be reoffend.",
+    },
+  },
+  compas3: {
+    task: "compas",
+    type: "multipleChoice",
+    context:
+      "Consider the following defendant:<br/><br/> A 34-year old male charged with a misdemeanor crime for DUI Level 0.15 Or Minor In Veh, with 1 prior charge, no prior juvenile felony charges, and no prior juvenile misdemeanor charges.",
+    prompt:
+      "When all other features are kept the same, if the defendant were instead charged with a felony crime, how would the model’s prediction on the defendant’s likelihood of reoffending change?",
+    options: {
+      "More likely reoffend":
+        "The model would predict a defendant charged with a felony to be <b>more</b> likely to be reoffend.",
+      "Less likely reoffend":
+        "The model would predict a defendant charged with a felony to be <b>less</b> likely to be reoffend.",
+    },
+  },
   beer1: {
     task: "beer",
     type: "multipleChoice",

@@ -1,0 +1,15 @@
+{
+  "title": "Recidivism Prediction with AI Assistance",
+  "keywords": [
+    ""
+  ],
+  "description": "In this study, you will be assisted by an automated system to review profiles of 20 criminal defendants and predict whether they will recidivate (commit another crime) within the next two years. A short survey is required after reviewing the 20 assigned profiles. Bonuses: $0.10 for each profile assessed correctly.",
+  "reward": 2.0,
+  "maxAssignments": 9,
+  "lifeTime": 43200,
+  "duration": 7200,
+  "autoApproveDelay": 172800,
+  "qualifications": [],
+  "externalUrl": "https://clam.cs.washington.edu/haidm/task?task=compas&condition=human-ai-posthoc",
+  "frameHeight": 0
+}

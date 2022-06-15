@@ -24,6 +24,7 @@ import LineChart from "./visualizations/LineChart";
 import { LightTooltip } from "./LightTooltip";
 
 const APPLICATION_ROOT = "/haidm";
+const CROWD_PLATFORM = "mturk"; // options: ["mturk", "prolific"]
 
 class MainTask extends Component {
   urlParams = new URLSearchParams(window.location.search);
@@ -81,9 +82,20 @@ class MainTask extends Component {
       responses: [],
       trainingCompletedCount: 0,
       completedCount: 0,
-      participantId: this.urlParams.get("participantId"),
-      studyId: this.urlParams.get("studyId"),
-      sessionId: this.urlParams.get("sessionId"),
+      participantId:
+        CROWD_PLATFORM === "mturk"
+          ? this.urlParams.get("workerId")
+          : this.urlParams.get("participantId"),
+      studyId:
+        CROWD_PLATFORM === "mturk"
+          ? this.urlParams.get("hitId")
+          : this.urlParams.get("studyId"),
+      sessionId:
+        CROWD_PLATFORM === "mturk"
+          ? this.urlParams.get("assignmentId")
+          : this.urlParams.get("sessionId"),
+      turkSubmitTo:
+        CROWD_PLATFORM === "mturk" ? this.urlParams.get("turkSubmitTo") : null,
       task: this.urlParams.get("task"),
       condition: this.urlParams.get("condition") || "human-ai",
       completionCode: this.urlParams.get("cc") || "NONE",
@@ -105,16 +117,12 @@ class MainTask extends Component {
     let previouslyCompleted = await this.checkHasPreviouslyCompleted();
     if (!previouslyCompleted) {
       let data = await this.getData();
-      let questions = Object.values(data["instances"]).slice(
-        0,
-        this.numberOfQuestions
-      );
-      // .sort(() => Math.random() - 0.5); // Shuffle
-      let trainingQuestions = Object.values(data["training_instances"]).slice(
-        0,
-        this.numberOfTrainingQuestions
-      );
-      // .sort(() => Math.random() - 0.5); // Shuffle
+      let questions = Object.values(data["instances"])
+        .slice(0, this.numberOfQuestions)
+        .sort(() => Math.random() - 0.5); // Shuffle
+      let trainingQuestions = Object.values(data["training_instances"])
+        .slice(0, this.numberOfTrainingQuestions)
+        .sort(() => Math.random() - 0.5); // Shuffle
       if (questions) {
         this.setState({
           data,
@@ -286,9 +294,33 @@ class MainTask extends Component {
   };
 
   handleSubmit = () => {
+    if (this.state.turkSubmitTo !== null) {
+      const form = document.getElementById("final-submit-form");
+      form.submit();
+    } else {
+      location.reload();
+    }
+
     this.setState({
       completedTask: true,
     });
+  };
+
+  getMTurkSubmitForm = () => {
+    return (
+      <form
+        id="final-submit-form"
+        action={this.state.turkSubmitTo + "/mturk/externalSubmit"}
+        method="POST"
+      >
+        <input
+          type="hidden"
+          name="assignmentId"
+          value={this.state.sessionId || ""}
+        />
+        <input type="hidden" name="nonce" value={"ray" + Math.random()} />
+      </form>
+    );
   };
 
   checkHasPreviouslyCompleted = async () => {
@@ -389,7 +421,7 @@ class MainTask extends Component {
     if (this.state.task === "compas") {
       return (
         <p>
-          You are here to help{" "}
+          Your task in this study is to{" "}
           <b>
             predict whether a defendant currently charged with a crime will
             reoffend within the next two years
@@ -416,7 +448,7 @@ class MainTask extends Component {
     } else if (this.state.task === "beer") {
       return (
         <p>
-          You are here to help{" "}
+          Your task in this study is to{" "}
           <b>predict whether a review of a beer is positive or negative</b>.{" "}
           {this.state.condition !== "human" && (
             <span>
@@ -437,6 +469,7 @@ class MainTask extends Component {
   getTermsAndConditions = () => {
     return (
       <p>
+        This task should only be accepted and completed once per participant.
         Participation is voluntary, you are free to release the task at any
         time, and refusing to be in the study or stopping participation will
         involve no penalty or loss of benefits to which you are otherwise
@@ -666,39 +699,49 @@ class MainTask extends Component {
       return (
         <div id="return-hit-message">
           <p>
-            If this message does not go away in a few seconds, either something
-            has gone catastrophically wrong or our records indicate that you
-            have already previously completed our task. Please do not accept
-            this task or return if already accepted. Thank you!
+            Oops! Our records indicate that you have already previously
+            completed our task. Please do not accept this task, or return it if
+            already accepted. Thank you!
           </p>
         </div>
       );
     }
 
     if (completedTask) {
-      return (
-        <div id="task-completed-message">
-          <p>
-            Your response has been successfully submitted. Please navigate to
-            the following link to register your completion with Prolific.
-            <br />
-            <br />
-            <a
-              href={`https://app.prolific.co/submissions/complete?cc=${completionCode}`}
-            >
-              https://app.prolific.co/submissions/complete
-            </a>
-            <br />
-            <br />
-            If you are not automatically redirected, please use the following
-            completion code: <b>{completionCode}</b>
-          </p>
-        </div>
-      );
+      if (CROWD_PLATFORM === "mturk") {
+        return (
+          <div id="task-completed-message">
+            Your response has been successfully submitted. Thank you for
+            completing our HIT!
+          </div>
+        );
+      } else {
+        return (
+          <div id="task-completed-message">
+            <p>
+              Your response has been successfully submitted. Please navigate to
+              the following link to register your completion with Prolific.
+              <br />
+              <br />
+              <a
+                href={`https://app.prolific.co/submissions/complete?cc=${completionCode}`}
+              >
+                https://app.prolific.co/submissions/complete
+              </a>
+              <br />
+              <br />
+              If you are not automatically redirected, please use the following
+              completion code: <b>{completionCode}</b>
+            </p>
+          </div>
+        );
+      }
     }
 
     return (
       <React.Fragment>
+        {CROWD_PLATFORM === "mturk" && this.getMTurkSubmitForm()}
+
         <div id="task-stepper">
           {!completedTask && <TaskStepper activeStep={activeStep} />}
           {activeStep === TaskStep.TaskOnboarding && (
